@@ -16,8 +16,8 @@
   "devDependencies": {
     "@types/node": "latest",
     "@types/offscreencanvas": "^2019.7.3",
-    "shx": "0.3.4",
-    "typescript": "^5.6.3",
-    "vite": "^5.4.2"
+    "shx": "0.4.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.10"
   }
 }

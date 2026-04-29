@@ -24,9 +24,9 @@
   },
   "homepage": "https://github.com/le5le-com/meta2d.js#readme",
   "devDependencies": {
-    "@types/marked": "^4.0.3",
+    "@types/marked": "^6.0.0",
     "@types/offscreencanvas": "latest",
-    "@types/zrender": "^4.0.0"
+    "@types/zrender": "^5.0.0"
   },
   "dependencies": {
     "mitt": "^2.1.0",

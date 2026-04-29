@@ -3428,8 +3428,11 @@ export class Canvas {
         getPensDisableResize(this.store.active) ||
         this.store.options.disableSize;
       if (!activePensLock && !activePensDisableRotate) {
+        // BeePower fork (KD-008 PoC): rotate handle at top-LEFT corner, not top-center.
+        // Reason: top-center handle visually competes with bbox top edge; top-left
+        // is more natural anchor for "rotate this bounding box".
         const rotatePt = {
-          x: this.activeRect.center.x,
+          x: this.activeRect.x,
           y: this.activeRect.y - 30,
         };
         if (this.activeRect.rotate) {
@@ -5180,9 +5183,11 @@ export class Canvas {
           return;
         }
         // Draw rotate control line.
+        // BeePower fork (KD-008 PoC): handle at top-LEFT, not top-center
+        // (matches hit-test at this.activeRect.x).
         ctx.beginPath();
-        ctx.moveTo(this.activeRect.center.x, this.activeRect.y);
-        ctx.lineTo(this.activeRect.center.x, this.activeRect.y - 30);
+        ctx.moveTo(this.activeRect.x, this.activeRect.y);
+        ctx.lineTo(this.activeRect.x, this.activeRect.y - 30);
         ctx.stroke();
 
         // Draw rotate control points.
@@ -5190,7 +5195,7 @@ export class Canvas {
         ctx.strokeStyle = this.store.styles.activeColor;
         ctx.fillStyle = '#ffffff';
         ctx.arc(
-          this.activeRect.center.x,
+          this.activeRect.x,
           this.activeRect.y - 30,
           5,
           0,

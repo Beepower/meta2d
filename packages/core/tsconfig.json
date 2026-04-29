@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "./dist",
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
+  },
+  "include": ["index.ts", "src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "src/tooltip/**", "src/dialog/**", "src/popconfirm/**", "src/message/**", "src/title/**"]
+}

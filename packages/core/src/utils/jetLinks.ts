@@ -20,7 +20,7 @@ export function connectJetLinks(meta2d:Meta2d, net:Network){
       }`
     );
     //消息接收
-    meta2d.jetLinksClient.onmessage = (e) => {
+    meta2d.jetLinksClient.onmessage = (e: MessageEvent) => {
       const mess = JSON.parse(e.data);
       if(!mess.payload){
         return;
@@ -70,7 +70,7 @@ export function connectJetLinks(meta2d:Meta2d, net:Network){
   }
 }
 
-function doWarning(meta2d:Meta2d, mess){
+function doWarning(meta2d:Meta2d, mess: any){
   let topicName = mess.payload.topicName;
   let message = mess.payload.message;
   let notifyTime = mess.payload.notifyTime;
@@ -91,7 +91,7 @@ function doWarning(meta2d:Meta2d, mess){
 
 globalThis.doWarning = doWarning
 
-function getTime(timestamp){
+function getTime(timestamp: number){
   const now = new Date(timestamp);
   const year = now.getFullYear();
   const month = (now.getMonth() + 1+ '').padStart(2, '0');
@@ -127,7 +127,7 @@ export function getSendData(meta2d:Meta2d, pen: Pen, e: Event){
           (item: any) => item.propertyId === key
         );
         if (realTime) {
-          list[index].properties[key] = _pen[realTime.key];
+          list[index].properties[key] = (_pen as any)[realTime.key];
         }
       } else if (
         typeof item.value[key] === 'string' &&
@@ -136,7 +136,7 @@ export function getSendData(meta2d:Meta2d, pen: Pen, e: Event){
         let keys = item.value[key].match(/(?<=\$\{).*?(?=\})/g);
         if (keys?.length) {
           list[index].properties[key] =
-            _pen[keys[0]] ?? meta2d.getDynamicParam(keys[0]);
+            (_pen as any)[keys[0]] ?? meta2d.getDynamicParam(keys[0]);
         }
       } else {
         list[index].properties[key] = item.value[key];
@@ -204,7 +204,9 @@ export async function playMp3(meta2d:any,alarmConfigId:string){
   }
 }
 
-function createAudio(meta2d,media,playTimes){
+// Phase A DEBT: meta2d 用 any 因 Meta2dStore 未声明 globalAudio 字段(TS2339)
+// Phase B 后:在 Meta2dStore 加 globalAudio?: HTMLAudioElement 字段,然后改 meta2d: Meta2d
+function createAudio(meta2d: any, media: string, playTimes: number){
   if(!meta2d.store.globalAudio){
     meta2d.store.globalAudio = document.createElement('audio');
   }

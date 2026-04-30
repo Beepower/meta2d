@@ -3,7 +3,7 @@ export function abs(num: number, percent: number | string): number {
     return +percent;
   }
 
-  if (!percent || percent[(percent as string).length - 1] !== '%') {
+  if (!percent || (percent as string)[(percent as string).length - 1] !== '%') {
     return 0;
   }
 
@@ -120,7 +120,7 @@ export function valueInArray(realValue: any, collection: unknown): boolean {
 }
 
 // 三次贝塞尔曲线y轴分量
-export function cubicBezierY(t, p1y, p2y) {
+export function cubicBezierY(t: number, p1y: number, p2y: number) {
   const mt = 1 - t;
   return (
     3 * mt * mt * t * p1y +
@@ -129,7 +129,7 @@ export function cubicBezierY(t, p1y, p2y) {
   );
 }
 
-export function toNumber(text) {
+export function toNumber(text: string) {
   const matches = text.match(/^-?\d*\.?\d*/);
   text = matches ? matches[0] : '';
   

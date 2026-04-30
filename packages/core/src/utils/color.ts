@@ -1,7 +1,9 @@
 // pSBC - Shade Blend Convert - Version 4.0 - 02/18/2019
 // https://github.com/PimpTrizkit/PJs/edit/master/pSBC.js
 
-export function pSBCr(d) {
+// Phase A DEBT: d 参数被多次重赋值为 string / string[] / number(变量重用反模式)
+// 短期 d: any 守 noImplicitAny 边界;Phase B 阶段拆为独立变量(decoded/parts/numeric)
+export function pSBCr(d: any) {
   const i = parseInt,
     m = Math.round;
   let n = d.length,
@@ -49,7 +51,7 @@ more:
 https://github-wiki-see.page/m/PimpTrizkit/PJs/wiki/12.-Shade%2C-Blend-and-Convert-a-Web-Color-%28pSBC.js%29
 */
 
-export function pSBC(p, c0, c1?, l?) {
+export function pSBC(p: number, c0: string, c1?: string, l?: boolean) {
   let r,
     g,
     b,

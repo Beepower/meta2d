@@ -321,7 +321,7 @@ export class Canvas {
       this.patchFlags = true;
       this.store.lastHover && (this.store.lastHover.calculative!.hover = false);
       let hover = this.store.data.pens.find(
-        (item) => item.calculative.hover === true
+        (item) => item.calculative!.hover === true
       );
       setHover(hover, false);
     };
@@ -1288,7 +1288,7 @@ export class Canvas {
       }
       const anchor = calcRelativePoint(this.movingAnchor, rect);
       // 更改 pen 的 anchors 属性
-      const index = pen.anchors.findIndex(
+      const index = pen.anchors!.findIndex(
         (anchor) => anchor.id === this.movingAnchor.id
       );
       pen.anchors[index] = anchor;
@@ -1424,8 +1424,8 @@ export class Canvas {
       for (const pen of pens) {
         if (pen.type) {
           pen.anchors[0].connectTo = this.randomIdObj[pen.anchors[0].connectTo];
-          pen.anchors[pen.anchors.length - 1].connectTo =
-            this.randomIdObj[pen.anchors[pen.anchors.length - 1].connectTo];
+          pen.anchors[pen.anchors!.length - 1].connectTo =
+            this.randomIdObj[pen.anchors[pen.anchors!.length - 1].connectTo];
         } else {
           pen.connectedLines?.forEach((item) => {
             item.lineAnchor = this.randomIdObj[item.lineAnchor];
@@ -1560,12 +1560,12 @@ export class Canvas {
     if (pen.type) {
       if (
         pen.anchors[0].connectTo ||
-        pen.anchors[pen.anchors.length - 1].connectTo
+        pen.anchors[pen.anchors!.length - 1].connectTo
       ) {
         beforeIds = [
           pen.id,
           pen.anchors[0].id,
-          pen.anchors[pen.anchors.length - 1].id,
+          pen.anchors[pen.anchors!.length - 1].id,
         ];
       }else{
         beforeIds = [pen.id];
@@ -1584,7 +1584,7 @@ export class Canvas {
       } else {
         this.randomIdObj[beforeIds[0]] = pen.id;
         this.randomIdObj[beforeIds[1]] = pen.anchors[0].id;
-        this.randomIdObj[beforeIds[2]] = pen.anchors[pen.anchors.length - 1].id;
+        this.randomIdObj[beforeIds[2]] = pen.anchors[pen.anchors!.length - 1].id;
       }
     }
     //处理链接关系
@@ -2466,7 +2466,7 @@ export class Canvas {
             if (activePen.locked === undefined || activePen.locked < LockState.DisableMove) {
               activePen?.onMouseMove?.(activePen, this.mousePos);
             }
-            if(activePen.calculative.focus){
+            if(activePen.calculative!.focus){
               //执行图元的操作
               return;
             }
@@ -2852,7 +2852,7 @@ export class Canvas {
     }
 
     if (this.willInactivePen) {
-      this.willInactivePen.calculative.active = undefined;
+      this.willInactivePen.calculative!.active = undefined;
       setChildrenActive(this.willInactivePen, false); // 子节点取消激活
       const index = this.store.active.findIndex((p) => p === this.willInactivePen);
       if(index >= 0) {
@@ -3190,7 +3190,7 @@ export class Canvas {
     const yPenId = this.dock?.yDock?.penId;
     const xPen = this.store.pens[xPenId];
     if (xPen) {
-      xPen.calculative.isDock = false;
+      xPen.calculative!.isDock = false;
     }
     const yPen = this.store.pens[yPenId];
     if (yPen) {
@@ -3372,7 +3372,7 @@ export class Canvas {
               this.store.emitter.emit('leave', this.store.lastHoverContainer);
             }
             if (this.store.hoverContainer) {
-              this.store.hoverContainer.calculative.containerHover = true;
+              this.store.hoverContainer.calculative!.containerHover = true;
               this.store.emitter.emit('enter', this.store.hoverContainer);
             }
             this.store.lastHoverContainer = this.store.hoverContainer;
@@ -3789,7 +3789,7 @@ export class Canvas {
       const connectPen = this.findOne(anchor.connectTo);
       if (connectPen?.calculative && !connectPen?.calculative.active) {
         pen = connectPen;
-        const connectAnchor = connectPen.calculative.worldAnchors.find(
+        const connectAnchor = connectPen.calculative!.worldAnchors.find(
           (item) => item.id === anchor.anchorId
         );
         connectAnchor && (anchor = connectAnchor);
@@ -4173,7 +4173,7 @@ export class Canvas {
                 if(this.store.pens[key]){
                   let connected = deepClone(this.store.data.pens[i].lastConnected[key]);
                   this.store.pens[key].connectedLines = connected;
-                  pen.anchors.forEach((anchor) => {
+                  pen.anchors!.forEach((anchor) => {
                     connected.forEach((item: any) => {
                       if(anchor.id === item.lineAnchor){
                         anchor.connectTo = key;
@@ -6051,7 +6051,7 @@ export class Canvas {
         const pen = this.store.active[i];
         if (
           pen.anchors[0]?.connectTo ||
-          pen.anchors[pen.anchors.length - 1]?.connectTo
+          pen.anchors[pen.anchors!.length - 1]?.connectTo
         ) {
           this.store.active.splice(i, 1);
           pen.calculative!.active = undefined;
@@ -6356,7 +6356,7 @@ export class Canvas {
       }
       if (
         hoverPen.type === PenType.Line &&
-        hoverPen.calculative.worldAnchors?.length <= 2
+        hoverPen.calculative!.worldAnchors?.length <= 2
       ) {
         this.delete([hoverPen]);
       } else {
@@ -6412,7 +6412,7 @@ export class Canvas {
       line = this.store.pens[id.replace(movingSuffix, '')];
     }
     // 连接
-    line.anchors.forEach((anchor) => {
+    line.anchors!.forEach((anchor) => {
       if (
         anchor.connectTo &&
         !pens.find(
@@ -7338,7 +7338,7 @@ export class Canvas {
       const line = pastePens.find((pen) => pen.id === lineId);
       if (line) {
         const from = line.anchors[0];
-        const to = line.anchors[line.anchors.length - 1];
+        const to = line.anchors[line.anchors!.length - 1];
         from.connectTo === oldId && (from.connectTo = pen.id);
         to.connectTo === oldId && (to.connectTo = pen.id);
       } else {
@@ -7357,7 +7357,7 @@ export class Canvas {
    */
   changeNodeConnectedLine(oldId: string, line: Pen, pastePens: Pen[]) {
     const from = line.anchors[0];
-    const to = line.anchors[line.anchors.length - 1];
+    const to = line.anchors[line.anchors!.length - 1];
     // 修改对应节点的 connectedLines
     const anchors = [from, to];
     for (const anchor of anchors) {
@@ -7481,7 +7481,7 @@ export class Canvas {
     if (i > -1) {
       const delPen = this.store.pens[pen.id];
       if(delPen && delPen.calculative){
-        delPen.calculative.active = undefined;
+        delPen.calculative!.active = undefined;
       }
       if(delPen.pathId){
         delPen.path = this.store.data.paths[pen.pathId];
@@ -7543,7 +7543,7 @@ export class Canvas {
         const { lineId, lineAnchor } = pen.connectedLines[i];
         const line = this.store.pens[lineId];
         if (line) {
-          let anchor = line.anchors.find((anchor) => anchor.id === lineAnchor);
+          let anchor = line.anchors!.find((anchor) => anchor.id === lineAnchor);
           if (anchor?.connectTo === pen.id) {
             anchor.connectTo = undefined;
             anchor.anchorId = undefined;
@@ -7571,7 +7571,7 @@ export class Canvas {
       }
       const connectTo = this.store.pens[lineAnchor.connectTo];
       if (connectTo) {
-        connectTo.calculative.worldAnchors?.forEach((anchor) => {
+        connectTo.calculative!.worldAnchors?.forEach((anchor) => {
           disconnectLine(connectTo, anchor, pen, lineAnchor);
         });
       }

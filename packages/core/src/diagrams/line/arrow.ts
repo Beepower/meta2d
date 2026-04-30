@@ -9,16 +9,16 @@ export function drawArrow(
   ctx?: CanvasRenderingContext2D | Path2D
 ): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  let worldAnchors = pen.calculative.worldAnchors;
-  let scale = pen.calculative.canvas.store.data.scale;
-  let size = (pen.calculative.animateLineWidth || 6) * scale; // 箭头大小
+  let worldAnchors = pen.calculative!.worldAnchors;
+  let scale = pen.calculative!.canvas.store.data.scale;
+  let size = (pen.calculative!.animateLineWidth || 6) * scale; // 箭头大小
   let arrowLength = (pen.animateLineWidth*2 || 12) * scale; // 箭头长度
   if(pen.lineAnimateType === LineAnimateType.WaterDrop){
     arrowLength = (pen.animateLineWidth*4 || 24) * scale; // 水滴长度
   }
   let d = (pen.animateInterval || 100) * scale; // 箭头间距
-  let smoothLenth = pen.calculative.lineWidth *(pen.calculative.lineSmooth || 0)//*scale;
-  let lineWidth = (pen.calculative.animateLineWidth/2 || 3) * scale;
+  let smoothLenth = pen.calculative!.lineWidth *(pen.calculative!.lineSmooth || 0)//*scale;
+  let lineWidth = (pen.calculative!.animateLineWidth/2 || 3) * scale;
   if (pen.animateReverse) {
     //箭头反向
     arrowLength = -arrowLength;
@@ -40,22 +40,22 @@ export function drawArrow(
           let newP = {
             x:
               from.x +
-              ((pen.calculative.animatePos - lastLength) % d) *
+              ((pen.calculative!.animatePos - lastLength) % d) *
                 Math.cos((angle * Math.PI) / 180),
             y:
               from.y -
-              ((pen.calculative.animatePos - lastLength) % d) *
+              ((pen.calculative!.animatePos - lastLength) % d) *
                 Math.sin((angle * Math.PI) / 180),
           };
           if (pen.animateReverse) {
             newP = {
               x:
                 from.x +
-                ((pen.length - (pen.calculative.animatePos + lastLength)) % d) *
+                ((pen.length - (pen.calculative!.animatePos + lastLength)) % d) *
                   Math.cos((angle * Math.PI) / 180),
               y:
                 from.y -
-                ((pen.length - (pen.calculative.animatePos + lastLength)) % d) *
+                ((pen.length - (pen.calculative!.animatePos + lastLength)) % d) *
                   Math.sin((angle * Math.PI) / 180),
             };
           }
@@ -88,7 +88,7 @@ export function drawArrow(
       }
     }else{
       let from: Point; // 上一个点
-      let pos = (pen.calculative.animatePos % d) / d;
+      let pos = (pen.calculative!.animatePos % d) / d;
       if(pos>1){
         pos = 1
       }

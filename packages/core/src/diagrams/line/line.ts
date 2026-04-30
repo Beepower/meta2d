@@ -10,13 +10,13 @@ export function line(
 ): Path2D {
   const path = !ctx ? new Path2D() : ctx;
   if (pen.lineName === 'line' || pen.lineName === 'polyline') {
-    if (pen.calculative.lineSmooth) {
+    if (pen.calculative!.lineSmooth) {
       let _path = getGradientAnimatePath(pen);
       if (path instanceof Path2D) path.addPath(_path);
       if (path instanceof Path2D) return path;
     }
   }
-  const worldAnchors = pen.calculative.worldAnchors;
+  const worldAnchors = pen.calculative!.worldAnchors;
   if (worldAnchors.length > 1) {
     let from: Point; // 上一个点
     worldAnchors.forEach((pt: Point) => {
@@ -39,11 +39,11 @@ export function line(
 }
 
 export function lineSegment(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
-  if (!pen.calculative.worldAnchors) {
-    pen.calculative.worldAnchors = [];
+  if (!pen.calculative!.worldAnchors) {
+    pen.calculative!.worldAnchors = [];
   }
 
-  if (pen.calculative.worldAnchors.length < 2 || pen.anchors?.length > 1) {
+  if (pen.calculative!.worldAnchors.length < 2 || pen.anchors?.length > 1) {
     return;
   }
 
@@ -55,7 +55,7 @@ export function lineSegment(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   from.next = undefined;
   deleteTempAnchor(pen);
   to.prev = undefined;
-  pen.calculative.worldAnchors.push(to);
+  pen.calculative!.worldAnchors.push(to);
 }
 
 function draw(path: CanvasRenderingContext2D | Path2D, from: Point, to: Point) {
@@ -96,7 +96,7 @@ export function getLineRect(pen: Pen) {
 export function getLinePoints(pen: Pen) {
   const pts: Point[] = [];
   let from: Point; // 上一个点
-  pen.calculative.worldAnchors.forEach((pt: Point) => {
+  pen.calculative!.worldAnchors.forEach((pt: Point) => {
     if (!from) {
       pts.push(pt);
     } else {
@@ -105,8 +105,8 @@ export function getLinePoints(pen: Pen) {
     }
     from = pt;
   });
-  if (pen.close && pen.calculative.worldAnchors.length > 1) {
-    pts.push(...getPoints(from, pen.calculative.worldAnchors[0], pen));
+  if (pen.close && pen.calculative!.worldAnchors.length > 1) {
+    pts.push(...getPoints(from, pen.calculative!.worldAnchors[0], pen));
   }
   return pts;
 }
@@ -158,7 +158,7 @@ export function pointInLine(pt: Point, pen: Pen) {
   let i = 0;
   let from: Point; // 上一个点
   let point: Point;
-  for (const anchor of pen.calculative.worldAnchors) {
+  for (const anchor of pen.calculative!.worldAnchors) {
     if (from) {
       point = pointInLineSegment(pt, from, anchor, r);
       if (point) {
@@ -173,8 +173,8 @@ export function pointInLine(pt: Point, pen: Pen) {
   }
   if (
     pen.close &&
-    pen.calculative.worldAnchors.length > 1 &&
-    (point = pointInLineSegment(pt, from, pen.calculative.worldAnchors[0], r))
+    pen.calculative!.worldAnchors.length > 1 &&
+    (point = pointInLineSegment(pt, from, pen.calculative!.worldAnchors[0], r))
   ) {
     return {
       i,
@@ -266,13 +266,13 @@ function lineLen(from: Point, cp1?: Point, cp2?: Point, to?: Point): number {
 }
 
 export function getLineLength(pen: Pen): number {
-  if (pen.calculative.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors.length < 2) {
     return 0;
   }
 
   let len = 0;
   let from: Point; // 上一个点
-  pen.calculative.worldAnchors.forEach((pt: Point) => {
+  pen.calculative!.worldAnchors.forEach((pt: Point) => {
     if (from) {
       from.lineLength = lineLen(from, from.next, pt.prev, pt);
       len += from.lineLength;
@@ -285,9 +285,9 @@ export function getLineLength(pen: Pen): number {
     from.lineLength = lineLen(from, from.next, to.prev, to);
     len += from.lineLength;
   }
-  if (pen.calculative.animatePos) {
-    pen.calculative.animatePos =
-      (len / pen.length) * pen.calculative.animatePos;
+  if (pen.calculative!.animatePos) {
+    pen.calculative!.animatePos =
+      (len / pen.length) * pen.calculative!.animatePos;
   }
   pen.length = len;
   return len;

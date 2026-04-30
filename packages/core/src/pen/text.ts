@@ -39,8 +39,8 @@ export function calcTextRect(pen: Pen) {
   if (textHeight && textHeight < 1) {
     textHeight *= worldRect.height;
   }
-  if (textWidth < pen.calculative.fontSize) {
-    textWidth = pen.calculative.fontSize;
+  if (textWidth < pen.calculative!.fontSize) {
+    textWidth = pen.calculative!.fontSize;
   }
   // 默认居左，居上
   x += (textLeft || 0) + worldRect.x;
@@ -73,10 +73,10 @@ export function calcTextRect(pen: Pen) {
     height: textHeight || height,
   };
   calcRightBottom(rect);
-  pen.calculative.worldTextRect = rect;
+  pen.calculative!.worldTextRect = rect;
 
   calcTextLines(pen);
-  pen.calculative.textDrawRect = undefined;
+  pen.calculative!.textDrawRect = undefined;
 }
 
 export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
@@ -91,11 +91,11 @@ export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
 
   const lineHeightValue = fontSize * lineHeight;
   const h = textLines.length * lineHeightValue;
-  if (pen.calculative.fontsChecked !== false) {
+  if (pen.calculative!.fontsChecked !== false) {
     if (!document.fonts.check(ctx.font)) {
-      pen.calculative.fontsChecked = true;
+      pen.calculative!.fontsChecked = true;
     } else {
-      pen.calculative.fontsChecked = false;
+      pen.calculative!.fontsChecked = false;
     }
   }
   const textWidth = calcTextAdaptionWidth(ctx, pen); // 多行文本最大宽度
@@ -123,16 +123,16 @@ export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
       break;
   }
 
-  pen.calculative.textDrawRect = {
+  pen.calculative!.textDrawRect = {
     x,
     y,
     width: textWidth,
     height: h,
   };
-  calcRightBottom(pen.calculative.textDrawRect);
+  calcRightBottom(pen.calculative!.textDrawRect);
 }
 
-export function calcTextLines(pen: Pen, text = pen.calculative.text) {
+export function calcTextLines(pen: Pen, text = pen.calculative!.text) {
   const calc = pen.calculative;
   if (isEmptyText(text)) {
     calc.textLines = undefined;
@@ -211,7 +211,7 @@ export function calcTextLines(pen: Pen, text = pen.calculative.text) {
       break;
   }
   /*
-  const keepDecimal = pen.calculative.keepDecimal;
+  const keepDecimal = pen.calculative!.keepDecimal;
   if (keepDecimal != undefined) {
     lines.forEach((text, i) => {
       const textNum = Number(text);
@@ -251,7 +251,7 @@ export function getWords(txt: string = '') {
 }
 
 export function wrapLines(words: string[], pen: Pen) {
-  const canvas: Canvas = pen.calculative.canvas;
+  const canvas: Canvas = pen.calculative!.canvas;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
     pen.calculative;
@@ -281,7 +281,7 @@ export function wrapLines(words: string[], pen: Pen) {
         (text.length - chinese.length - spaces.length) * fontSize * 0.6; // 其他字符占用的宽度
       currentWidth = chineseWidth + spaceWidth + otherWidth;
     }
-    const textWidth = pen.calculative.worldTextRect.width;
+    const textWidth = pen.calculative!.worldTextRect.width;
     if (currentWidth <= textWidth + 0.1) {
       currentLine += word;
     } else {
@@ -299,23 +299,23 @@ export function calcTextAdaptionWidth(
   pen: Pen
 ): number {
   let maxWidth = 0;
-  pen.calculative.textLineWidths = [];
-  pen.calculative.textLines && pen.calculative.textLines.forEach((text: string) => {
+  pen.calculative!.textLineWidths = [];
+  pen.calculative!.textLines && pen.calculative!.textLines.forEach((text: string) => {
     let width;
-    if(pen.calculative.textType){
+    if(pen.calculative!.textType){
       // 文字渐变 measureText 计算有误
-      width = getFontWith(text,pen) + text.length * pen.calculative.letterSpacing;
+      width = getFontWith(text,pen) + text.length * pen.calculative!.letterSpacing;
     }else{
-      width = ctx.measureText(text).width + text.length * pen.calculative.letterSpacing;  
+      width = ctx.measureText(text).width + text.length * pen.calculative!.letterSpacing;  
     }
-    pen.calculative.textLineWidths.push(width);
+    pen.calculative!.textLineWidths.push(width);
     maxWidth < width && (maxWidth = width);
   });
   return maxWidth;
 }
 
 function getFontWith(text: string, pen: Pen) {
-  const fontSize = pen.calculative.fontSize;
+  const fontSize = pen.calculative!.fontSize;
   const chinese = text.match(/[^\x00-\xff]/g) || '';
   const chineseWidth = chinese.length * fontSize; // 中文占用的宽度
   const spaces = text.match(/\s/g) || '';
@@ -339,11 +339,11 @@ function setEllipsisOnLastLine(lines: string[]) {
 
 export function calcTextAutoWidth(pen: Pen) {
   let arr = pen.text.split('\n');
-  const canvas: Canvas = pen.calculative.canvas;
+  const canvas: Canvas = pen.calculative!.canvas;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
     pen.calculative;
-  let textWidth = 0; // pen.calculative.worldTextRect.width;
+  let textWidth = 0; // pen.calculative!.worldTextRect.width;
   let currentWidth = 0; // textWidth;
   ctx.save();
   for (let i = 0; i < arr.length; i++) {
@@ -355,7 +355,7 @@ export function calcTextAutoWidth(pen: Pen) {
         fontSize,
         lineHeight,
       });
-      currentWidth = ctx.measureText(arr[i]).width + arr[i].length * pen.calculative.letterSpacing; //* scale;
+      currentWidth = ctx.measureText(arr[i]).width + arr[i].length * pen.calculative!.letterSpacing; //* scale;
     } else {
       // 近似计算
       const chinese = arr[i].match(/[^\x00-\xff]/g) || '';
@@ -364,7 +364,7 @@ export function calcTextAutoWidth(pen: Pen) {
       const spaceWidth = spaces.length * fontSize * 0.3; // 空格占用的宽度
       const otherWidth =
         (arr[i].length - chinese.length - spaces.length) * fontSize * 0.6; // 其他字符占用的宽度
-      currentWidth = chineseWidth + spaceWidth + otherWidth + arr[i].length * pen.calculative.letterSpacing;
+      currentWidth = chineseWidth + spaceWidth + otherWidth + arr[i].length * pen.calculative!.letterSpacing;
     }
     if (currentWidth > textWidth) {
       textWidth = currentWidth; //* scale;
@@ -390,6 +390,6 @@ export function calcTextAutoWidth(pen: Pen) {
   pen.height = textHeight + 5;
   // }
   pen.width = textWidth + 5; //误差
-  pen.calculative.canvas.updatePenRect(pen);
-  pen.calculative.canvas.calcActiveRect();
+  pen.calculative!.canvas.updatePenRect(pen);
+  pen.calculative!.canvas.calcActiveRect();
 }

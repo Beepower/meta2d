@@ -47,20 +47,20 @@ export function video(pen: Pen) {
 
     muted.onclick = (e)=>{
       e.stopPropagation();
-      if(pen.calculative.media.muted){
+      if(pen.calculative!.media.muted){
         muted.innerHTML = mutedIcons[0];
-        pen.calculative.media.muted = false;
+        pen.calculative!.media.muted = false;
       }else{
         muted.innerHTML = mutedIcons[1];
-        pen.calculative.media.muted = true;
+        pen.calculative!.media.muted = true;
       }
     }
-    if(!pen.calculative.singleton){
-      pen.calculative.singleton = {
+    if(!pen.calculative!.singleton){
+      pen.calculative!.singleton = {
         div: player,
       };
     }
-    pen.calculative.singleton.muted = muted;
+    pen.calculative!.singleton.muted = muted;
     player.onmouseenter = (e)=>{
       if(!(pen as any).hideMuted){
         muted.style.display = 'block';
@@ -87,12 +87,12 @@ export function video(pen: Pen) {
 
     media.loop = pen.playLoop;
     media.ontimeupdate = () => {
-      resizeProcessWidth(progress, media, pen.calculative.worldRect.width);
+      resizeProcessWidth(progress, media, pen.calculative!.worldRect.width);
     };
     media.onended = () => {
-      pen.calculative.onended && pen.calculative.onended(pen);
+      pen.calculative!.onended && pen.calculative!.onended(pen);
     };
-    pen.calculative.media = media;
+    pen.calculative!.media = media;
     media.style.position = 'absolute';
     media.style.outline = 'none';
     media.style.left = '0';
@@ -102,7 +102,7 @@ export function video(pen: Pen) {
     media.style.objectFit = (pen as any).objectFit || 'contain';
     player.appendChild(media);
     videos[pen.id] = player;
-    pen.calculative.canvas.externalElements?.parentElement.appendChild(player);
+    pen.calculative!.canvas.externalElements?.parentElement.appendChild(player);
     setElemPosition(pen, player);
     if (pen.autoPlay) {
       media.autoplay = true;
@@ -110,31 +110,31 @@ export function video(pen: Pen) {
     }
   } else if (
     pen.video &&
-    pen.calculative.media &&
-    pen.video !== pen.calculative.video
+    pen.calculative!.media &&
+    pen.video !== pen.calculative!.video
   ) {
     console.warn('video 更改, 此处是否执行？');
-    pen.calculative.media.src = pen.video;
+    pen.calculative!.media.src = pen.video;
     if (pen.autoPlay) {
-      pen.calculative.media.muted = true;
-      pen.calculative.media.autoplay = true;
+      pen.calculative!.media.muted = true;
+      pen.calculative!.media.autoplay = true;
     }
-    pen.calculative.media.loop = pen.playLoop;
-    pen.calculative.video = pen.video;
+    pen.calculative!.media.loop = pen.playLoop;
+    pen.calculative!.video = pen.video;
   } else if (
     pen.audio &&
-    pen.calculative.media &&
-    pen.audio !== pen.calculative.audio
+    pen.calculative!.media &&
+    pen.audio !== pen.calculative!.audio
   ) {
-    pen.calculative.media.src = pen.audio;
+    pen.calculative!.media.src = pen.audio;
     if (pen.autoPlay) {
-      pen.calculative.media.muted = true;
-      pen.calculative.media.autoplay = true;
+      pen.calculative!.media.muted = true;
+      pen.calculative!.media.autoplay = true;
     }
-    pen.calculative.media.loop = pen.playLoop;
-    pen.calculative.audio = pen.audio;
+    pen.calculative!.media.loop = pen.playLoop;
+    pen.calculative!.audio = pen.audio;
   }
-  if (pen.calculative.patchFlags) {
+  if (pen.calculative!.patchFlags) {
     setElemPosition(pen, videos[pen.id]);
   }
   return new Path2D();
@@ -153,18 +153,18 @@ function move(pen: Pen) {
   resizeProcessWidth(
     progress as HTMLDivElement,
     media as HTMLMediaElement,
-    pen.calculative.worldRect.width
+    pen.calculative!.worldRect.width
   );
 }
 
 function click(pen: Pen) {
-  if (pen.calculative.media) {
-    pen.calculative.media.muted = false;
-    pen.calculative.singleton.muted.innerHTML = mutedIcons[0];
-    if (pen.calculative.media.paused) {
-      pen.calculative.media.play();
+  if (pen.calculative!.media) {
+    pen.calculative!.media.muted = false;
+    pen.calculative!.singleton.muted.innerHTML = mutedIcons[0];
+    if (pen.calculative!.media.paused) {
+      pen.calculative!.media.play();
     } else {
-      pen.calculative.media.pause();
+      pen.calculative!.media.pause();
     }
   }
 }
@@ -191,24 +191,24 @@ function value(pen: Pen) {
     return;
   }
   setElemPosition(pen, video);
-  if(!pen.calculative.media){
-    pen.calculative.media = video.querySelector('video')
+  if(!pen.calculative!.media){
+    pen.calculative!.media = video.querySelector('video')
   }
-  const currentSrc = pen.calculative.media.getAttribute('src');
+  const currentSrc = pen.calculative!.media.getAttribute('src');
   if (pen.video) {
     if (currentSrc !== pen.video) {
-      pen.calculative.media.src = pen.video;
+      pen.calculative!.media.src = pen.video;
     }
   } else if (pen.audio) {
     if (currentSrc !== pen.audio) {
-      pen.calculative.media.src = pen.audio;
+      pen.calculative!.media.src = pen.audio;
     }
   }
   // TODO: 下面每次都改动，是否影响性能？
   if (pen.autoPlay) {
-    pen.calculative.media.muted = true;
+    pen.calculative!.media.muted = true;
     // TODO: 自动播放何时关？
-    pen.calculative.media.autoplay = true;
+    pen.calculative!.media.autoplay = true;
   }
-  pen.calculative.media.loop = pen.playLoop;
+  pen.calculative!.media.loop = pen.playLoop;
 }

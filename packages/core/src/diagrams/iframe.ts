@@ -26,7 +26,7 @@ export function updateIframes(pens: Pen[]) {
 function matchIframe(pen: Pen) {
   const div = iframes[pen.iframe];
   if (div) {
-    pen.calculative.singleton.div = div;
+    pen.calculative!.singleton.div = div;
     generateAroundDiv(pen);
     return true;
   }
@@ -44,12 +44,12 @@ export function iframe(pen: Pen) {
     pen.onBeforeValue = beforeValue;
     pen.onRenderPenRaw = renderPenRaw;
   }
-  if (!pen.calculative.singleton) {
-    pen.calculative.singleton = {};
+  if (!pen.calculative!.singleton) {
+    pen.calculative!.singleton = {};
   }
-  const worldRect = pen.calculative.worldRect;
+  const worldRect = pen.calculative!.worldRect;
 
-  if (!pen.calculative.singleton.div) {
+  if (!pen.calculative!.singleton.div) {
     if(matchIframe(pen)){
       return
     }
@@ -60,9 +60,9 @@ export function iframe(pen: Pen) {
     div.style.top = '-9999px';
     div.style.width = worldRect.width + 'px';
     div.style.height = worldRect.height + 'px';
-    pen.calculative.canvas.externalElements?.parentElement.appendChild(div);
+    pen.calculative!.canvas.externalElements?.parentElement.appendChild(div);
     setElemPosition(pen, div);
-    pen.calculative.singleton.div = div;
+    pen.calculative!.singleton.div = div;
     const iframe = document.createElement('iframe');
     iframe.style.width = '100%';
     iframe.style.height = '100%';
@@ -71,7 +71,7 @@ export function iframe(pen: Pen) {
     iframe.style.border = 'none';
     iframe.src = pen.iframe;
     iframe.allowFullscreen = true;
-    pen.calculative.iframe = pen.iframe;
+    pen.calculative!.iframe = pen.iframe;
     div.appendChild(iframe);
     generateAroundDiv(pen);
     iframe.onload = () => {
@@ -79,8 +79,8 @@ export function iframe(pen: Pen) {
     };
   }
 
-  if (pen.calculative.patchFlags) {
-    setElemPosition(pen, pen.calculative.singleton.div);
+  if (pen.calculative!.patchFlags) {
+    setElemPosition(pen, pen.calculative!.singleton.div);
   }
   pen.onRenderPenRaw(pen);
   return new Path2D();
@@ -88,28 +88,28 @@ export function iframe(pen: Pen) {
 
 function destory(pen: Pen) {
   updatePointerEvents(pen);
-  if (pen.calculative.singleton && pen.calculative.singleton.div) {
-    if (!pen.calculative.canvas.store.data.locked) {
+  if (pen.calculative!.singleton && pen.calculative!.singleton.div) {
+    if (!pen.calculative!.canvas.store.data.locked) {
       // 手动删除iframe
-      pen.calculative.singleton.div.remove();
-      iframes[pen.calculative.iframe] = null;
+      pen.calculative!.singleton.div.remove();
+      iframes[pen.calculative!.iframe] = null;
     }else{
-      iframes[pen.calculative.iframe] = pen.calculative.singleton.div;
-      delete pen.calculative.singleton.div;
+      iframes[pen.calculative!.iframe] = pen.calculative!.singleton.div;
+      delete pen.calculative!.singleton.div;
     }
   }
 }
 
 function move(pen: Pen) {
-  pen.calculative.singleton.div &&
-    setElemPosition(pen, pen.calculative.singleton.div);
+  pen.calculative!.singleton.div &&
+    setElemPosition(pen, pen.calculative!.singleton.div);
 }
 
 function beforeValue(pen: Pen, value: any) {
   if (value.iframe) {
-    if (pen.calculative.singleton.div) {
-      pen.calculative.singleton.div.children[0].src = value.iframe;
-      pen.calculative.iframe = value.iframe;
+    if (pen.calculative!.singleton.div) {
+      pen.calculative!.singleton.div.children[0].src = value.iframe;
+      pen.calculative!.iframe = value.iframe;
     }
   }
 
@@ -140,44 +140,44 @@ function beforeValue(pen: Pen, value: any) {
       _value.operationalRect.height = _value['operationalRect.height'];
     }
     Object.assign(pen.operationalRect, _value.operationalRect);
-    if (pen.calculative.singleton.div) {
-      let length = pen.calculative.singleton.div.children.length;
+    if (pen.calculative!.singleton.div) {
+      let length = pen.calculative!.singleton.div.children.length;
       if (length === 1) {
         //没有创建
         generateAroundDiv(pen);
       } else {
         //有更新值
-        pen.calculative.singleton.div.children[1].style.height =
+        pen.calculative!.singleton.div.children[1].style.height =
           pen.operationalRect.y * 100 + '%';
-        pen.calculative.singleton.div.children[1].style.left =
+        pen.calculative!.singleton.div.children[1].style.left =
           pen.operationalRect.x * 100 + '%';
-        pen.calculative.singleton.div.children[1].style.width =
+        pen.calculative!.singleton.div.children[1].style.width =
           pen.operationalRect.width * 100 + '%';
-        pen.calculative.singleton.div.children[2].style.width =
+        pen.calculative!.singleton.div.children[2].style.width =
           (1 - pen.operationalRect.x - pen.operationalRect.width) * 100 + '%';
 
-        pen.calculative.singleton.div.children[3].style.height =
+        pen.calculative!.singleton.div.children[3].style.height =
           (1 - pen.operationalRect.y - pen.operationalRect.height) * 100 + '%';
-        pen.calculative.singleton.div.children[3].style.left =
+        pen.calculative!.singleton.div.children[3].style.left =
           pen.operationalRect.x * 100 + '%';
-        pen.calculative.singleton.div.children[3].style.width =
+        pen.calculative!.singleton.div.children[3].style.width =
           pen.operationalRect.width * 100 + '%';
 
-        pen.calculative.singleton.div.children[4].style.width =
+        pen.calculative!.singleton.div.children[4].style.width =
           pen.operationalRect.x * 100 + '%';
       }
     }
   }
   if (value.blur !== undefined) {
     for (let i = 1; i < 5; i++) {
-      pen.calculative.singleton.div.children[i]&&(pen.calculative.singleton.div.children[i].style[
+      pen.calculative!.singleton.div.children[i]&&(pen.calculative!.singleton.div.children[i].style[
           'backdrop-filter'
         ] = `blur(${value.blur}px)`);
     }
   }
   if (value.blurBackground !== undefined) {
     for (let i = 1; i < 5; i++) {
-      pen.calculative.singleton.div.children[i]&&(pen.calculative.singleton.div.children[i].style.backgroundColor =
+      pen.calculative!.singleton.div.children[i]&&(pen.calculative!.singleton.div.children[i].style.backgroundColor =
           value.blurBackground);
     }
   }
@@ -185,12 +185,12 @@ function beforeValue(pen: Pen, value: any) {
 }
 
 function mouseMove(pen: Pen, e: Point) {
-  if (!pen.calculative.canvas.store.data.locked && !pen.locked) {
+  if (!pen.calculative!.canvas.store.data.locked && !pen.locked) {
     return;
   }
   if (initOperationalRect(pen.operationalRect)) {
     if (
-      pen.calculative.zIndex < 5 &&
+      pen.calculative!.zIndex < 5 &&
       e.x > pen.x + pen.width * pen.operationalRect.x &&
       e.x <
         pen.x +
@@ -200,9 +200,9 @@ function mouseMove(pen: Pen, e: Point) {
         pen.y +
           pen.height * (pen.operationalRect.y + pen.operationalRect.height)
     ) {
-      if (pen.calculative.singleton.div) {
+      if (pen.calculative!.singleton.div) {
         let children: HTMLElement[] =
-          pen.calculative.singleton.div.parentNode.children;
+          pen.calculative!.singleton.div.parentNode.children;
         for (let i = 0; i < 6; i++) {
           children[i].style.pointerEvents = 'none';
         }
@@ -239,7 +239,7 @@ function generateAroundDiv(pen: Pen) {
   if (!initOperationalRect(pen.operationalRect)) {
     return;
   }
-  const div = pen.calculative.singleton.div;
+  const div = pen.calculative!.singleton.div;
   if (!div) {
     return;
   }
@@ -309,11 +309,11 @@ function generateAroundDiv(pen: Pen) {
 }
 
 function updatePointerEvents(pen: Pen) {
-  if (!pen.calculative.canvas.store.data.locked && !pen.locked) {
+  if (!pen.calculative!.canvas.store.data.locked && !pen.locked) {
     return;
   }
-  if (pen.calculative.zIndex < 5) {
-    let children: any = pen.calculative.singleton.div.parentNode.children;
+  if (pen.calculative!.zIndex < 5) {
+    let children: any = pen.calculative!.singleton.div.parentNode.children;
     for (let i = 1; i < 6; i++) {
       children[i].style.pointerEvents = 'initial';
     }
@@ -322,44 +322,44 @@ function updatePointerEvents(pen: Pen) {
 
 function renderPenRaw(pen: Pen) {
   if (pen.thumbImg) {
-    if (!pen.calculative.img) {
+    if (!pen.calculative!.img) {
       const img = new Image();
       img.crossOrigin =
         pen.crossOrigin === 'undefined'
           ? undefined
-          : pen.crossOrigin || pen.calculative.canvas.store.options.crossOrigin || 'anonymous';
+          : pen.crossOrigin || pen.calculative!.canvas.store.options.crossOrigin || 'anonymous';
       if (
-        pen.calculative.canvas.store.options.cdn &&
+        pen.calculative!.canvas.store.options.cdn &&
         !(
           pen.thumbImg.startsWith('http') ||
           pen.thumbImg.startsWith('//') ||
           pen.thumbImg.startsWith('data:image')
         )
       ) {
-        img.src = pen.calculative.canvas.store.options.cdn + pen.thumbImg;
+        img.src = pen.calculative!.canvas.store.options.cdn + pen.thumbImg;
       } else {
         img.src = pen.thumbImg;
       }
       img.onerror = (e) => {
         img.remove();
-        pen.calculative.img = undefined;
+        pen.calculative!.img = undefined;
       };
-      pen.calculative.img = img;
+      pen.calculative!.img = img;
     }
   } else {
-    // if (pen.calculative.singleton && pen.calculative.singleton.div) {
+    // if (pen.calculative!.singleton && pen.calculative!.singleton.div) {
     //   try {
     //     // handleSaveImg(pen);
     //   } catch (e) {
     //     console.warn(e);
-    //     pen.calculative.img = null;
+    //     pen.calculative!.img = null;
     //   }
     // }
   }
 }
 
 async function handleSaveImg(pen: Pen) {
-  let iframeHtml = pen.calculative.singleton.div.children[0].contentWindow;
+  let iframeHtml = pen.calculative!.singleton.div.children[0].contentWindow;
   const iframeBody = iframeHtml.document.getElementsByTagName('body')[0];
   const iframeScrollY = iframeHtml.document.documentElement.scrollTop;
   const iframeScrollX = iframeHtml.document.documentElement.scrollLeft;
@@ -385,10 +385,10 @@ async function handleSaveImg(pen: Pen) {
     img.crossOrigin =
       pen.crossOrigin === 'undefined'
         ? undefined
-        : pen.crossOrigin || pen.calculative.canvas.store.options.crossOrigin || 'anonymous';
+        : pen.crossOrigin || pen.calculative!.canvas.store.options.crossOrigin || 'anonymous';
     img.src = canvas.toDataURL('image/png', 0.1);
     if (img.src.length > 10) {
-      pen.calculative.img = img;
+      pen.calculative!.img = img;
     }
     document.body.removeChild(fillContent);
   }
@@ -413,7 +413,7 @@ async function handleSaveImg(pen: Pen) {
   //           : pen.crossOrigin || 'anonymous';
   //       img.src = canvas.toDataURL('image/png', 0.1);
   //       if (img.src.length > 10) {
-  //         pen.calculative.img = img;
+  //         pen.calculative!.img = img;
   //       }
   //     })
   //     .catch((e) => {

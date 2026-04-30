@@ -12,11 +12,11 @@ import { s8 } from '../../utils';
 
 let faceSpace = 10;
 export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
-  if (!pen.calculative.worldAnchors) {
-    pen.calculative.worldAnchors = [];
+  if (!pen.calculative!.worldAnchors) {
+    pen.calculative!.worldAnchors = [];
   }
   faceSpace = store.options.polylineSpace || 10;
-  if (pen.calculative.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors.length < 2) {
     return;
   }
 
@@ -29,15 +29,15 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
 
   // 拖拽起点
   let dragFrom: boolean;
-  if (pen.anchors?.length && from === pen.calculative.activeAnchor) {
+  if (pen.anchors?.length && from === pen.calculative!.activeAnchor) {
     dragFrom = true;
     from = to;
     to = getFromAnchor(pen);
   } else if (
     (!pen.anchors || !pen.anchors.length) &&
-    from !== pen.calculative.activeAnchor
+    from !== pen.calculative!.activeAnchor
   ) {
-    from = pen.calculative.activeAnchor;
+    from = pen.calculative!.activeAnchor;
   }
   if (!from || !to) {
     return;
@@ -103,25 +103,25 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   pts.forEach((anchor: Point) => {
     anchor.id = s8();
     anchor.penId = pen.id;
-    pen.calculative.worldAnchors.push(anchor);
+    pen.calculative!.worldAnchors.push(anchor);
   });
 
-  pen.calculative.worldAnchors.push(to);
+  pen.calculative!.worldAnchors.push(to);
   if (corner) {
-    pen.calculative.worldAnchors.push(corner);
+    pen.calculative!.worldAnchors.push(corner);
   }
   if (a) {
-    pen.calculative.worldAnchors.push(end);
+    pen.calculative!.worldAnchors.push(end);
   }
 
   if (dragFrom) {
-    pen.calculative.worldAnchors.reverse();
+    pen.calculative!.worldAnchors.reverse();
   }
 
   if (connected) {
-    const i = pen.calculative.worldAnchors.length - 2;
-    pen.calculative.worldAnchors[i].isTemp = false;
-    pen.calculative.worldAnchors[1].isTemp = false;
+    const i = pen.calculative!.worldAnchors.length - 2;
+    pen.calculative!.worldAnchors[i].isTemp = false;
+    pen.calculative!.worldAnchors[1].isTemp = false;
   }
 }
 
@@ -398,15 +398,15 @@ function getNextPointsOfLeft(from: Point, to: Point, toFace: Direction) {
 function getNextPoints(pen: Pen, from: Point, to: Point) {
   const pts: Point[] = [];
 
-  if (pen.calculative.drawlineH == undefined) {
-    pen.calculative.drawlineH =
+  if (pen.calculative!.drawlineH == undefined) {
+    pen.calculative!.drawlineH =
       Math.abs(to.x - from.x) > Math.abs(to.y - from.y);
   }
-  let index = pen.calculative.worldAnchors.findIndex(
+  let index = pen.calculative!.worldAnchors.findIndex(
     (anchor) => anchor.id == from.id
   );
   if (index > 1) {
-    let prev = pen.calculative.worldAnchors[index - 1];
+    let prev = pen.calculative!.worldAnchors[index - 1];
     if (prev.x === from.x && prev.y !== from.y) {
       //水平
       pts.push({ x: to.x, y: from.y });
@@ -418,9 +418,9 @@ function getNextPoints(pen: Pen, from: Point, to: Point) {
     }
   }
 
-  if (pen.calculative.worldAnchors.length) {
+  if (pen.calculative!.worldAnchors.length) {
     to.isTemp = undefined;
-    if (pen.calculative.drawlineH) {
+    if (pen.calculative!.drawlineH) {
       pts.push({ x: to.x, y: from.y });
       if (Math.abs(to.y - from.y) < faceSpace) {
         to.isTemp = true;
@@ -437,10 +437,10 @@ function getNextPoints(pen: Pen, from: Point, to: Point) {
 }
 
 export function anchorInHorizontal(pen: Pen, anchor: Point, from = true) {
-  let anchors = pen.calculative.worldAnchors;
+  let anchors = pen.calculative!.worldAnchors;
   if (!from) {
     anchors = [];
-    pen.calculative.worldAnchors.forEach((item) => {
+    pen.calculative!.worldAnchors.forEach((item) => {
       anchors.unshift(item);
     });
   }
@@ -465,10 +465,10 @@ export function anchorInHorizontal(pen: Pen, anchor: Point, from = true) {
 }
 
 export function anchorInVertical(pen: Pen, anchor: Point, from = true) {
-  let anchors = pen.calculative.worldAnchors;
+  let anchors = pen.calculative!.worldAnchors;
   if (!from) {
     anchors = [];
-    pen.calculative.worldAnchors.forEach((item) => {
+    pen.calculative!.worldAnchors.forEach((item) => {
       anchors.unshift(item);
     });
   }
@@ -497,46 +497,46 @@ export function translatePolylineAnchor(
   anchor: Point,
   pt: { x: number; y: number }
 ) {
-  if (!pen.calculative.worldAnchors) {
+  if (!pen.calculative!.worldAnchors) {
     return;
   }
 
-  const i = pen.calculative.worldAnchors.findIndex(
+  const i = pen.calculative!.worldAnchors.findIndex(
     (item) => item.id === anchor.id
   );
 
   const from = getFromAnchor(pen);
   const to = getToAnchor(pen);
 
-  let prev = pen.calculative.worldAnchors[i - 1];
-  let next = pen.calculative.worldAnchors[i + 1];
-  if (pen.calculative.h == undefined) {
+  let prev = pen.calculative!.worldAnchors[i - 1];
+  let next = pen.calculative!.worldAnchors[i + 1];
+  if (pen.calculative!.h == undefined) {
     if (from.connectTo) {
       if (anchorInHorizontal(pen, anchor, true)) {
-        pen.calculative.h = true;
+        pen.calculative!.h = true;
       } else if (anchorInVertical(pen, anchor, true)) {
-        pen.calculative.h = false;
+        pen.calculative!.h = false;
       }
     }
-    if (pen.calculative.h == undefined && to.connectTo) {
+    if (pen.calculative!.h == undefined && to.connectTo) {
       if (anchorInHorizontal(pen, anchor, false)) {
-        pen.calculative.h = true;
+        pen.calculative!.h = true;
       } else if (anchorInVertical(pen, anchor, false)) {
-        pen.calculative.h = false;
+        pen.calculative!.h = false;
       }
     }
 
-    if (pen.calculative.h == undefined) {
+    if (pen.calculative!.h == undefined) {
       if (prev) {
-        pen.calculative.h = prev.y === anchor.y;
+        pen.calculative!.h = prev.y === anchor.y;
       } else if (next) {
-        pen.calculative.h = next.y === anchor.y;
+        pen.calculative!.h = next.y === anchor.y;
       }
     }
   }
 
   // 水平
-  if (pen.calculative.h) {
+  if (pen.calculative!.h) {
     anchor.x = pt.x;
 
     if (from.connectTo && anchorInHorizontal(pen, anchor, true)) {
@@ -563,13 +563,13 @@ export function translatePolylineAnchor(
       }
       if (d === true) {
         if (prev.y === a.y) {
-          pen.calculative.worldAnchors[pos].y = pt.y;
+          pen.calculative!.worldAnchors[pos].y = pt.y;
         } else {
           break;
         }
       } else {
         if (prev.x === a.x) {
-          pen.calculative.worldAnchors[pos].x = pt.x;
+          pen.calculative!.worldAnchors[pos].x = pt.x;
         } else {
           break;
         }
@@ -577,7 +577,7 @@ export function translatePolylineAnchor(
     }
 
     d = undefined;
-    for (let pos = i + 1; pos < pen.calculative.worldAnchors.length; pos++) {
+    for (let pos = i + 1; pos < pen.calculative!.worldAnchors.length; pos++) {
       next = pen.anchors[pos];
       if (next) {
         if (d == undefined) {
@@ -586,13 +586,13 @@ export function translatePolylineAnchor(
 
         if (d === true) {
           if (next.y === a.y) {
-            pen.calculative.worldAnchors[pos].y = pt.y;
+            pen.calculative!.worldAnchors[pos].y = pt.y;
           } else {
             break;
           }
         } else {
           if (next.x === a.x) {
-            pen.calculative.worldAnchors[pos].x = pt.x;
+            pen.calculative!.worldAnchors[pos].x = pt.x;
           } else {
             break;
           }
@@ -632,13 +632,13 @@ export function translatePolylineAnchor(
       }
       if (d === true) {
         if (prev.x === a.x) {
-          pen.calculative.worldAnchors[pos].x = pt.x;
+          pen.calculative!.worldAnchors[pos].x = pt.x;
         } else {
           break;
         }
       } else {
         if (prev.y === a.y) {
-          pen.calculative.worldAnchors[pos].y = pt.y;
+          pen.calculative!.worldAnchors[pos].y = pt.y;
         } else {
           break;
         }
@@ -646,7 +646,7 @@ export function translatePolylineAnchor(
     }
 
     d = undefined;
-    for (let pos = i + 1; pos < pen.calculative.worldAnchors.length; pos++) {
+    for (let pos = i + 1; pos < pen.calculative!.worldAnchors.length; pos++) {
       next = pen.anchors[pos];
       if (next) {
         if (d == undefined) {
@@ -655,13 +655,13 @@ export function translatePolylineAnchor(
 
         if (d === true) {
           if (next.x === a.x) {
-            pen.calculative.worldAnchors[pos].x = pt.x;
+            pen.calculative!.worldAnchors[pos].x = pt.x;
           } else {
             break;
           }
         } else {
           if (next.y === a.y) {
-            pen.calculative.worldAnchors[pos].y = pt.y;
+            pen.calculative!.worldAnchors[pos].y = pt.y;
           } else {
             break;
           }

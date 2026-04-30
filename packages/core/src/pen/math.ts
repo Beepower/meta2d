@@ -22,7 +22,7 @@ export function calcAnchorDock(
   let y = Infinity;
   const size = 8;
   for (const pen of store.data.pens) {
-    if (pen.calculative.inView === false) {
+    if (pen.calculative!.inView === false) {
       continue;
     }
 
@@ -33,10 +33,10 @@ export function calcAnchorDock(
         return;
       }
       let distance =
-        (pen.calculative.worldRect.center.x - e.x) *
-          (pen.calculative.worldRect.center.x - e.x) +
-        (pen.calculative.worldRect.center.y - e.y) *
-          (pen.calculative.worldRect.center.y - e.y);
+        (pen.calculative!.worldRect.center.x - e.x) *
+          (pen.calculative!.worldRect.center.x - e.x) +
+        (pen.calculative!.worldRect.center.y - e.y) *
+          (pen.calculative!.worldRect.center.y - e.y);
       const disX = Math.abs(pt.x - e.x);
       if (disX > 0 && disX < size && distance < x) {
         xDock = {
@@ -101,15 +101,15 @@ export function calcMoveDock(
  */
 export function getPointsByPen(pen: Pen): Point[] {
   if (!pen.type) {
-    const outerPoints = rectToPoints(pen.calculative.worldRect);
-    calcCenter(pen.calculative.worldRect);
+    const outerPoints = rectToPoints(pen.calculative!.worldRect);
+    calcCenter(pen.calculative!.worldRect);
     return [
-      ...pen.calculative.worldAnchors,
+      ...pen.calculative!.worldAnchors,
       ...outerPoints,
-      pen.calculative.worldRect.center,
+      pen.calculative!.worldRect.center,
     ];
   } else if (pen.type === PenType.Line) {
-    return pen.calculative.worldAnchors;
+    return pen.calculative!.worldAnchors;
   }
 }
 
@@ -273,7 +273,7 @@ export function findOutliersByZScore(pens: Pen[], threshold = 4) {
 
   // 计算每个点的综合z-score
   return pens.filter((pen) => {
-    let point = pen.calculative.worldRect;
+    let point = pen.calculative!.worldRect;
     const zX = (point.x - meanX) / stdX;
     const zY = (point.y - meanY) / stdY;
     const combinedZ = Math.sqrt(zX * zX + zY * zY);

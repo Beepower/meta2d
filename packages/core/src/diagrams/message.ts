@@ -2,7 +2,7 @@ import { Pen } from '../pen';
 
 export function message(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  const { x, y, width, height, ey } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, height = 0, ey = 0 } = pen.calculative!.worldRect!;
 
   path.moveTo(x, y);
   path.lineTo(x + width, y);
@@ -13,5 +13,5 @@ export function message(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   path.lineTo(x, y + (height * 3) / 4);
 
   path.closePath();
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }

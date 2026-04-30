@@ -6,12 +6,12 @@ export function pentagram(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
     pen.onResize = resize;
   }
   const path = !ctx ? new Path2D() : ctx;
-  const { width, height, center } = pen.calculative.worldRect;
+  const { width = 0, height = 0, center } = pen.calculative!.worldRect!;
 
   const r = width > height ? height : width;
   //旋转中心点
-  const centerx = center.x;
-  const centery = center.y;
+  const centerx = center?.x ?? 0;
+  const centery = center?.y ?? 0;
   const basey = centery - r / 2;
   const baseyi = centery - r / 4;
 
@@ -34,12 +34,12 @@ export function pentagram(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
     );
   }
   path.closePath();
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }
 
 export function pentagramAnchors(pen: Pen) {
   // TODO: 组合状态下的 width height 成了固定的百分比
-  const { width, height } = pen;
+  const { width = 0, height = 0 } = pen;
   const r = width > height ? height : width;
   const anchors: Point[] = [];
 
@@ -57,7 +57,7 @@ export function pentagramAnchors(pen: Pen) {
 
 function resize(pen: Pen) {
   // 过滤出非默认锚点，即自定义锚点
-  const manualPoints = pen.anchors.filter((point: Point) => point.flag !== 1);
+  const manualPoints = pen.anchors!.filter((point: Point) => point.flag !== 1);
   pentagramAnchors(pen);
-  pen.anchors = pen.anchors.concat(...manualPoints);
+  pen.anchors = pen.anchors!.concat(...manualPoints);
 }

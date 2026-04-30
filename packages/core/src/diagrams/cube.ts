@@ -2,12 +2,12 @@ import { Pen } from '../pen';
 import { Point } from '../point';
 
 export function cube(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { x, y, width, ex, ey } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, ex = 0, ey = 0 } = pen.calculative!.worldRect!;
   let offset = width * 0.25;
 
   const z: number = (pen as any).z;
   if (z > 1) {
-    offset = z * pen.calculative.canvas.store.data.scale;
+    offset = z * pen.calculative!.canvas!.store.data.scale;
   } else if (z > 0) {
     offset = width * z;
   }

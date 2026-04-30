@@ -3,17 +3,14 @@ import { Pen } from '../pen';
 export function rectangle(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   const path = !ctx ? new Path2D() : ctx;
   if(pen.name === 'combine' && !pen.draw){
-    if (path instanceof Path2D) {
-      return path;
-    }
-    return;
+    return path as Path2D;
   }
   if(!pen.setTheme){
     pen.setTheme = setTheme;
   }
-  let wr = pen.calculative.borderRadius || 0,
+  let wr = pen.calculative!.borderRadius || 0,
     hr = wr;
-  const { x, y, width, height, ex, ey } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, height = 0, ex = 0, ey = 0 } = pen.calculative!.worldRect!;
   if (wr < 1) {
     wr = width * wr;
     hr = height * hr;
@@ -31,9 +28,7 @@ export function rectangle(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   path.arcTo(x, ey, x, y, r);
   path.arcTo(x, y, ex, y, r);
   path.closePath();
-  if (path instanceof Path2D) {
-    return path;
-  }
+  return path as Path2D;
 }
 function setTheme(pen:any,styles:any){
   if(!pen.affectByTheme){

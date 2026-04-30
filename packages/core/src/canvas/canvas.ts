@@ -225,7 +225,7 @@ export class Canvas {
   opening: boolean = false;
   maxZindex: number = 5;
   canMoveLine: boolean = false; //moveConnectedLine=false
-  randomIdObj: object; //记录拖拽前后id变化
+  randomIdObj: Record<string, string>; //记录拖拽前后id变化
   keyOptions?:{
     shiftKey?: boolean;
     altKey?: boolean;
@@ -312,7 +312,7 @@ export class Canvas {
     this.externalElements.style.background = 'transparent';
     this.externalElements.style.zIndex = '5';
     parentElement.style.position = 'relative';
-    parentElement.style['-webkit-tap-highlight-color'] = 'transparent'
+    (parentElement.style as any)['-webkit-tap-highlight-color'] = 'transparent'
     parentElement.appendChild(this.externalElements);
     this.createInput();
 
@@ -1854,20 +1854,20 @@ export class Canvas {
     }, 60);
   };
 
-  getDistance(touch1, touch2) {
+  getDistance(touch1: { clientX: number; clientY: number }, touch2: { clientX: number; clientY: number }) {
     const dx = touch2.clientX - touch1.clientX;
     const dy = touch2.clientY - touch1.clientY;
     return Math.sqrt(dx * dx + dy * dy);
   }
 
-  getCenter(touch1, touch2) {
+  getCenter(touch1: { clientX: number; clientY: number }, touch2: { clientX: number; clientY: number }) {
     return {
       x: (touch1.clientX + touch2.clientX) / 2,
       y: (touch1.clientY + touch2.clientY) / 2
     };
   }
 
-  onGesturestart = (e) => {
+  onGesturestart = (e: Event) => {
     e.preventDefault();
   };
 
@@ -2736,8 +2736,8 @@ export class Canvas {
             );
           }
         }
-        if (this[line.lineName] && line.lineName !== 'polyline') {
-          this[line.lineName](this.store, line);
+        if ((this as any)[line.lineName] && line.lineName !== 'polyline') {
+          (this as any)[line.lineName](this.store, line);
         }
         this.store.path2dMap.set(line, globalStore.path2dDraws.line(line));
         this.initLineRect(line);
@@ -3524,7 +3524,7 @@ export class Canvas {
     this.store.hover?.onMouseMove?.(this.store.hover, this.mousePos);
   };
 
-  private inPens = (pt: Point, pens: Pen[]) => {
+  private inPens = (pt: Point, pens: Pen[]): HoverType => {
     let hoverType = HoverType.None;
     outer: for (let i = pens.length - 1; i >= 0; --i) {
       const pen = pens[i];
@@ -3617,7 +3617,7 @@ export class Canvas {
         }
       } else {
         if (pen.children) {
-          const pens = []; // TODO: 只考虑了一级子
+          const pens: Pen[] = []; // TODO: 只考虑了一级子
           pen.children.forEach((id) => {
             this.store.pens[id] && pens.push(this.store.pens[id]);
           });
@@ -4112,7 +4112,7 @@ export class Canvas {
 
   activeHistory() {
     let now = this.store.histories[this.store.historyIndex + 1];
-    const pens = [];
+    const pens: Pen[] = [];
     if(now && (now.type === EditType.Update)){
       now.pens.forEach((pen) => {
         pens.push(this.store.pens[pen.id]);
@@ -4174,7 +4174,7 @@ export class Canvas {
                   let connected = deepClone(this.store.data.pens[i].lastConnected[key]);
                   this.store.pens[key].connectedLines = connected;
                   pen.anchors.forEach((anchor) => {
-                    connected.forEach((item) => {
+                    connected.forEach((item: any) => {
                       if(anchor.id === item.lineAnchor){
                         anchor.connectTo = key;
                       }
@@ -4186,8 +4186,8 @@ export class Canvas {
             this.store.data.pens[i] = pen;
             this.store.pens[pen.id] = pen;
             for (const k in pen) {
-              if (typeof pen[k] !== 'object' || k === 'lineDash') {
-                pen.calculative[k] = pen[k];
+              if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
+                (pen.calculative as any)[k] = (pen as any)[k];
               }
             }
             pen.calculative.image = undefined;
@@ -4197,9 +4197,9 @@ export class Canvas {
             if (pen.calculative.canvas.parent.isCombine(pen)) {
               let unPen: Pen = unPens.find((item) => item.id === pen.id);
               inheritanceProps.forEach((key) => {
-                if (pen[key] !== unPen[key]) {
+                if ((pen as any)[key] !== (unPen as any)[key]) {
                   this.parent.setValue(
-                    { id: pen.id, [key]: pen[key] },
+                    { id: pen.id, [key]: (pen as any)[key] },
                     { render: true, doEvent: false }
                   );
                 }
@@ -4383,8 +4383,8 @@ export class Canvas {
       };
     }
     for (const k in pen) {
-      if (typeof pen[k] !== 'object' || k === 'lineDash') {
-        pen.calculative[k] = pen[k];
+      if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
+        (pen.calculative as any)[k] = (pen as any)[k];
       }
     }
     pen.calculative.image = undefined;
@@ -4423,7 +4423,7 @@ export class Canvas {
       return;
     }
 
-    this[this.drawingLineName]?.(this.store, this.drawingLine, mouse);
+    (this as any)[this.drawingLineName]?.(this.store, this.drawingLine, mouse);
     this.store.path2dMap.set(
       this.drawingLine,
       globalStore.path2dDraws.line(this.drawingLine)
@@ -4990,19 +4990,19 @@ export class Canvas {
     if(this.store.options.themeOnlyCanvas || this.store.data.themeOnlyCanvas){
       return;
     }
-    const options={};
-    const data = {};
-    const theme = {};
-    themeKeys.forEach(key => {
+    const options: Record<string, any> = {};
+    const data: Record<string, any> = {};
+    const theme: Record<string, any> = {};
+    themeKeys.forEach((key: string) => {
       // 过滤调 null undefined ''
-      if (this.store.options[key] != null && this.store.options[key] !== '') {
-        options[key] = this.store.options[key];
+      if ((this.store.options as any)[key] != null && (this.store.options as any)[key] !== '') {
+        options[key] = (this.store.options as any)[key];
       }
-      if (this.store.data[key] != null && this.store.data[key] !== '') {
-        data[key] = this.store.data[key];
+      if ((this.store.data as any)[key] != null && (this.store.data as any)[key] !== '') {
+        data[key] = (this.store.data as any)[key];
       }
       if(this.store.data.theme){
-        const value = this.store.theme[this.store.data.theme]?.[key];
+        const value = (this.store.theme as any)[this.store.data.theme]?.[key];
 
         if(value != null && value !== ''){
           theme[key] = value;
@@ -6206,7 +6206,7 @@ export class Canvas {
         to.prev = undefined;
         // 重新自动计算连线
         if (line.lineName !== 'polyline') {
-          this[line.lineName]?.(this.store, line);
+          (this as any)[line.lineName]?.(this.store, line);
         }
       }
     }
@@ -6573,8 +6573,8 @@ export class Canvas {
       connectLine(pen, newAnchor, line, lineAnchor);
     }
 
-    if (this[line.lineName]) {
-      this[line.lineName](this.store, line);
+    if ((this as any)[line.lineName]) {
+      (this as any)[line.lineName](this.store, line);
     }
 
     this.store.path2dMap.set(line, globalStore.path2dDraws.line(line));
@@ -6585,7 +6585,7 @@ export class Canvas {
     if (pen.calculative.initRect) {
       if (pen.keepAnimateState) {
         for (const k in pen) {
-          if (pen.calculative[k] === undefined) {
+          if ((pen.calculative as any)[k] === undefined) {
             continue;
           }
           if (
@@ -6594,13 +6594,13 @@ export class Canvas {
             k !== 'width' &&
             k !== 'height' &&
             k !== 'initRect' &&
-            (typeof pen[k] !== 'object' || k === 'lineDash')
+            (typeof (pen as any)[k] !== 'object' || k === 'lineDash')
           ) {
             if (k === 'fontSize' || k === 'lineWidth') {
-              pen[k] =
-                pen.calculative[k] / pen.calculative.canvas.store.data.scale;
+              (pen as any)[k] =
+                (pen.calculative as any)[k] / pen.calculative.canvas.store.data.scale;
             } else {
-              pen[k] = pen.calculative[k];
+              (pen as any)[k] = (pen.calculative as any)[k];
             }
           }
         }
@@ -6614,9 +6614,9 @@ export class Canvas {
             k !== 'height' &&
             k !== 'initRect' &&
             k !== 'rotate' &&
-            (typeof pen[k] !== 'object' || k === 'lineDash')
+            (typeof (pen as any)[k] !== 'object' || k === 'lineDash')
           ) {
-            pen.calculative[k] = pen[k];
+            (pen.calculative as any)[k] = (pen as any)[k];
           }
         }
         if (pen.children?.length) {
@@ -6917,7 +6917,7 @@ export class Canvas {
   }
 
   getFrameProps(pen: Pen) {
-    let initProps = {};
+    let initProps: Record<string, any> = {};
     pen.frames &&
       pen.frames.forEach((frame) => {
         for (let key in frame) {
@@ -6927,7 +6927,7 @@ export class Canvas {
             ) &&
             !initProps[key]
           ) {
-            initProps[key] = pen[key];
+            initProps[key] = (pen as any)[key];
           }
         }
       });
@@ -6983,31 +6983,31 @@ export class Canvas {
           if (!setLineAnimate(pen, now)) {
             if (pen.keepAnimateState) {
               for (const k in pen) {
-                if (pen.calculative[k] === undefined) {
+                if ((pen.calculative as any)[k] === undefined) {
                   continue;
                 }
                 if(k === 'length'){
                   continue;
                 }
-                if (typeof pen[k] !== 'object' || k === 'lineDash') {
+                if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
                   if (k === 'lineWidth') {
-                    pen[k] =
-                      pen.calculative[k] /
+                    (pen as any)[k] =
+                      (pen.calculative as any)[k] /
                       pen.calculative.canvas.store.data.scale;
                   } else {
-                    pen[k] = pen.calculative[k];
+                    (pen as any)[k] = (pen.calculative as any)[k];
                   }
                 }
               }
               calcPenRect(pen);
             } else {
               for (const k in pen) {
-                if (typeof pen[k] !== 'object' || k === 'lineDash') {
+                if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
                   if (k === 'lineWidth') {
-                    pen.calculative[k] =
-                      pen[k] * pen.calculative.canvas.store.data.scale;
+                    (pen.calculative as any)[k] =
+                      (pen as any)[k] * pen.calculative.canvas.store.data.scale;
                   } else {
-                    pen.calculative[k] = pen[k];
+                    (pen.calculative as any)[k] = (pen as any)[k];
                   }
                 }
               }
@@ -7897,9 +7897,9 @@ export class Canvas {
     // sheet.insertRule(`.meta2d-input .input-div-font{${style_font}}`);
   };
 
-  convertSpecialCharacter(str) {
-    var arrEntities = { lt: '<', gt: '>', nbsp: ' ', amp: '&', quot: '"' };
-    return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, function (all, t) {
+  convertSpecialCharacter(str: string) {
+    var arrEntities: Record<string, string> = { lt: '<', gt: '>', nbsp: ' ', amp: '&', quot: '"' };
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, function (all: string, t: string) {
       return arrEntities[t];
     });
   }
@@ -8333,9 +8333,9 @@ export class Canvas {
         } else if (k === 'image') {
           willRenderImage = true;
         }
-        if (typeof pen[k] !== 'object' || k === 'lineDash') {
+        if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
           if(!pen.disableRotate || k !== 'rotate'){//当图元禁止旋转时不重新设置旋转角度
-            pen.calculative[k] = data[k];
+            (pen.calculative as any)[k] = (data as any)[k];
           }
         }
         if (needCalcTextRectProps.includes(k)) {
@@ -8358,8 +8358,8 @@ export class Canvas {
         }
       } else {
         // 复合属性，如abc.def.ghi
-        delete pen[k];
-        setter(pen, k, data[k]);
+        delete (pen as any)[k];
+        setter(pen, k, (data as any)[k]);
       }
       // anchors 或者 anchors.x都去执行
       if (k.split('.')[0] === 'anchors') {

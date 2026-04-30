@@ -3997,7 +3997,7 @@ export class Canvas {
   addPenSync(pen: Pen, history?: boolean, emit?: boolean, abs?:boolean): Pen {
 
     if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
-      return;
+      return undefined as any;
     }
     if(abs) {
       pen.x! = pen.x! * this.store.data.scale + this.store.data.origin.x;
@@ -4035,10 +4035,10 @@ export class Canvas {
       });
     }
 
-    if (this.store.historyIndex < this.store.histories.length - 1) {
-      this.store.histories.splice(
-        this.store.historyIndex + 1,
-        this.store.histories.length - this.store.historyIndex - 1
+    if (this.store.historyIndex! < this.store.histories!.length - 1) {
+      this.store.histories!.splice(
+        this.store.historyIndex! + 1,
+        this.store.histories!.length - this.store.historyIndex! - 1
       );
     }
     action.pens?.forEach((pen) => {
@@ -4058,8 +4058,8 @@ export class Canvas {
         }
       }
     });
-    this.store.histories.push(action);
-    this.store.historyIndex = this.store.histories.length - 1;
+    this.store.histories!.push(action);
+    this.store.historyIndex = this.store.histories!.length - 1;
     this.store.emitter.emit('update', {
       previous: action.initPens,
       current: action.pens,
@@ -4075,13 +4075,13 @@ export class Canvas {
       return;
     }
 
-    const action = this.store.histories[this.store.historyIndex--];
+    const action = this.store.histories![this.store.historyIndex--]!;
     this.doEditAction(action, true);
     let step = action.step;
-    while (step > 1) {
-      const action = this.store.histories[this.store.historyIndex--];
+    while (step! > 1) {
+      const action = this.store.histories![this.store.historyIndex--]!;
       this.doEditAction(action, true);
-      step--;
+      step!--;
     }
     if (action.type == EditType.Add || action.type == EditType.Delete || action.type == EditType.Update) {
       this.activeHistory();
@@ -4092,18 +4092,18 @@ export class Canvas {
     if (
       this.store.data.locked ||
       this.store.historyIndex == null ||
-      this.store.historyIndex > this.store.histories.length - 2
+      this.store.historyIndex > this.store.histories!.length - 2
     ) {
       return;
     }
 
-    const action = this.store.histories[++this.store.historyIndex];
+    const action = this.store.histories![++this.store.historyIndex]!;
     this.doEditAction(action, false);
     let step = action.step;
-    while (step > 1) {
-      const action = this.store.histories[++this.store.historyIndex];
+    while (step! > 1) {
+      const action = this.store.histories![++this.store.historyIndex]!;
       this.doEditAction(action, false);
-      step--;
+      step!--;
     }
     if (action.type == EditType.Add || action.type == EditType.Delete || action.type == EditType.Update) {
       this.activeHistory();
@@ -4111,19 +4111,19 @@ export class Canvas {
   }
 
   activeHistory() {
-    let now = this.store.histories[this.store.historyIndex + 1];
+    let now = this.store.histories![this.store.historyIndex! + 1];
     const pens: Pen[] = [];
     if(now && (now.type === EditType.Update)){
-      now.pens.forEach((pen) => {
-        pens.push(this.store.pens[pen.id]);
+      now.pens!.forEach((pen) => {
+        pens.push(this.store.pens[pen.id!]!);
       });
       this.active(pens);
       return;
     }
-    let before = this.store.histories[this.store.historyIndex];
+    let before = this.store.histories![this.store.historyIndex!];
     if (before && (before.type === EditType.Add || before.type === EditType.Delete)) {
-      before.pens.forEach((pen) => {
-        pens.push(this.store.pens[pen.id]);
+      before.pens!.forEach((pen: Pen) => {
+        pens.push(this.store.pens[pen.id!]!);
       });
       this.active(pens);
     }
@@ -4136,15 +4136,15 @@ export class Canvas {
 
     switch (action.type) {
       case EditType.Add:
-        action.pens.forEach((aPen) => {
+        action.pens!.forEach((aPen) => {
           const pen: Pen = deepClone(aPen, true);
           const i = this.store.data.pens.findIndex(
             (item) => item.id === pen.id
           );
           if (i > -1) {
-            pen.onDestroy?.(this.store.pens[pen.id]);
+            pen.onDestroy?.(this.store.pens[pen.id!]!);
             this.store.data.pens.splice(i, 1);
-            this.store.pens[pen.id] = undefined;
+            this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
               pen.calculative = {};
             }
@@ -4156,23 +4156,23 @@ export class Canvas {
         action.type = EditType.Delete;
         break;
       case EditType.Update:
-        const pens = undo ? action.initPens : action.pens;
-        const unPens = undo ? action.pens : action.initPens;
+        const pens = undo ? action.initPens! : action.pens!;
+        const unPens = undo ? action.pens! : action.initPens!;
         pens.forEach((p) => {
           const pen: Pen = deepClone(p, true);
           const i = this.store.data.pens.findIndex(
             (item) => item.id === pen.id
           );
           if (i > -1) {
-            pen.calculative = this.store.data.pens[i].calculative;
+            pen.calculative = this.store.data.pens[i]!.calculative;
             if (
-              this.store.data.pens[i].type &&
-              this.store.data.pens[i].lastConnected
+              this.store.data.pens[i]!.type &&
+              this.store.data.pens[i]!.lastConnected
             ) {
-              for (let key in this.store.data.pens[i].lastConnected) {
+              for (let key in this.store.data.pens[i]!.lastConnected) {
                 if(this.store.pens[key]){
-                  let connected = deepClone(this.store.data.pens[i].lastConnected[key]);
-                  this.store.pens[key].connectedLines = connected;
+                  let connected = deepClone(this.store.data.pens[i]!.lastConnected![key]);
+                  this.store.pens[key]!.connectedLines = connected;
                   pen.anchors!.forEach((anchor) => {
                     connected.forEach((item: any) => {
                       if(anchor.id === item.lineAnchor){
@@ -4184,7 +4184,7 @@ export class Canvas {
               }
             }
             this.store.data.pens[i] = pen;
-            this.store.pens[pen.id] = pen;
+            this.store.pens[pen.id!] = pen;
             for (const k in pen) {
               if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
                 (pen.calculative as any)[k] = (pen as any)[k];
@@ -4192,10 +4192,10 @@ export class Canvas {
             }
             pen.calculative!.image = undefined;
             const rect = this.getPenRect(pen, action.origin, action.scale);
-            this.setPenRect(pen, rect, false);
+            this.setPenRect(pen, rect!, false);
             this.updateLines(pen, true);
             if (pen.calculative!.canvas!.parent.isCombine(pen)) {
-              let unPen: Pen = unPens.find((item) => item.id === pen.id);
+              let unPen: Pen = unPens.find((item) => item.id === pen.id)!;
               inheritanceProps.forEach((key) => {
                 if ((pen as any)[key] !== (unPen as any)[key]) {
                   this.parent.setValue(
@@ -4209,34 +4209,34 @@ export class Canvas {
         });
         break;
       case EditType.Delete:
-        action.pens.reverse().forEach((aPen) => {
+        action.pens!.reverse().forEach((aPen) => {
           const pen = deepClone(aPen, true);
           if (!pen.calculative) {
             pen.calculative = {};
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1
-              ? pen.calculative?.layer
+              ? pen.calculative?.layer!
               : this.store.data.pens.length,
             0,
             pen
           );
           if(pen.path){
-            !this.store.data.paths[pen.pathId]&&(this.store.data.paths[pen.pathId] = pen.path);
+            !this.store.data.paths![pen.pathId!]&&(this.store.data.paths![pen.pathId!] = pen.path);
           }
           // 先放进去，pens 可能是子节点在前，而父节点在后
-          this.store.pens[pen.id] = pen;
+          this.store.pens[pen.id!] = pen;
           if (pen.type && pen.lastConnected) {
             for (let key in pen.lastConnected) {
-              this.store.pens[key]&&(this.store.pens[key].connectedLines = pen.lastConnected[key]);
+              this.store.pens[key]&&(this.store.pens[key]!.connectedLines = pen.lastConnected[key]);
             }
           }
           pen.calculative!.canvas = this;
         });
-        action.pens.reverse().forEach((aPen) => {
-          const pen = this.store.pens[aPen.id];
+        action.pens!.reverse().forEach((aPen) => {
+          const pen = this.store.pens[aPen.id!]!;
           const rect = this.getPenRect(pen, action.origin, action.scale);
-          this.setPenRect(pen, rect, false);
+          this.setPenRect(pen, rect!, false);
           pen.calculative!.image = undefined;
           pen.calculative!.backgroundImage = undefined;
           pen.calculative!.strokeImage = undefined;
@@ -4246,8 +4246,8 @@ export class Canvas {
         break;
       case EditType.Replace: {
         // undo pens则为新的pen
-        const pens = undo ? action.initPens : action.pens;
-        const unPens = undo ? action.pens : action.initPens;
+        const pens = undo ? action.initPens! : action.pens!;
+        const unPens = undo ? action.pens! : action.initPens!;
 
         // 删除旧的
         unPens.forEach((aPen) => {
@@ -4256,12 +4256,12 @@ export class Canvas {
             (item) => item.id === pen.id
           );
           if (i > -1) {
-            pen.onDestroy?.(this.store.data.pens.find(i=>i.id === pen.id));
+            pen.onDestroy?.(this.store.data.pens.find((it: Pen) => it.id === pen.id)!);
             const i = this.store.data.pens.findIndex(
               (item) => item.id === pen.id
             );
             this.store.data.pens.splice(i, 1);
-            this.store.pens[pen.id] = undefined;
+            this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
               pen.calculative = {};
             }
@@ -4279,24 +4279,24 @@ export class Canvas {
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1
-              ? pen.calculative?.layer
+              ? pen.calculative?.layer!
               : this.store.data.pens.length,
             0,
             pen
           );
           // 先放进去，pens 可能是子节点在前，而父节点在后
-          this.store.pens[pen.id] = pen;
+          this.store.pens[pen.id!] = pen;
           if(pen.type&&pen.lastConnected){
             for(let key  in pen.lastConnected){
-              this.store.pens[key]&&(this.store.pens[key].connectedLines = pen.lastConnected[key]);
+              this.store.pens[key]&&(this.store.pens[key]!.connectedLines = pen.lastConnected[key]);
             }
           }
           pen.calculative!.canvas = this;
         });
         pens.reverse().forEach((aPen) => {
-          const pen = this.store.data.pens.find(i=>i.id === aPen.id);
+          const pen = this.store.data.pens.find((it: Pen) => it.id === aPen.id)!;
           const rect = this.getPenRect(pen, action.origin, action.scale);
-          this.setPenRect(pen, rect, false);
+          this.setPenRect(pen, rect!, false);
           pen.calculative!.image = undefined;
           pen.calculative!.backgroundImage = undefined;
           pen.calculative!.strokeImage = undefined;
@@ -4307,12 +4307,12 @@ export class Canvas {
       }
     }
     if (action.type === EditType.Update) {
-      let pens = [...action.pens, ...action.initPens];
+      let pens = [...action.pens!, ...action.initPens!];
       this.initImageCanvas(pens);
       this.initTemplateCanvas(pens);
     } else {
-      this.initImageCanvas(action.pens);
-      this.initTemplateCanvas(action.pens);
+      this.initImageCanvas(action.pens!);
+      this.initTemplateCanvas(action.pens!);
     }
     this.parent.onSizeUpdate();
     this.render();
@@ -6105,108 +6105,108 @@ export class Canvas {
     }
 
     if (this.store.activeAnchor?.connectTo) {
-      const pen = this.store.pens[this.store.activeAnchor.connectTo];
+      const pen = this.store.pens[this.store.activeAnchor.connectTo]!;
       disconnectLine(
         pen,
-        getAnchor(pen, this.store.activeAnchor.anchorId),
-        this.store.pens[this.store.activeAnchor.penId],
+        getAnchor(pen, this.store.activeAnchor.anchorId!)!,
+        this.store.pens[this.store.activeAnchor.penId!]!,
         this.store.activeAnchor
       );
     }
     let anchorId = this.store.activeAnchor?.id;
     let connectedLine = this.store.pens[
-      this.store.activeAnchor.penId
-    ]?.connectedLines?.filter((item) => item.anchor === anchorId);
+      this.store.activeAnchor!.penId!
+    ]?.connectedLines?.filter((item: any) => item.anchor === anchorId);
     if (connectedLine && connectedLine.length > 0) {
-      connectedLine.forEach((connected) => {
-        const pen = this.store.pens[connected.lineId];
+      connectedLine.forEach((connected: any) => {
+        const pen = this.store.pens[connected.lineId]!;
         disconnectLine(
-          this.store.pens[this.store.activeAnchor.penId],
-          this.store.activeAnchor,
+          this.store.pens[this.store.activeAnchor!.penId!]!,
+          this.store.activeAnchor!,
           pen,
-          getAnchor(pen, connected.lineAnchor)
+          getAnchor(pen, connected.lineAnchor)!
         );
       });
     }
 
-    const line = this.store.active[0];
+    const line = this.store.active![0]!;
     const from = getFromAnchor(line);
     const to = getToAnchor(line);
 
     if (line.lineName === 'polyline' && !keyOptions.shiftKey) {
-      translatePolylineAnchor(line, this.store.activeAnchor, pt);
+      translatePolylineAnchor(line, this.store.activeAnchor!, pt);
     } else {
       let offsetX = 0;
       let offsetY = 0;
       if (
         line.lineName === 'line'
       ) {
-        let index = line.calculative!.worldAnchors.findIndex(
-          (anchor) => anchor.id === this.store.activeAnchor.id
+        let index = line.calculative!.worldAnchors!.findIndex(
+          (anchor) => anchor.id === this.store.activeAnchor!.id
         );
         if (index === 0) {
           index = 2;
         }
-        let relativePt = line.calculative!.worldAnchors[index - 1];
+        let relativePt = line.calculative!.worldAnchors![index - 1]!;
         if (keyOptions.ctrlKey && keyOptions.shiftKey) {
           let _pt = deepClone(pt);
           this.getSpecialAngle(
             _pt,
             relativePt
           );
-          offsetX = _pt.x - this.store.activeAnchor.x;
-          offsetY = _pt.y - this.store.activeAnchor.y;
+          offsetX = _pt.x! - this.store.activeAnchor!.x!;
+          offsetY = _pt.y! - this.store.activeAnchor!.y!;
         } else if (!keyOptions.ctrlKey && keyOptions.shiftKey) {
           let _pt = {
             x: pt.x,
             y: relativePt.y,
           };
-          offsetX = _pt.x - this.store.activeAnchor.x;
-          offsetY = _pt.y - this.store.activeAnchor.y;
+          offsetX = _pt.x! - this.store.activeAnchor!.x!;
+          offsetY = _pt.y! - this.store.activeAnchor!.y!;
         } else if (keyOptions.ctrlKey && !keyOptions.shiftKey) {
           let _pt = {
             x: relativePt.x,
             y: pt.y,
           };
-          offsetX = _pt.x - this.store.activeAnchor.x;
-          offsetY = _pt.y - this.store.activeAnchor.y;
+          offsetX = _pt.x! - this.store.activeAnchor!.x!;
+          offsetY = _pt.y! - this.store.activeAnchor!.y!;
         } else {
-          offsetX = pt.x - this.store.activeAnchor.x;
-          offsetY = pt.y - this.store.activeAnchor.y;
+          offsetX = pt.x! - this.store.activeAnchor!.x!;
+          offsetY = pt.y! - this.store.activeAnchor!.y!;
         }
       } else {
         if(!keyOptions.ctrlKey && keyOptions.shiftKey){
-          offsetX = pt.x - this.store.activeAnchor.x;
+          offsetX = pt.x! - this.store.activeAnchor!.x!;
           offsetY = 0;
         }else if(keyOptions.ctrlKey && !keyOptions.shiftKey){
           offsetX = 0;
-          offsetY = pt.y - this.store.activeAnchor.y;
+          offsetY = pt.y! - this.store.activeAnchor!.y!;
         }else{
-          offsetX = pt.x - this.store.activeAnchor.x;
-          offsetY = pt.y - this.store.activeAnchor.y;
+          offsetX = pt.x! - this.store.activeAnchor!.x!;
+          offsetY = pt.y! - this.store.activeAnchor!.y!;
         }
       }
-      translatePoint(this.store.activeAnchor, offsetX, offsetY);
+      translatePoint(this.store.activeAnchor!, offsetX, offsetY);
       if (
         this.store.hover &&
         this.store.hoverAnchor &&
-        this.store.hoverAnchor.penId !== this.store.activeAnchor.penId
+        this.store.hoverAnchor.penId !== this.store.activeAnchor!.penId
       ) {
         if (this.store.hoverAnchor.type === PointType.Line) {
-          offsetX = pt.x - this.store.activeAnchor.x;
-          offsetY = pt.y - this.store.activeAnchor.y;
+          offsetX = pt.x! - this.store.activeAnchor!.x!;
+          offsetY = pt.y! - this.store.activeAnchor!.y!;
           getDistance(
-            this.store.activeAnchor,
+            this.store.activeAnchor!,
             this.store.hoverAnchor,
             this.store
           );
         } else {
-          offsetX = this.store.hoverAnchor.x - this.store.activeAnchor.x;
-          offsetY = this.store.hoverAnchor.y - this.store.activeAnchor.y;
+          offsetX = this.store.hoverAnchor.x! - this.store.activeAnchor!.x!;
+          offsetY = this.store.hoverAnchor.y! - this.store.activeAnchor!.y!;
         }
-        translatePoint(this.store.activeAnchor, offsetX, offsetY);
+        translatePoint(this.store.activeAnchor!, offsetX, offsetY);
 
-        to.prev = undefined;
+        to!.prev = undefined;
         // 重新自动计算连线
         if (line.lineName !== 'polyline') {
           (this as any)[line.lineName]?.(this.store, line);

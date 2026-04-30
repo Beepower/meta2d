@@ -265,7 +265,7 @@ export class Meta2d {
     if(!ret){
       return;
     }
-    const obj = {},newTheme = [];
+    const obj: Record<string, string> = {}, newTheme: string[] = [];
     for (let i = 0; i < theme.length; i++) {
       const item = theme[i];
       const kvs = item.split(":");
@@ -358,7 +358,7 @@ export class Meta2d {
       if (window && e.value && typeof e.value === 'string') {
         let url = e.value;
         if(url.includes('${')){
-          let keys = url.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+          let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
           if (keys) {
             keys?.forEach((key) => {
               url = url.replace(`\${${key}}`, getter(pen,key)||this.getDynamicParam(key));
@@ -378,11 +378,11 @@ export class Meta2d {
         const _value:any = {};
         for(let key in value){
           if(value[key]?.id){
-            _value[key] = this.store.pens[value[key].id]?.[value[key].key];
+            _value[key] = (this.store.pens[value[key].id] as any)?.[value[key].key];
           }else{
             if(typeof value[key] === 'string'&&value[key].includes('${')){
               let __value = value[key]
-              let keys = __value.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+              let keys = __value.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
               if (keys) {
                 keys.forEach((key) => {
                   __value = __value.replace(
@@ -513,8 +513,8 @@ export class Meta2d {
         console.warn('[meta2d] GlobalFn value must be a string');
         return;
       }
-      if (globalThis[e.value]) {
-        globalThis[e.value](pen, e.params);
+      if ((globalThis as any)[e.value]) {
+        (globalThis as any)[e.value](pen, e.params);
       }
     };
     this.events[EventAction.Emit] = (pen: Pen, e: Event) => {
@@ -534,7 +534,7 @@ export class Meta2d {
         const _pen = e.params ? this.findOne(e.params) : pen;
         for (let key in value) {
           if (value[key] === undefined || value[key] === '') {
-            value[key] = _pen[key];
+            value[key] = (_pen as any)[key];
           }
         }
         value.id = _pen.id;
@@ -560,7 +560,7 @@ export class Meta2d {
                 (_item.dataIds as BindId).dataId === obj.dataId
             );
             if (oneForm) {
-              obj.value = _pen[oneForm.key];
+              obj.value = (_pen as any)[oneForm.key];
             }
           }
           array.push(obj);
@@ -579,7 +579,7 @@ export class Meta2d {
       if (e.params && typeof e.params === 'string') {
         let url = e.params;
         if (e.params.includes('${')) {
-          let keys = e.params.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+          let keys = e.params.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
           if (keys) {
             keys?.forEach((key) => {
               url = url.replace(`\${${key}}`, getter(pen,key)||this.getDynamicParam(key));
@@ -644,7 +644,7 @@ export class Meta2d {
               typeof value[key] === 'string' &&
               value[key]?.indexOf('${') > -1
             ) {
-              let keys = value[key].match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+              let keys = value[key].match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
               if (keys?.length) {
                 value[key] = getter(_pen,key[0]) ?? this.getDynamicParam(keys[0]);
               }
@@ -728,9 +728,9 @@ export class Meta2d {
         }else{
           if(typeof item.value === 'string'&&item.value.includes('${')){
             let _value = item.value
-            let keys = _value.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = _value.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys) {
-              keys.forEach((key) => {
+              keys.forEach((key: string) => {
                 _value = _value.replace(
                   `\${${key}}`,getter(cpen,key) || this.getDynamicParam(key)
                 );
@@ -761,7 +761,7 @@ export class Meta2d {
       }
     }else if(typeof value === 'object'){
       let bodyStr = JSON.stringify(value);
-      let keys = bodyStr.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+      let keys = bodyStr.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys?.length) {
         for(let i=0; i<keys.length; i++){
           bodyStr = bodyStr.replace(
@@ -782,14 +782,14 @@ export class Meta2d {
         const _pen = item.params ? this.findOne(item.params) : pen;
         for (let key in item.value) {
           if (item.value[key] === undefined || item.value[key] === '') {
-            value[key] = _pen[key];
+            value[key] = (_pen as any)[key];
           } else if (
             typeof item.value[key] === 'string' &&
             item.value[key]?.indexOf('${') > -1
           ) {
-            let keys = item.value[key].match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = item.value[key].match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys?.length) {
-              value[key] = _pen[keys[0]] ?? this.getDynamicParam(keys[0]);
+              value[key] = (_pen as any)[keys[0]] ?? this.getDynamicParam(keys[0]);
             }
           } else {
             value[key] = item.value[key];
@@ -905,8 +905,8 @@ export class Meta2d {
             if (_value.end && typeof _value.end === 'string') {
               _value.end = Math.floor(new Date(_value.end).getTime() / 1000);
             }
-            let payload = [];
-            keys.forEach((key) => {
+            let payload: any[] = [];
+            keys.forEach((key: string) => {
               let arr = key.split('#');
               payload.push({
                 token: this.store.data.iot.token,
@@ -947,7 +947,7 @@ export class Meta2d {
       if (typeof network.headers === 'object') {
         /*for (let i in network.headers) {
           if (typeof network.headers[i] === 'string') {
-            let keys = network.headers[i].match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = network.headers[i].match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys) {
               network.headers[i] = network.headers[i].replace(
                 `\${${keys[0]}}`,
@@ -957,7 +957,7 @@ export class Meta2d {
           }
         }*/
         let headersStr = JSON.stringify(network.headers);
-        let keys = headersStr.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+        let keys = headersStr.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
         if (keys?.length) {
          for(let i=0; i<keys.length; i++){
             headersStr = headersStr.replace(
@@ -989,9 +989,9 @@ export class Meta2d {
       }
       // if (network.method === 'POST') {
         if (url.indexOf('${') > -1) {
-          let keys = url.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+          let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
           if (keys) {
-            keys.forEach((key) => {
+            keys.forEach((key: string) => {
               url = url.replace(
                 `\${${key}}`,
                 getter(pen, key) || this.getDynamicParam(key)
@@ -1035,7 +1035,7 @@ export class Meta2d {
       );
       if (clients && clients.length) {
         if (clients[0].connected) {
-          network.topics.split(',').forEach((topic) => {
+          network.topics.split(',').forEach((topic: string) => {
             clients[0].publish(topic, JSON.stringify(value));
           });
         }
@@ -1044,7 +1044,7 @@ export class Meta2d {
         let mqttClient = mqtt.connect(network.url, network.options);
         mqttClient.on('connect', () => {
           console.info('mqtt连接成功');
-          network.topics.split(',').forEach((topic) => {
+          network.topics.split(',').forEach((topic: string) => {
             mqttClient.publish(topic, JSON.stringify(value));
             setTimeout(() => {
               mqttClient?.end();
@@ -1276,7 +1276,7 @@ export class Meta2d {
     const pens = this.store.data.pens;
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
-    const dirtyPens = [];
+    const dirtyPens: Pen[] = [];
     for (let i = pens.length - 1; i >= 0; i--) {
       let pen = pens[i];
       if(pen.parentId){
@@ -1451,9 +1451,9 @@ export class Meta2d {
   initBinds() {
     this.jetLinksList = [];
     this.store.bind = {};
-    const devices = [];
-    const properties = [];
-    const computes = [];
+    const devices: any[] = [];
+    const properties: any[] = [];
+    const computes: any[] = [];
     this.store.data.pens.forEach((pen) => {
       pen.realTimes?.forEach((realTime) => {
         if (realTime.bind && realTime.bind.id) {
@@ -1707,7 +1707,7 @@ export class Meta2d {
   }
 
   updateLineType(pen: Pen, lineName: string) {
-    if (!pen || pen.name != 'line' || !lineName || !this.canvas[lineName]) {
+    if (!pen || pen.name != 'line' || !lineName || !(this.canvas as any)[lineName]) {
       return;
     }
 
@@ -1720,7 +1720,7 @@ export class Meta2d {
     to.next = undefined;
     pen.calculative.worldAnchors = [from, to];
     pen.calculative.activeAnchor = from;
-    this.canvas[lineName](this.store, pen, to);
+    (this.canvas as any)[lineName](this.store, pen, to);
     if (pen.lineName === 'curve') {
       from.prev = {
         penId: from.penId,
@@ -1749,7 +1749,7 @@ export class Meta2d {
   }
 
   addDrawLineFn(fnName: string, fn: Function) {
-    this.canvas[fnName] = fn;
+    (this.canvas as any)[fnName] = fn;
     this.canvas.drawLineFns.push(fnName);
   }
 
@@ -1826,13 +1826,13 @@ export class Meta2d {
 
   registerAnchors = registerAnchors;
 
-  registerLineAnimateDraws = (name,drawFunc)=>{
+  registerLineAnimateDraws = (name: string, drawFunc: string)=>{
     this.store.data.lineAnimateDraws[name] = drawFunc;
     // 同步到store
     // @ts-ignore
     globalStore.lineAnimateDraws[name] = new Function('ctx','pen','state','index',drawFunc);
   }
-  updateLineAnimateDraws(name,option){// option: {name:'xxx',code:'xxx'}
+  updateLineAnimateDraws(name: string, option: any){// option: {name:'xxx',code:'xxx'}
     if(!option)return
 
     delete this.store.data.lineAnimateDraws[name];
@@ -2290,7 +2290,7 @@ export class Meta2d {
       }
       child.children = undefined;
     });
-    const combineArr = [];
+    const combineArr: Pen[] = [];
     children.forEach((child,index)=>{
       if(child.name === 'combine'){
         child.children = undefined;
@@ -2779,7 +2779,7 @@ export class Meta2d {
   connectNetwork() {
     this.closeNetwork();
     const { networks } = this.store.data;
-    const https = [];
+    const https: any[] = [];
     if (networks) {
       let mqttIndex = 0, httpIndex = 0, websocketIndex = 0, sseIndex = 0;
       this.mqttClients = [];
@@ -2966,20 +2966,21 @@ export class Meta2d {
       key:item.key,
       name: item.key+'_'+item.compute_name//item.id
     };
-    ['aggregate','start','end','groupBy','limit','recent'].forEach((key)=>{
+    ['aggregate','start','end','groupBy','limit','recent'].forEach((key: string)=>{
+      const _data = data as Record<string, any>;
       if(item[key]){
         if(item[key].indexOf('${') > -1){
             let keys = item[key].match(/(?<=\$\{).*?(?=\})/g);
-            data[key] = this.getDynamicParam(keys[0])
+            _data[key] = this.getDynamicParam(keys[0])
         }else{
           if(key ==='start' || key ==='end'){
             if(typeof item[key] === 'string'){
-              data[key] = Math.floor(new Date(item[key]).getTime() / 1000);
+              _data[key] = Math.floor(new Date(item[key]).getTime() / 1000);
             }else{
-              data[key] = item[key]
+              _data[key] = item[key]
             }
           }else{
-            data[key] = item[key];
+            _data[key] = item[key];
           }
         }
       }
@@ -2989,7 +2990,7 @@ export class Meta2d {
 
   iotAggregatePublish(item:any){
     if(this.iotMqttClient){
-      let data = item.map((_item)=>{
+      let data = item.map((_item: any)=>{
         return this.iotAggregateBuild(_item);
       })
 
@@ -3066,7 +3067,7 @@ export class Meta2d {
     }
     let url = net.url;
     if(url.indexOf('${') > -1){
-      let keys = url.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+      let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
         keys.forEach((key) => {
           url = url.replace(
@@ -3078,7 +3079,7 @@ export class Meta2d {
     net.times = 0;
     let options = deepClone(net.options);
     if(options?.username&&options.username.includes('${')){
-      let keys = options.username.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+      let keys = options.username.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
         keys.forEach((key) => {
           options.username = options.username.replace(
@@ -3088,7 +3089,7 @@ export class Meta2d {
       }
     }
     if(options?.password&&options.password.includes('${')){
-      let keys = options.password.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+      let keys = options.password.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
         keys.forEach((key) => {
           options.password = options.password.replace(
@@ -3152,7 +3153,7 @@ export class Meta2d {
         if (net.topics) {
           let topics = net.topics;
           if(topics.indexOf('${') > -1){
-            let keys = topics.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = topics.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys) {
               keys.forEach((key) => {
                 topics = topics.replace(
@@ -3183,7 +3184,7 @@ export class Meta2d {
     }
     let url = net.url;
     if(url.indexOf('${') > -1){
-      let keys = url.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+      let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
         keys.forEach((key) => {
           url = url.replace(
@@ -3320,7 +3321,7 @@ export class Meta2d {
     return n;
   }
 
-  mockValue(data) {
+  mockValue(data: any) {
     let value = undefined;
     if (data.enableMock && data.mock !== undefined) {
       if (data.type === 'float') {
@@ -3421,8 +3422,8 @@ export class Meta2d {
 
   //数据模拟
   dataMock() {
-    let arr = [];
-    this.store.data.dataset?.devices?.forEach((data) => {
+    let arr: any[] = [];
+    this.store.data.dataset?.devices?.forEach((data: any) => {
       let value = this.mockValue(data);
       if (value !== undefined) {
         arr.push({
@@ -3442,10 +3443,10 @@ export class Meta2d {
 
   networkMock() {
     if (this.store.data.networks && this.store.data.networks.length) {
-      let arr = [];
-      this.store.data.networks.forEach((net) => {
+      let arr: any[] = [];
+      this.store.data.networks.forEach((net: any) => {
         if(net.enable === false){
-          net.children?.forEach((child) => {
+          net.children?.forEach((child: any) => {
             let _child = deepClone(child);
             _child.enableMock = true;
             let value = this.mockValue(_child);
@@ -3550,7 +3551,7 @@ export class Meta2d {
       }
     }
     let params = queryURLParams();
-    let value = params[key] || lsValue || getCookie(key) || globalThis[key] || '';
+    let value = params[key] || lsValue || getCookie(key) || (globalThis as any)[key] || '';
     return value;
   }
 
@@ -3614,7 +3615,7 @@ export class Meta2d {
     let req = deepClone(_req);
     if (req.url) {
       if(req.url.indexOf('${') > -1){
-        let keys = req.url.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+        let keys = req.url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
           if (keys) {
             keys.forEach((key) => {
               req.url = req.url.replace(
@@ -3626,7 +3627,7 @@ export class Meta2d {
       if (typeof req.headers === 'object') {
         /*for (let i in req.headers) {
           if (typeof req.headers[i] === 'string') {
-            let keys = req.headers[i].match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = req.headers[i].match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys) {
               req.headers[i] = req.headers[i].replace(
                 `\${${keys[0]}}`,
@@ -3636,7 +3637,7 @@ export class Meta2d {
           }
         }*/
         let headersStr = JSON.stringify(req.headers);
-        let keys = headersStr.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+        let keys = headersStr.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
         if (keys?.length) {
          for(let i=0; i<keys.length; i++){
             headersStr = headersStr.replace(
@@ -3650,7 +3651,7 @@ export class Meta2d {
       if (typeof req.body === 'object') {
         /*for (let i in req.body) {
           if (typeof req.body[i] === 'string') {
-            let keys = req.body[i].match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+            let keys = req.body[i].match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
             if (keys) {
               req.body[i] = req.body[i].replace(
                 `\${${keys[0]}}`,
@@ -3660,7 +3661,7 @@ export class Meta2d {
           }
         }*/
         let bodyStr = JSON.stringify(req.body);
-        let keys = bodyStr.match(/\$\{([^}]+)\}/g)?.map(m => m.slice(2, -1));
+        let keys = bodyStr.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
         if (keys?.length) {
          for(let i=0; i<keys.length; i++){
             bodyStr = bodyStr.replace(
@@ -4189,7 +4190,7 @@ export class Meta2d {
       return;
     }
     let old = false; //是否是旧的事件
-    let indexArr = []; //事件条件成立的索引
+    let indexArr: number[] = []; //事件条件成立的索引
     pen.events?.forEach((event, index) => {
       if (event.actions && event.actions.length) {
         if (event.name === eventName) {
@@ -4240,9 +4241,9 @@ export class Meta2d {
                 can = event.where.fn(pen, { meta2d: this });
               }
             } else {
-              let pValue = pen[key];
+              let pValue = (pen as any)[key];
               if (['x', 'y', 'width', 'height'].includes(key)) {
-                pValue = this.getPenRect(pen)[key];
+                pValue = (this.getPenRect(pen) as any)[key];
               }
               switch (comparison) {
                 case '>':
@@ -4329,7 +4330,7 @@ export class Meta2d {
 
     if (eventName === 'valueUpdate') {
       pen.realTimes?.forEach((realTime) => {
-        let indexArr = [];
+        let indexArr: number[] = [];
         realTime.triggers?.forEach((trigger, index) => {
           let flag = false;
           if (trigger.conditions?.length) {
@@ -4375,7 +4376,7 @@ export class Meta2d {
       });
 
       //全局
-      let indexArr = [];
+      let indexArr: number[] = [];
       this.store.globalTriggers[pen.id]?.forEach((trigger, index) => {
         let flag = false;
         if (trigger.conditions?.length) {
@@ -4498,11 +4499,11 @@ export class Meta2d {
     if (!this.store.data.dataEvents?.length) {
       return;
     }
-    const data = datas.reduce((accumulator, { dataId, id, value }) => {
+    const data = datas.reduce<Record<string, any>>((accumulator, { dataId, id, value }) => {
       accumulator[id || dataId] = value;
       return accumulator;
     }, {});
-    let indexArr = [];
+    let indexArr: number[] = [];
     this.store.data.dataEvents?.forEach((event, index) => {
       let flag = false;
       if (event.conditions && event.conditions.length) {
@@ -4657,11 +4658,11 @@ export class Meta2d {
       //TODO boolean类型 数字类型
       let value = condition.value;
       if (valueType === 'prop') {
-        value = this.store.pens[target][condition.value];
+        value = (this.store.pens[target] as any)[condition.value];
       }
       let compareValue = getter(pen, key);
       if (['x', 'y', 'width', 'height'].includes(key)) {
-        compareValue = this.getPenRect(pen)[key];
+        compareValue = (this.getPenRect(pen) as any)[key];
       }
       switch (operator) {
         case '>':
@@ -5023,8 +5024,8 @@ export class Meta2d {
     //宽度拉伸
     if (Math.abs(wGap) > 10) {
       this.store.data.fits?.forEach((fit) => {
-        let pens = [];
-        fit.children.forEach((id) => {
+        let pens: Pen[] = [];
+        fit.children.forEach((id: string) => {
           if(this.store.pens[id]){
             this.store.pens[id].locked = LockState.None;
             pens.push(this.store.pens[id]);
@@ -5055,8 +5056,8 @@ export class Meta2d {
               }
             }
             if (pen.name === 'tablePlus') {
-              pen.colWidth = (pen.colWidth ?? 150) * ratio;
-              pen.styles.forEach((style) => {
+              (pen as any).colWidth = ((pen as any).colWidth ?? 150) * ratio;
+              pen.styles.forEach((style: any) => {
                 if (style.width) {
                   style.width = style.width * ratio;
                 }
@@ -5159,8 +5160,8 @@ export class Meta2d {
     //高度拉伸
     if (Math.abs(hGap) > 10) {
       this.store.data.fits?.forEach((fit) => {
-        let pens = [];
-        fit.children.forEach((id) => {
+        let pens: Pen[] = [];
+        fit.children.forEach((id: string) => {
           if(this.store.pens[id]){
             this.store.pens[id].locked = LockState.None;
             pens.push(this.store.pens[id]);
@@ -5639,9 +5640,9 @@ export class Meta2d {
     const initPens = deepClone(pens); // 原 pens ，深拷贝一下
     const firstPen = pens[0];
     // 格式刷修改的属性，除开宽高
-    const attrs = {};
-    formatAttrs.forEach((attr) => {
-      attrs[attr] = firstPen[attr];
+    const attrs: Record<string, any> = {};
+    formatAttrs.forEach((attr: string) => {
+      attrs[attr] = (firstPen as any)[attr];
     });
 
     for (let i = 1; i < pens.length; i++) {
@@ -5667,9 +5668,9 @@ export class Meta2d {
     const initPens = deepClone(pens); // 原 pens ，深拷贝一下
     const firstPen = pens[pens.length - 1];
     // 格式刷修改的属性，除开宽高
-    const attrs = {};
-    formatAttrs.forEach((attr) => {
-      attrs[attr] = firstPen[attr];
+    const attrs: Record<string, any> = {};
+    formatAttrs.forEach((attr: string) => {
+      attrs[attr] = (firstPen as any)[attr];
     });
 
     for (let i = 0; i < pens.length - 1; i++) {
@@ -5689,25 +5690,25 @@ export class Meta2d {
   }
   setFormatPainter() {
     const pens = this.store.active;
-    const attrs = {};
+    const attrs: Record<string, any> = {};
     if (pens.length > 0) {
       const firstPen = pens[0];
-      formatAttrs.forEach((attr) => {
+      formatAttrs.forEach((attr: string) => {
         attrs[attr] =
-          firstPen[attr] !== undefined
-            ? firstPen[attr]
-            : this.store.options.defaultFormat[attr] ||
-              this.store.data[attr] ||
-              this.store.options[attr];
+          (firstPen as any)[attr] !== undefined
+            ? (firstPen as any)[attr]
+            : (this.store.options.defaultFormat as any)[attr] ||
+              (this.store.data as any)[attr] ||
+              (this.store.options as any)[attr];
       });
     } else {
       //默认值
-      const attrs = {};
-      formatAttrs.forEach((attr) => {
+      const attrs: Record<string, any> = {};
+      formatAttrs.forEach((attr: string) => {
         attrs[attr] =
-          this.store.options.defaultFormat[attr] ||
-          this.store.data[attr] ||
-          this.store.options[attr] ||
+          (this.store.options.defaultFormat as any)[attr] ||
+          (this.store.data as any)[attr] ||
+          (this.store.options as any)[attr] ||
           undefined;
       });
     }
@@ -5751,8 +5752,8 @@ export class Meta2d {
           pen.lineHeight = lineHeight;
           pen.calculative.lineHeight = lineHeight;
         } else {
-          delete pen[attr];
-          delete pen.calculative[attr];
+          delete (pen as any)[attr];
+          delete (pen.calculative as any)[attr];
         }
       }
     });
@@ -5939,8 +5940,8 @@ export class Meta2d {
         end = -Infinity,
         key = direction === 'width' ? 'x' : 'y';
       pens.forEach((item) => {
-        start = Math.min(start, item.calculative.worldRect[key]);
-        end = Math.max(end, item.calculative.worldRect['e' + key]);
+        start = Math.min(start, (item.calculative.worldRect as any)[key]);
+        end = Math.max(end, (item.calculative.worldRect as any)['e' + key]);
       });
       distance = (end - start) / this.store.data.scale;
     }
@@ -6820,7 +6821,7 @@ export class Meta2d {
     plugins: PluginOptions[]
   ) {
     if (!pen.tag && !pen.name && !pen.id) return;
-    let type;
+    let type: 'id' | 'tag' | 'name' | '' = '';
     pen.id
       ? (type = 'id')
       : pen.tag
@@ -6839,7 +6840,7 @@ export class Meta2d {
         if (!this.penPluginMap.has(plugin)) {
           this.penPluginMap.set(plugin, [{ [type]: pen[type], option }]);
         } else {
-          let op = this.penPluginMap.get(plugin).find((i) => {
+          let op = this.penPluginMap.get(plugin).find((i: any) => {
             return i[type] === pen[type];
           });
           // 存在替换
@@ -6860,7 +6861,7 @@ export class Meta2d {
     pen: { tag?: string; name?: string; id?: string },
     plugins: PluginOptions[]
   ) {
-    let type;
+    let type: 'id' | 'tag' | 'name' | '' = '';
     pen.id
       ? (type = 'id')
       : pen.tag
@@ -6873,7 +6874,7 @@ export class Meta2d {
       let plugin = pluginConfig.plugin;
       plugin.uninstall(pen, pluginConfig.options);
       let mapList = this.penPluginMap.get(plugin);
-      let op = mapList.findIndex((i) => i[type] === pen[type]);
+      let op = mapList.findIndex((i: any) => i[type] === pen[type]);
       if (op !== -1) {
         mapList.splice(op, 1);
         // TODO 在运行时 插件卸载后是否需要移除？
@@ -6923,10 +6924,10 @@ export class Meta2d {
     this.store.emitter.all.clear(); // 内存释放
     this.canvas.destroy();
     this.canvas = undefined;
-    globalStore[this.store.id] = undefined;
+    (globalStore as any)[this.store.id] = undefined;
     if (!onlyData) {
       for (const k in globalStore) {
-        delete globalStore[k];
+        delete (globalStore as any)[k];
       }
       globalStore.path2dDraws = {};
       globalStore.canvasDraws = {};

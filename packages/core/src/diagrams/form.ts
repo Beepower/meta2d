@@ -170,7 +170,7 @@ function mouseMove(pen: Pen, e: Point) {
 }
 
 //更新表单数据
-export function updateFormData(pen, key?: string) {
+export function updateFormData(pen: any, key?: string) {
   if (pen.formId && pen.formKey && pen.formValue) {
     //表单图元更新值
     const leaderPen = pen.calculative.canvas.store.pens[pen.formId];
@@ -199,7 +199,7 @@ export function reset(pen: Pen) {
       follower.formKey &&
       formPen.formData[follower.formKey]
     ) {
-      const value = follower[follower.formValue];
+      const value = (follower as any)[follower.formValue];
       let data: any = '';
       if (Array.isArray(value)) {
         data = [];
@@ -239,5 +239,5 @@ function predictFormValue(pen: Pen) {
       return;
     }
   }
-  pen.formValue = formValueMap[pen.name];
+  pen.formValue = (formValueMap as Record<string, string>)[pen.name];
 }

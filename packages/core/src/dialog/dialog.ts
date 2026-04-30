@@ -322,7 +322,7 @@ export class Dialog {
   } 
 }
 
-function isSameOrigin(url) {
+function isSameOrigin(url: string) {
   if (url.startsWith('/')) {
     return true;
   }

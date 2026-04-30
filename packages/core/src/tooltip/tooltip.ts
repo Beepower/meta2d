@@ -1,7 +1,9 @@
 import { Pen } from '../pen';
 import { Point } from '../point';
 import { Meta2dStore } from '../store';
-import type { marked as Marked } from 'marked';
+// Phase A: 'marked' 包无 .d.ts(@types/marked 未装);本地 type stub 替代 import
+// M5+ 装 @types/marked 时还原为 import type { marked as Marked } from 'marked';
+type Marked = (input: string) => string;
 import { getParent } from '../pen';
 
 export class Tooltip {
@@ -88,7 +90,7 @@ export class Tooltip {
    */
   private setText(pen: Pen): DOMRect {
     const oldElemRect = this.box.getBoundingClientRect();
-    let marked: typeof Marked = globalThis.marked;
+    let marked = globalThis.marked as Marked | undefined;
     const title = Tooltip.getTitle(pen);
     if (marked) {
       this.text.innerHTML = marked(title);

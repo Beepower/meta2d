@@ -61,8 +61,8 @@ export function smoothLine(points: Point[], cornerThres = 0.8, match = false) {
   }
 
   // adds bezier control points at points if lines have angle less than thres
-  let p1, p2, p3, dist1, dist2, x, y, endP, len, angle, newPoints, aLen, nx1, nx2, ny1, ny2;
-  const dot = (x, y, xx, yy) => {
+  let p1: any, p2: any, p3: any, dist1: number, dist2: number, x: number, y: number, endP: any, len: number, angle: number, newPoints: any[], aLen: number, nx1: number, nx2: number, ny1: number, ny2: number;
+  const dot = (x: number, y: number, xx: number, yy: number) => {
     dist1 = Math.sqrt(x * x + y * y);
     if (dist1 > 0) {
       // normalise

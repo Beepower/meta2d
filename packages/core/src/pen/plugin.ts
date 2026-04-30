@@ -10,7 +10,7 @@ import {Pen} from "../pen";
 function rewritePenLifeCycle() {
   let funcMap = null;
   let funcPenMap = new WeakMap();
-  return (pen: Pen, lifeCycle, func: Function, del= false )=>{
+  return (pen: Pen, lifeCycle: string, func: Function, del= false )=>{
     if(funcPenMap.has(pen) && funcPenMap.get(pen)){
       funcMap = funcPenMap.get(pen);
     }else {
@@ -24,7 +24,7 @@ function rewritePenLifeCycle() {
     if(funcMap.has(lifeCycle) && funcMap.get(lifeCycle)){
       funcListSet = funcMap.get(lifeCycle);
     }else {
-      originFuncMap.set(lifeCycle,pen[lifeCycle]);
+      originFuncMap.set(lifeCycle,(pen as any)[lifeCycle]);
       funcMap.set(lifeCycle,funcListSet);
     }
     if(del){
@@ -33,21 +33,21 @@ function rewritePenLifeCycle() {
       funcListSet.add(func);
     }
     let originLifeCycle = originFuncMap.get(lifeCycle); // 原始事件;
-    let rewriteFunc = (...args)=>{
+    let rewriteFunc = (...args: unknown[])=>{
       originLifeCycle?.(...args);
       funcListSet.forEach(i=>{
         // @ts-ignore
         i(...args);
       });
     };
-    pen[lifeCycle] = rewriteFunc;
+    (pen as any)[lifeCycle] = rewriteFunc;
   };
 }
 export let setLifeCycleFunc = rewritePenLifeCycle();
 
 /**
  * @description 校验插件*/
-export function validationPlugin(plugin){
+export function validationPlugin(plugin: any){
   // 校验penPlugin
   if(!plugin.name && !plugin.install){
     console.error('installPenPlugin Error: Validation Failed');

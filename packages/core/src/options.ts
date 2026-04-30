@@ -223,8 +223,8 @@ export const defaultOptions: Options = {
 };
 
 export interface PenPlugin {
-  install: (pen:Pen|string,options)=>void;
-  uninstall: (pen:Pen|string,options)=>void;
+  install: (pen:Pen|string,options:any)=>void;
+  uninstall: (pen:Pen|string,options:any)=>void;
   name:string;
   [key:string]:any;
 }

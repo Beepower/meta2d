@@ -10,7 +10,7 @@ export function isNumber(value:any):value is Number{
  * @param {*} text
  * @returns {*}  {boolean}
  */
-export function isEmptyText(text) {
+export function isEmptyText(text: unknown) {
     // 检查是否为null或undefined
     if (text == null) {
         return true;

@@ -211,7 +211,7 @@ function mouseMove(pen: Pen, e: Point) {
   }
 }
 
-function initOperationalRect(operationalRect) {
+function initOperationalRect(operationalRect: any) {
   if (operationalRect) {
     if (!operationalRect.width || !operationalRect.height) {
       return false;
@@ -229,7 +229,7 @@ function initOperationalRect(operationalRect) {
   }
 }
 
-function removeAllButFirst(parent) {
+function removeAllButFirst(parent: HTMLElement) {
   while (parent.childNodes.length > 1) {
       parent.removeChild(parent.lastChild);
   }
@@ -253,7 +253,7 @@ function generateAroundDiv(pen: Pen) {
   top.style.width = pen.operationalRect.width * 100 + '%';
   top.style.height = pen.operationalRect.y * 100 + '%';
   if(!isLinux && pen.blur){
-    top.style['backdrop-filter'] = `blur(${pen.blur}px)`;
+    (top.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
   top.style.backgroundColor = pen.blurBackground;
   div.appendChild(top);
@@ -266,7 +266,7 @@ function generateAroundDiv(pen: Pen) {
     (1 - pen.operationalRect.x - pen.operationalRect.width) * 100 + '%';
   right.style.height = '100%';
   if(!isLinux && pen.blur){
-    right.style['backdrop-filter'] = `blur(${pen.blur}px)`;
+    (right.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
   right.style.backgroundColor = pen.blurBackground;
   div.appendChild(right);
@@ -279,7 +279,7 @@ function generateAroundDiv(pen: Pen) {
   bottom.style.height =
     (1 - pen.operationalRect.y - pen.operationalRect.height) * 100 + '%';
   if(!isLinux && pen.blur){
-    bottom.style['backdrop-filter'] = `blur(${pen.blur}px)`;
+    (bottom.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
   bottom.style.backgroundColor = pen.blurBackground;
   div.appendChild(bottom);
@@ -291,7 +291,7 @@ function generateAroundDiv(pen: Pen) {
   left.style.width = pen.operationalRect.x * 100 + '%';
   left.style.height = '100%';
   if(!isLinux && pen.blur){
-    left.style['backdrop-filter'] = `blur(${pen.blur}px)`;
+    (left.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
   left.style.backgroundColor = pen.blurBackground;
   div.appendChild(left);
@@ -369,7 +369,7 @@ async function handleSaveImg(pen: Pen) {
   document.body.appendChild(fillContent);
   iframeHtml.document.domain = getRootDomain();
   if (globalThis.html2canvas) {
-    const canvas = await globalThis.html2canvas(fillContent, {
+    const canvas = await (globalThis.html2canvas as any)(fillContent, {
       allowTaint: true,
       useCORS: true,
       width: pen.width, // TODO 截屏按照1920*1080分辨率下的预览窗口宽高

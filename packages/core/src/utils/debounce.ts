@@ -32,7 +32,7 @@ export async function throttle(fn: Function, delay: number, params?: any) {
 export class InstanceDebouncer {
   static instances = new WeakMap();
   
-  static debounce(instance, methodName, wait = 300) {
+  static debounce(instance: any, methodName: string, wait = 300) {
     const key = Symbol(`${instance.constructor.name}.${methodName}`);
     
     if (!this.instances.has(instance)) {
@@ -41,7 +41,7 @@ export class InstanceDebouncer {
     
     const instanceData = this.instances.get(instance);
     
-    return (...args) => {
+    return (...args: unknown[]) => {
       if (instanceData[key]) {
         clearTimeout(instanceData[key]);
       }

@@ -97,7 +97,7 @@ export function drawArrow(
       }
       let step = 1 / (worldAnchors[0].lineLength / d);
       let lastPos = pos * step;
-      let i;
+      let i: number | undefined;
       worldAnchors.forEach((pt: Point) => {
         let to = pt;
         if (from) {
@@ -220,7 +220,7 @@ export function drawArrow(
 }
 
 //获取两点连线和水平线的夹角
-function getAngle(p1, p2) {
+function getAngle(p1: { x: number; y: number }, p2: { x: number; y: number }) {
   let dx = p2.x - p1.x;
   let dy = p2.y - p1.y;
   let angle = (Math.atan(dy / dx) * 180) / Math.PI;

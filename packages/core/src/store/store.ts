@@ -303,13 +303,16 @@ export const createStore = () => {
 };
 
 // Return a data store, if not exists will create a store.
+// Phase A DEBT: globalStore 兼作 (a) 注册表(version/path2dDraws/...) (b) Meta2dStore 实例 map by id;
+// 两种用途混用同一对象,Phase B 阶段拆为两个独立 map 后此 cast 删除
 export const useStore = (id = 'default'): Meta2dStore => {
-  if (!globalStore[id]) {
-    globalStore[id] = createStore();
-    globalStore[id].id = id;
+  const stores = globalStore as unknown as Record<string, Meta2dStore>;
+  if (!stores[id]) {
+    stores[id] = createStore();
+    stores[id].id = id;
   }
 
-  return globalStore[id];
+  return stores[id];
 };
 
 export const clearStore = (store: Meta2dStore, template?: string) => {

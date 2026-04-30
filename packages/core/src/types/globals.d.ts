@@ -45,6 +45,9 @@ declare global {
   var marked: unknown
   // eslint-disable-next-line no-var
   var pSBC: unknown
+}
+
+declare global {
 
   // Meta2d 实例引用(host 应用层)— Phase A 用 unknown,M4+ 收紧到具体 Meta2d 类型
   // eslint-disable-next-line no-var

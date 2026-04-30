@@ -67,7 +67,7 @@ const deleteContainerPens = (pen: Pen) => {
 };
 
 const collectContainerPens = (pen: any) => {
-  let pens = [];
+  let pens: any[] = [];
   const meta2d = pen.calculative.canvas.parent;
 
   meta2d.store.data.pens.forEach((cpen: any) => {
@@ -121,9 +121,9 @@ function onMouseUp(pen: any, e: Point) {
   pen.calculative.drag = false;
 }
 
-function moveToLast(pen) {
+function moveToLast(pen: any) {
   let array = pen.calculative.canvas.store.data.pens;
-  let index = array.findIndex((item) => item.id === pen.id);
+  let index = array.findIndex((item: any) => item.id === pen.id);
 
   if (index < 0 || index >= array.length) return array;
 

@@ -314,7 +314,7 @@ export function calcTextAdaptionWidth(
   return maxWidth;
 }
 
-function getFontWith(text, pen: Pen) {
+function getFontWith(text: string, pen: Pen) {
   const fontSize = pen.calculative.fontSize;
   const chinese = text.match(/[^\x00-\xff]/g) || '';
   const chineseWidth = chinese.length * fontSize; // 中文占用的宽度

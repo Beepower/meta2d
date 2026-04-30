@@ -7278,29 +7278,29 @@ export class Canvas {
     if (!pen.parentId) {
       const rect = this.getPenRect(
         pen,
-        this.store.clipboard.origin,
-        this.store.clipboard.scale
+        this.store.clipboard!.origin,
+        this.store.clipboard!.scale
       );
 
       const initRect: Rect = this.getPenRect(
-        this.store.clipboard.initRect,
-        this.store.clipboard.origin,
-        this.store.clipboard.scale
-      );
+        this.store.clipboard!.initRect as any as Pen,
+        this.store.clipboard!.origin,
+        this.store.clipboard!.scale
+      )!;
 
       const { origin, scale } = this.store.data;
-      pen.x! = origin.x + rect!.x * scale;
-      pen.y! = origin.y + rect!.y * scale;
-      pen.width! = rect!.width * scale;
-      pen.height! = rect!.height * scale;
+      pen.x! = origin.x + rect!.x! * scale;
+      pen.y! = origin.y + rect!.y! * scale;
+      pen.width! = rect!.width! * scale;
+      pen.height! = rect!.height! * scale;
 
-      initRect.x = origin.x + initRect.x * scale;
-      initRect.y = origin.y + initRect.y * scale;
+      initRect.x = origin.x + initRect.x! * scale;
+      initRect.y = origin.y + initRect.y! * scale;
       calcCenter(initRect);
 
-      if (this.store.clipboard.pos) {
-        pen.x! -= initRect.center.x - this.store.clipboard.pos.x;
-        pen.y! -= initRect.center.y - this.store.clipboard.pos.y;
+      if (this.store.clipboard!.pos) {
+        pen.x! -= initRect.center!.x! - this.store.clipboard!.pos!.x;
+        pen.y! -= initRect.center!.y! - this.store.clipboard!.pos!.y;
       }
       if(this.keyOptions && this.keyOptions.altKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey)){
         pen.x! =-this.store.data.x+ this.width / 2 - pen.width! / 2;
@@ -7308,18 +7308,18 @@ export class Canvas {
       }else if(this.keyOptions && this.keyOptions.shiftKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey || this.keyOptions.F)){
 
       }else{
-        pen.x! += this.store.clipboard.offset * this.store.data.scale;
-        pen.y! += this.store.clipboard.offset * this.store.data.scale;
+        pen.x! += this.store.clipboard!.offset! * this.store.data.scale;
+        pen.y! += this.store.clipboard!.offset! * this.store.data.scale;
       }
     }
     this.makePen(pen);
-    const newChildren = [];
+    const newChildren: string[] = [];
     if (Array.isArray(pen.children)) {
       for (const childId of pen.children) {
-        const childPen = this.store.clipboard.pens.find(
+        const childPen = this.store.clipboard!.pens!.find(
           (pen) => pen.id === childId
         );
-        childPen && newChildren.push(this.pastePen(childPen, pen.id).id);
+        childPen && newChildren.push(this.pastePen(childPen, pen.id).id!);
       }
     }
     pen.children = newChildren;
@@ -7337,11 +7337,11 @@ export class Canvas {
       return;
     }
     for (let index = 0; index < pen.connectedLines.length; index++) {
-      const { lineId } = pen.connectedLines[index];
+      const { lineId } = pen.connectedLines[index]!;
       const line = pastePens.find((pen) => pen.id === lineId);
       if (line) {
-        const from = line.anchors[0];
-        const to = line.anchors[line.anchors!.length - 1];
+        const from = line.anchors![0]!;
+        const to = line.anchors![line.anchors!.length - 1]!;
         from.connectTo === oldId && (from.connectTo = pen.id);
         to.connectTo === oldId && (to.connectTo = pen.id);
       } else {
@@ -7359,8 +7359,8 @@ export class Canvas {
    * @param pastePens 此处复制的全部 pens (包含子节点)
    */
   changeNodeConnectedLine(oldId: string, line: Pen, pastePens: Pen[]) {
-    const from = line.anchors[0];
-    const to = line.anchors[line.anchors!.length - 1];
+    const from = line.anchors![0]!;
+    const to = line.anchors![line.anchors!.length - 1]!;
     // 修改对应节点的 connectedLines
     const anchors = [from, to];
     for (const anchor of anchors) {
@@ -7591,12 +7591,12 @@ export class Canvas {
         this.store.hover.onShowInput(this.store.hover, e as any);
       } else {
         if(this.store.hover && this.store.hover.parentId){
-          if(this.store.active?.length===1 && this.store.active[0].id === this.store.hover.id){
+          if(this.store.active?.length===1 && this.store.active[0]!.id === this.store.hover.id){
             this.showInput(this.store.hover);
           }else{
-            this.store.pens[this.store.hover.parentId].children.forEach((id)=>{
-              this.store.pens[id].calculative.active = false;
-              this.store.pens[id].calculative.hover = false;
+            this.store.pens[this.store.hover.parentId]!.children!.forEach((id)=>{
+              this.store.pens[id]!.calculative!.active = false;
+              this.store.pens[id]!.calculative!.hover = false;
             });
             if(this.store.hover.parentId){
               //组合图元 找命中率高的子图元
@@ -7604,9 +7604,9 @@ export class Canvas {
               const pt = this.calibrateMouse({ x: e.offsetX, y: e.offsetY });
               let distance = Infinity;
               this.store.pens[this.store.hover.parentId]?.children?.forEach((_id)=>{
-                const pen = this.store.pens[_id];
-                if(pointInRect(pt, pen.calculative!.worldRect)){
-                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect!.center.x) ** 2  +(pt.y - pen.calculative!.worldRect!.center.y) ** 2 );
+                const pen = this.store.pens[_id]!;
+                if(pointInRect(pt, pen.calculative!.worldRect!)){
+                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect!.center!.x!) ** 2  +(pt.y - pen.calculative!.worldRect!.center!.y!) ** 2 );
                   if(dis < distance){
                     distance = dis;
                     id = _id;
@@ -7614,8 +7614,8 @@ export class Canvas {
                 }
 
               });
-              this.store.hover = this.store.pens[id];
-              this.store.pens[id].calculative.hover = true;
+              this.store.hover = this.store.pens[id!]!;
+              this.store.pens[id!]!.calculative!.hover = true;
             }
             this.active([this.store.hover]);
           }
@@ -7647,7 +7647,7 @@ export class Canvas {
       this.inputDiv.dataset.isInput = 'true';
       this.inputDiv.contentEditable = 'true';
       this.inputDiv.focus();
-      const range = window.getSelection(); //创建range
+      const range = window.getSelection()!; //创建range
       range.selectAllChildren(this.inputDiv); //range 选择obj下所有子内容
       range.collapseToEnd(); //光标移至最后
       this.inputDiv.scrollTop = this.inputDiv.scrollHeight;
@@ -7674,18 +7674,18 @@ export class Canvas {
     // this.inputDiv.style.fontSize = pen.calculative!.fontSize + 'px';
     // this.inputDiv.style.color = getTextColor(pen, this.store);
     this.inputParent.style.left =
-      textRect.x + this.store.data.x - (pen.calculative!.textLeft || 0) + 'px'; //+ 5
+      textRect!.x! + this.store.data.x - (pen.calculative!.textLeft || 0) + 'px'; //+ 5
     this.inputParent.style.top =
-      textRect.y + this.store.data.y - (pen.calculative!.textTop || 0) + 'px'; //+ 5
-    let _width = textRect.width ;//+ (pen.textLeft || 0);
-    this.inputParent.style.width = (_width < 0 ? 12 : _width) + 'px'; //(textRect.width < pen.width! ? 0 : 10)
-    this.inputParent.style.height = textRect.height + (pen.textTop || 0) + 'px'; //   (textRect.height < pen.height! ? 0 : 10)
+      textRect!.y! + this.store.data.y - (pen.calculative!.textTop || 0) + 'px'; //+ 5
+    let _width = textRect!.width ;//+ (pen.textLeft || 0);
+    this.inputParent.style.width = (_width! < 0 ? 12 : _width!) + 'px'; //(textRect.width < pen.width! ? 0 : 10)
+    this.inputParent.style.height = textRect!.height! + (pen.textTop || 0) + 'px'; //   (textRect.height < pen.height! ? 0 : 10)
     this.inputParent.style.zIndex = '9999';
     this.inputParent.style.background = background;
-    if (pen.rotate % 360) {
+    if (pen.rotate! % 360) {
       this.inputParent.style.transform = `rotate(${pen.rotate}deg)`;
     } else {
-      this.inputParent.style.transform = null;
+      this.inputParent.style.transform = null as any;
     }
     this.inputParent.style.display = 'flex';
     this.inputDiv.dataset.penId = pen.id;

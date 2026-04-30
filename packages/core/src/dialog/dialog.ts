@@ -249,7 +249,7 @@ export class Dialog {
 
     this.iframe.onload = () => {
       if(!this.dialogMeta2d||isIframe){
-        this.close.style.display = rect.hideClose? 'none':'block';
+        this.close.style.display = rect?.hideClose? 'none':'block';
         this.box.style.opacity = '1';
       }
     }
@@ -315,11 +315,11 @@ export class Dialog {
   }
 
   destroy() {
-    this.dialog.onclick = undefined;
-    this.box.onclick = undefined;
-    this.close.onclick = undefined;
+    this.dialog.onclick = null;
+    this.box.onclick = null;
+    this.close.onclick = null;
     this.dialogMeta2d?.destroy(true);
-  } 
+  }
 }
 
 function isSameOrigin(url: string) {

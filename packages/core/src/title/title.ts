@@ -58,7 +58,7 @@ export class Title {
    */
   private setText(anchor: Point) {
     // this.box.title = anchor.title;
-    this.box.innerText = anchor.title;
+    this.box.innerText = anchor.title ?? '';
   }
 
   /**
@@ -111,8 +111,8 @@ export class Title {
     this.currentAnchor = anchor;
     this.setText(anchor);
     let pos = {
-      x: pen.calculative.canvas.store.data.x + anchor.x,
-      y: pen.calculative.canvas.store.data.y + anchor.y,
+      x: pen.calculative!.canvas!.store.data.x + (anchor.x ?? 0),
+      y: pen.calculative!.canvas!.store.data.y + (anchor.y ?? 0),
     };
     this.changePositionByAnchor(pos);
   }
@@ -120,7 +120,7 @@ export class Title {
   hide() {
     this.box.style.left = '-9999px';
     this.box.innerText = '';
-    this.currentAnchor = null;
+    this.currentAnchor = null as any;
   }
 
   destroy() {

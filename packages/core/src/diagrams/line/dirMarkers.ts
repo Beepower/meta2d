@@ -99,16 +99,16 @@ export function renderLineDirectionMarkers(
     return;
   }
 
-  if (pen.calculative.pencil) {
+  if (pen.calculative!.pencil) {
     return;
   }
 
-  const anchors = pen.calculative.worldAnchors;
+  const anchors = pen.calculative!.worldAnchors;
   if (!anchors || anchors.length < 2) {
     return;
   }
 
-  if (pen.calculative.animatePos && lineHasArrowOrWaterDropAnimate(pen)) {
+  if (pen.calculative!.animatePos && lineHasArrowOrWaterDropAnimate(pen)) {
     return;
   }
 
@@ -163,7 +163,7 @@ export function renderLineDirectionMarkers(
       drawer(ctx, x, y, ang, color, pen);
     }
   } else {
-    const lineW = pen.calculative.lineWidth || 2;
+    const lineW = pen.calculative!.lineWidth || 2;
     const strokeW = Math.min(lineW * 0.38, Math.max(0.75, lineW * 0.14));
     const innerW = Math.max(0, lineW - strokeW);
     const halfSpread = innerW * 0.38;

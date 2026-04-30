@@ -7,7 +7,7 @@ import { Event } from "../event";
 
 export function connectJetLinks(meta2d:Meta2d, net:Network){
   if (meta2d.jetLinksList.length) {
-    let url = net.url;
+    let url = net.url ?? '';
     if(url.startsWith('/')){
       url = (location.protocol === 'https:'?'wss://':'ws://')+ window.location.host + url;
     }
@@ -113,8 +113,9 @@ export function closeJetLinks(meta2d:Meta2d){
 
 export function getSendData(meta2d:Meta2d, pen: Pen, e: Event){
   const list: any = [];
-  e.list.forEach((item: any, index) => {
+  e.list?.forEach((item: any, index) => {
     const _pen = item.params ? meta2d.findOne(item.params) : pen;
+    if (!_pen) return;
     list[index] = {
       deviceId: _pen.deviceId,
       productId: _pen.productId,

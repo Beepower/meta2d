@@ -13,7 +13,7 @@ export function sceneContainer(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D
   }
   const path = !ctx ? new Path2D() : ctx;
 
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }
 
 async function add(pen: any) {
@@ -54,7 +54,7 @@ const getContainerPens = async (pen: any, vId?: string) => {
 };
 
 const deleteContainerPens = (pen: Pen) => {
-  const meta2d = pen.calculative.canvas.parent;
+  const meta2d = pen.calculative!.canvas!.parent;
   let pens = collectContainerPens(pen);
   pens.forEach((cpen: Pen) => {
     meta2d.canvas.delForce(cpen);

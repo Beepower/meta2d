@@ -59,7 +59,7 @@ export class Message {
     this.icon.className = 'icon';
     this.text.className = 'text';
     this.icon.innerHTML = status[options.theme || 'info'].icon;
-    this.text.innerHTML = options.content;
+    this.text.innerHTML = options.content ?? '';
 
     this.box.appendChild(this.icon);
     this.box.appendChild(this.text);
@@ -130,7 +130,7 @@ export class Message {
     this.duration = options.duration ?? 3000;
     this.placement = options.placement || 'top';
     this.theme = options.theme || 'info';
-    this.height = options.height;
+    this.height = options.height ?? 0;
     // this.init();
   }
 
@@ -190,7 +190,7 @@ export class Message {
         }
       }
     });
-    messageList[this.id] = null;
+    messageList[this.id] = null as any;
     delete messageList[this.id];
     this.box.remove();
   }

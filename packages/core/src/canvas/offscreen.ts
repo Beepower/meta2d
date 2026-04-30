@@ -3,7 +3,7 @@ export function createOffscreen(): any {
     const offscreen = new OffscreenCanvas(0, 0);
     const context = offscreen.getContext('2d');
 
-    if (context && context.arc) {
+    if (context) {
       return offscreen;
     }
 

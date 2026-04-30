@@ -5,7 +5,7 @@ export function getter(object: any, path: string) {
     return object;
   }
   const arr = path.split('.');
-  while (arr.length && (object = object[arr.shift()]));
+  while (arr.length && (object = object[arr.shift() as string]));
   return object;
 }
 

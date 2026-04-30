@@ -11,7 +11,7 @@ export function formatTime(format?: string, utcDate?:string) {
   const hours = now.getHours();
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
-  let fn = new Function(
+  let fn: Function | null = new Function(
     'year',
     'month',
     'day',

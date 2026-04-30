@@ -299,7 +299,7 @@ export const createStore = () => {
     messageEvents: {},
     templatePens: {},
     globalTriggers:{},
-  } as Meta2dStore;
+  } as unknown as Meta2dStore;
 };
 
 // Return a data store, if not exists will create a store.
@@ -336,13 +336,13 @@ export const clearStore = (store: Meta2dStore, template?: string) => {
     origin: { x: 0, y: 0 },
     center: { x: 0, y: 0 },
     paths: {},
-    template: isSame ? template : null,
+    template: isSame ? template : undefined,
     lineAnimateDraws: {}
   };
   store.sameTemplate = isSame;
   store.pens = {};
   store.histories = [];
-  store.historyIndex = null;
+  store.historyIndex = undefined;
   store.path2dMap = new WeakMap();
   store.animateMap = new WeakMap();
   store.bindDatas = {};

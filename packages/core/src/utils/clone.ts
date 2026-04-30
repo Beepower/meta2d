@@ -13,7 +13,7 @@ export function deepClone<T>(o: T, keepCalc = false): T {
     return arr;
   } else if (typeof o === 'object') {
     if (o === null) {
-      return null;
+      return null as T;
     } else if (o.constructor === RegExp) {
       return o;
     }
@@ -52,7 +52,7 @@ export function deepSetValue<T>(o: any, keyWords: string[], value: number): T {
     return arr;
   } else if (typeof o === 'object') {
     if (o === null) {
-      return null;
+      return null as T;
     }
     // const _o = {} as any;
     for (const key in o) {

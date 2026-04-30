@@ -18,7 +18,7 @@ export function abs(num: number, percent: number | string): number {
  * @param collection 集合规范，与数学上相同，如[0, 100]，前闭后闭；如[0, 100)，前闭后开；
  * @returns undefined 说明参数不规范 ，true 说明在范围内，false 说明不在范围内
  */
-export function valueInRange(realValue: number, collection: unknown): boolean {
+export function valueInRange(realValue: number, collection: unknown): boolean | undefined {
   if (isNaN(realValue)) {
     console.warn(`realValue not number`);
     return;
@@ -70,7 +70,7 @@ export function valueInRange(realValue: number, collection: unknown): boolean {
  * @param collection 集合
  * @returns undefined 说明参数不规范 ，true 说明在范围内，false 说明不在范围内
  */
-export function valueInArray(realValue: any, collection: unknown): boolean {
+export function valueInArray(realValue: any, collection: unknown): boolean | undefined {
   // if (isNaN(realValue)) {
   //   console.warn(`realValue not number`);
   //   return;

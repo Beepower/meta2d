@@ -2,7 +2,7 @@ import { Pen } from '../pen';
 import { Point } from '../point';
 export function pentagon(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  const { x, y, width, height } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, height = 0 } = pen.calculative!.worldRect!;
 
   path.moveTo(x + width / 2, y);
   path.lineTo(x + width, y + (height * 2) / 5);
@@ -11,7 +11,7 @@ export function pentagon(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   path.lineTo(x, y + (height * 2) / 5);
 
   path.closePath();
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }
 
 export function pentagonAnchors(pen: Pen) {

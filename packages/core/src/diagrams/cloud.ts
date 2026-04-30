@@ -2,7 +2,7 @@ import { Pen } from '../pen';
 
 export function cloud(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  const { x, y, width, height } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, height = 0 } = pen.calculative!.worldRect!;
 
   path.moveTo(x + width / 5, y + (height * 13) / 16);
   path.bezierCurveTo(
@@ -30,5 +30,5 @@ export function cloud(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
     y + (height * 13) / 16
   );
   path.closePath();
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }

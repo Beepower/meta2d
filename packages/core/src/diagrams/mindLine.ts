@@ -2,11 +2,11 @@ import { Pen } from '../pen';
 
 export function mindLine(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  const { x, y, width, height } = pen.calculative.worldRect;
+  const { x = 0, y = 0, width = 0, height = 0 } = pen.calculative!.worldRect!;
   path.moveTo(x, y + height);
   path.lineTo(x + width, y + height);
   path.closePath();
-  if (path instanceof Path2D) return path;
+  return path as Path2D;
 }
 
 export function mindLineAnchors(pen: Pen) {

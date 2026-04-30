@@ -54,13 +54,13 @@ export function getToken() {
   const key = globalThis.le5leTokenName ?? 'token';
   switch (globalThis.le5leTokenType) {
     case TokenType.LocalStorage: //1
-      token = localStorage.getItem(key);
+      token = localStorage.getItem(key) ?? '';
       break;
     case TokenType.Cookie: //2
       token =  getCookie(key);
       break;
     default:
-      token = isLe5le ? getCookie(key) : localStorage.getItem(key);
+      token = (isLe5le ? getCookie(key) : localStorage.getItem(key)) ?? '';
   }
   return (globalThis.TokenPrefix ??'Bearer ') + (globalThis.le5leTokenD?d(token):token);
 }

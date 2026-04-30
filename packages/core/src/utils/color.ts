@@ -71,7 +71,7 @@ export function pSBC(p: number, c0: string, c1?: string, l?: boolean) {
   )
     return null;
   (h = c0.length > 9),
-    (h = a ? (c1.length > 9 ? true : c1 == 'c' ? !h : false) : h),
+    (h = a ? ((c1?.length ?? 0) > 9 ? true : c1 == 'c' ? !h : false) : h),
     (f = pSBCr(c0)),
     (P = p < 0),
     (t =

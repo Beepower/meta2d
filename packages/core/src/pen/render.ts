@@ -312,8 +312,8 @@ function formatGradient(color: string) {
     let arr = color.slice(16, -2).split('deg,');
     if (arr.length > 1) {
       let _arr = arr[1].split('%,');
-      const colors = [];
-      _arr.forEach((stap) => {
+      const colors: { color: string; i: number }[] = [];
+      _arr.forEach((stap: string) => {
         if (/rgba?/.test(stap)) {
           let _arr = stap.split(') ');
           colors.push({
@@ -353,7 +353,7 @@ function formatGradient(color: string) {
   }
 }
 
-function rgbaToHex(value) {
+function rgbaToHex(value: string) {
   if (/rgba?/.test(value)) {
     let array = value.split(',');
     //不符合rgb或rgb规则直接return
@@ -367,7 +367,7 @@ function rgbaToHex(value) {
       } else {
         //rgba的透明度转换成16进制
         color = color.replace(')', '');
-        let colorA = parseInt(color * 255 + '');
+        let colorA = parseInt(+color * 255 + '');
         let colorAHex = colorA.toString(16);
         colorAHex = colorAHex.length === 2 ? colorAHex : '0' + colorAHex;
         value += colorAHex;
@@ -3329,9 +3329,9 @@ export function setNodeAnimate(pen: Pen, now: number) {
     for (const f of pen.frames) {
       pen.calculative.duration += f.duration;
       for (const k in f) {
-        if (k !== 'duration' && !pen[k]) {
+        if (k !== 'duration' && !(pen as any)[k]) {
           if (k === 'scale') {
-            pen[k] = 1;
+            (pen as any)[k] = 1;
           }
         }
       }
@@ -3447,7 +3447,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
         pen.prevFrame = {};
         const prevFrame = pen.frames[frameIndex - 1];
         for (const k in prevFrame) {
-          pen.prevFrame[k] = prevFrame[k];
+          (pen.prevFrame as any)[k] = (prevFrame as any)[k];
         }
         Object.assign(pen.prevFrame, {
           rotate: prevFrame.rotate || 0,
@@ -3477,7 +3477,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
 
     const t = elapsed
 
-    process = cubicBezierY(t,timeParams[1],timeParams[3])
+    process = cubicBezierY(t, +timeParams[1], +timeParams[3])
   }else {
     process = ((now - pen.calculative.frameStart) / pen.calculative.frameDuration) % 1;
   }
@@ -3489,8 +3489,8 @@ export function setNodeAnimate(pen: Pen, now: number) {
 export function initPrevFrame(pen: Pen) {
   pen.prevFrame = {};
   for (const k in pen) {
-    if (typeof pen[k] !== 'object' || k === 'lineDash') {
-      pen.prevFrame[k] = pen[k];
+    if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
+      (pen.prevFrame as any)[k] = (pen as any)[k];
     }
   }
   pen.prevFrame.rotate = 0;
@@ -3620,18 +3620,18 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       } else if (pen.canvasLayer === CanvasLayer.CanvasImage) {
         pen.calculative.canvas.canvasImage.init();
       }
-    } else if (isLinear(frame[k], k, pen)) {
-      if (pen.prevFrame[k] == null) {
+    } else if (isLinear((frame as any)[k], k, pen)) {
+      if ((pen.prevFrame as any)[k] == null) {
         if (k === 'globalAlpha') {
-          pen.prevFrame[k] = 1;
+          (pen.prevFrame as any)[k] = 1;
         } else {
-          pen.prevFrame[k] = 0;
+          (pen.prevFrame as any)[k] = 0;
         }
       }
 
       const current =
-        pen.prevFrame[k] + (frame[k] - pen.prevFrame[k]) * process;
-      pen.calculative[k] = Math.round(current * 100) / 100;
+        (pen.prevFrame as any)[k] + ((frame as any)[k] - (pen.prevFrame as any)[k]) * process;
+      (pen.calculative as any)[k] = Math.round(current * 100) / 100;
     } else {
       if (k === 'visible') {
         if (pen.calculative.image) {
@@ -3650,9 +3650,9 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
           pen.calculative.canvas.initImageCanvas(childs);
         }
       }
-      pen.calculative[k] = frame[k];
+      (pen.calculative as any)[k] = (frame as any)[k];
       const v: any = {};
-      v[k] = frame[k];
+      v[k] = (frame as any)[k];
       setChildValue(pen, v);
     }
 
@@ -3709,7 +3709,7 @@ export function setLineAnimate(pen: Pen, now: number) {
     const duration = pen.duration || 5;
     const t = elapsed / duration
 
-    const progress = cubicBezierY(t,timeParams[1],timeParams[3])
+    const progress = cubicBezierY(t, +timeParams[1], +timeParams[3])
     // 更新动画位置
     pen.calculative.animatePos = progress * pen.length;
   }else{
@@ -3843,7 +3843,7 @@ export function setElemPosition(pen: Pen, elem: HTMLElement) {
   }
   if(pen.styles){
     for(let key in pen.styles){
-      elem.style[key] = pen.styles[key];
+      (elem.style as any)[key] = (pen.styles as any)[key];
     }
   }
 }
@@ -3854,7 +3854,7 @@ export function setElemImg(pen: Pen, elem: HTMLElement) {
   }
   //https://github.com/niklasvh/html2canvas
   globalThis.html2canvas &&
-    globalThis.html2canvas(elem).then(function (canvas) {
+    (globalThis.html2canvas as any)(elem).then(function (canvas: HTMLCanvasElement) {
       // document.body.appendChild(canvas);
       const img = new Image();
       img.src = canvas.toDataURL('image/png', 0.1);
@@ -3974,7 +3974,7 @@ export function getFrameValue(pen: Pen, prop: string, frameIndex: number) {
   let v = 0;
   for (let i = 0; i < frameIndex; i++) {
     if (pen.frames[i]) {
-      v += pen.frames[i][prop] || 0;
+      v += (pen.frames[i] as any)[prop] || 0;
     }
   }
 
@@ -4126,7 +4126,7 @@ function drawFuncGenerator(ctx: CanvasRenderingContext2D, pen: any) {
     drawCommand.forEach((command)=> {
       try {
         command.steps = command.steps.flat(Infinity);
-        command.steps.reduce((calculate,step)=>{
+        command.steps.reduce((calculate: any, step: any)=>{
           const cs = commandTransfer(step,pen,calculate.x,calculate.y);
           // 应当保证顺序的正确
           try {
@@ -4162,12 +4162,12 @@ function drawFuncGenerator(ctx: CanvasRenderingContext2D, pen: any) {
   };
 }
 
-function commandTransfer(command,pen,startX,startY){
+function commandTransfer(command: any, pen: any, startX: any, startY: any){
 
   // TODO 是否支持扩展更多的命令？用于兼容未来的其他解析格式？
   //1. 进行简单的命令解析
   // VISIO
-  const map = {
+  const map: Record<string, (command: any, pen: any, startX: any, startY: any) => any> = {
     'visio':dealWithVisio,
     'dxf':dealWithDXF,
     'canvas': dealWithCanvas
@@ -4176,7 +4176,7 @@ function commandTransfer(command,pen,startX,startY){
   return map[pen.parseType]?.(command,pen,startX,startY) || command;
 }
 
-function dealWithDXF(command,pen,startX,startY) {
+function dealWithDXF(command: any, pen: any, startX: any, startY: any) {
   const { x, y, width, height } = pen.calculative.worldRect;
   const {originWidth,originHeight} = pen.dxfOrigin;
   switch (command.c) {
@@ -4261,7 +4261,7 @@ function dealWithDXF(command,pen,startX,startY) {
   }
 }
 
-function dealWithCanvas(command, pen, startX, startY) {
+function dealWithCanvas(command: any, pen: any, startX: any, startY: any) {
 
   const { x, y, width, height } = pen.calculative.worldRect;
   const {originWidth,originHeight} = pen.origin;
@@ -4339,7 +4339,7 @@ function dealWithCanvas(command, pen, startX, startY) {
       return c;
   }
 }
-function dealWithVisio(command, pen, startX, startY) {
+function dealWithVisio(command: any, pen: any, startX: any, startY: any) {
   const { x, y, width, height } = pen.calculative.worldRect;
   const { width: originWidth, height: originHeight } = pen.origin;
   switch (command.c) {
@@ -4591,21 +4591,21 @@ function dealWithVisio(command, pen, startX, startY) {
   }
 }
 
-export function drawFilter(ctx,pen) {
+export function drawFilter(ctx: CanvasRenderingContext2D, pen: Pen) {
   ctx.filter = pen.filter
 }
 export function setChildValue(pen: Pen, data: IValue) {
   for (const k in data) {
     if (inheritanceProps.includes(k)) {
-      if (k == 'fontSize' && data[k] < 0) {
-        data[k] = 0;
+      if (k == 'fontSize' && (data as any)[k] < 0) {
+        (data as any)[k] = 0;
       }
-      pen[k] = data[k];
+      (pen as any)[k] = (data as any)[k];
       if (['fontSize', 'lineWidth'].includes(k)) {
-        pen.calculative[k] = data[k] * pen.calculative.canvas.store.data.scale;
+        (pen.calculative as any)[k] = (data as any)[k] * pen.calculative.canvas.store.data.scale;
         calcTextRect(pen);
       } else {
-        pen.calculative[k] = data[k];
+        (pen.calculative as any)[k] = (data as any)[k];
       }
     }
     if(pen.image && pen.name !== 'gif' && needImgCanvasPatchFlagsProps.includes(k)){
@@ -4632,7 +4632,7 @@ export function setChildValue(pen: Pen, data: IValue) {
   }
 }
 
-function calculateEllipseParameters(x1, y1, x2, y2, x3, y3, D) {
+function calculateEllipseParameters(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, D: number) {
   // Calculate x₀ using equation ⑥
   let numeratorX0 =
     (x1 - x2) * (x1 + x2) * (y2 - y3) -
@@ -4660,7 +4660,7 @@ function calculateEllipseParameters(x1, y1, x2, y2, x3, y3, D) {
   return { x0, y0, a, b };
 }
 
-function calculateAngleInRadians(x1, y1, x2, y2) {
+function calculateAngleInRadians(x1: number, y1: number, x2: number, y2: number) {
   // 计算两个点的差值
   let dx = x2 - x1;
   let dy = y2 - y1;

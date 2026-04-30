@@ -20,8 +20,7 @@
     "@meta2d/flow-diagram": "workspace:*",
     "@meta2d/chart-diagram": "workspace:*",
     "@meta2d/form-diagram": "workspace:*",
-    "@meta2d/fta-diagram": "workspace:*",
-    "@meta2d/le5le-charts": "workspace:*"
+    "@meta2d/fta-diagram": "workspace:*"
   },
   "devDependencies": {
     "copyfiles": "latest",

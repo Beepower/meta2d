@@ -13,7 +13,6 @@ import {
 } from '@meta2d/chart-diagram';
 import { formPens } from '@meta2d/form-diagram';
 import { ftaPens, ftaPensbyCtx, ftaAnchors } from '@meta2d/fta-diagram';
-import { chartsPens } from '@meta2d/le5le-charts';
 export * from "@meta2d/core"
 
 globalThis.Meta2d = Meta2d;
@@ -31,7 +30,6 @@ globalThis.registerCommonDiagram = function () {
     meta2d.register(sequencePens());
     meta2d.registerCanvasDraw(sequencePensbyCtx());
     meta2d.registerCanvasDraw(formPens());
-    meta2d.registerCanvasDraw(chartsPens());
     meta2d.register(ftaPens());
     meta2d.registerCanvasDraw(ftaPensbyCtx());
     meta2d.registerAnchors(ftaAnchors());
@@ -50,7 +48,6 @@ export {
   ftaPens,
   ftaPensbyCtx,
   ftaAnchors,
-  chartsPens,
   flowAnchors,
   registerEcharts,
   registerHighcharts,

@@ -123,12 +123,12 @@ export function mindNodeAnchors(pen: Pen) {
  * @returns 元素实际半径
  */
 function borderRadius(pen: Pen): number {
-  let wr = pen.calculative.borderRadius || 0;
-  let hr = pen.calculative.borderRadius || 0;
+  let wr = pen.calculative!.borderRadius || 0;
+  let hr = pen.calculative!.borderRadius || 0;
   const { width, height } = pen;
-  if (pen.calculative.borderRadius < 1) {
-    wr = width * pen.calculative.borderRadius;
-    hr = height * pen.calculative.borderRadius;
+  if (pen.calculative!.borderRadius < 1) {
+    wr = width * pen.calculative!.borderRadius;
+    hr = height * pen.calculative!.borderRadius;
   }
   let r = wr < hr ? wr : hr;
   if (width < 2 * r) {

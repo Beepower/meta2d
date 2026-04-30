@@ -97,7 +97,7 @@ export class CanvasImage {
     for (const pen of this.store.data.pens) {
       if (this.hasImage(pen)) {
         // 只影响本层的
-        pen.calculative.imageDrawed = false;
+        pen.calculative!.imageDrawed = false;
       }
     }
     if(this.isBottom){
@@ -126,17 +126,17 @@ export class CanvasImage {
   }
 
   hasImage(pen: Pen) {
-    pen.calculative.hasImage =
+    pen.calculative!.hasImage =
       pen.calculative &&
-      pen.calculative.inView &&
+      pen.calculative!.inView &&
       // !pen.isBottom == !this.isBottom && // undefined == false 结果 false
       ((this.isBottom && pen.canvasLayer === CanvasLayer.CanvasImageBottom) ||
         (!this.isBottom && pen.canvasLayer === CanvasLayer.CanvasImage)) &&
       pen.image &&
-      pen.calculative.img &&
+      pen.calculative!.img &&
       pen.name !== 'gif';
 
-    return pen.calculative.hasImage;
+    return pen.calculative!.hasImage;
   }
 
   render() {
@@ -146,7 +146,7 @@ export class CanvasImage {
       if (this.hasImage(pen)) {
         if (this.store.animates.has(pen)) {
           patchFlagsAnimate = true;
-        } else if (!pen.calculative.imageDrawed) {
+        } else if (!pen.calculative!.imageDrawed) {
           patchFlags = true;
         }
         if (pen.parentId && this.store.animates.has(getParent(pen, true))) {
@@ -213,9 +213,9 @@ export class CanvasImage {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.translate(this.store.data.x, this.store.data.y);
       for (const pen of this.store.data.pens) {
-        //pen.calculative.imageDrawed  只用于判断是否需要重绘整块画布，不用于判断改图片节点是否绘制过
+        //pen.calculative!.imageDrawed  只用于判断是否需要重绘整块画布，不用于判断改图片节点是否绘制过
         if (
-          !pen.calculative.hasImage ||
+          !pen.calculative!.hasImage ||
           this.store.animates.has(pen) ||
           this.store.animates.has(getParent(pen, true))
         ) {
@@ -228,10 +228,10 @@ export class CanvasImage {
         // if (pen.name === 'combine' && !pen.draw){
         //   continue;
         // }
-        pen.calculative.imageDrawed = true;
+        pen.calculative!.imageDrawed = true;
         ctx.save();
         ctxFlip(ctx, pen);
-        if (pen.rotateByRoot || pen.calculative.rotate) {
+        if (pen.rotateByRoot || pen.calculative!.rotate) {
           ctxRotate(ctx, pen);
         }
 
@@ -247,21 +247,21 @@ export class CanvasImage {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.translate(this.store.data.x, this.store.data.y);
       for (const pen of this.store.animates) {
-        if (!pen.calculative.hasImage) {
+        if (!pen.calculative!.hasImage) {
           continue;
         }
         // if (pen.template) {
         if (pen.canvasLayer === CanvasLayer.CanvasTemplate) {
           continue;
         }
-        if(pen.visible === false || pen.calculative.visible === false){
+        if(pen.visible === false || pen.calculative!.visible === false){
           //动画控制显示隐藏
           continue;
         }
-        pen.calculative.imageDrawed = true;
+        pen.calculative!.imageDrawed = true;
         ctx.save();
         ctxFlip(ctx, pen);
-        if (pen.rotateByRoot || pen.calculative.rotate) {
+        if (pen.rotateByRoot || pen.calculative!.rotate) {
           ctxRotate(ctx, pen);
         }
 
@@ -271,21 +271,21 @@ export class CanvasImage {
       }
       //图片组合节点 动画
       for (const pen of this.store.data.pens) {
-        if (!pen.calculative.hasImage || !pen.parentId) {
+        if (!pen.calculative!.hasImage || !pen.parentId) {
           continue;
         }
         // if (pen.template) {
         if (pen.canvasLayer === CanvasLayer.CanvasTemplate) {
           continue;
         }
-        if(pen.visible === false || pen.calculative.visible === false){
+        if(pen.visible === false || pen.calculative!.visible === false){
           continue;
         }
         if (this.store.animates.has(getParent(pen, true))) {
-          pen.calculative.imageDrawed = true;
+          pen.calculative!.imageDrawed = true;
           ctx.save();
           ctxFlip(ctx, pen);
-          if (pen.rotateByRoot || pen.calculative.rotate) {
+          if (pen.rotateByRoot || pen.calculative!.rotate) {
             ctxRotate(ctx, pen);
           }
 

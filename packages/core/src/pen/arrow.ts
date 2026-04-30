@@ -28,7 +28,7 @@ export function renderFromArrow(
   if (from.next) {
     pt.rotate = calcRotate(from.next, from) + 90;
   } else {
-    const p = pen.calculative.worldAnchors[1];
+    const p = pen.calculative!.worldAnchors[1];
     if (!p) {
       return;
     }
@@ -41,7 +41,7 @@ export function renderFromArrow(
   ctx.save();
   ctx.beginPath();
   ctx.setLineDash([]);
-  const fromArrowColor = pen.fromArrowColor || pen.calculative.color;
+  const fromArrowColor = pen.fromArrowColor || pen.calculative!.color;
   fromArrowColor && (ctx.strokeStyle = fromArrowColor);
   arrows[pen.fromArrow](ctx, pen, store, pt);
   ctx.restore();
@@ -52,7 +52,7 @@ export function renderToArrow(
   pen: Pen,
   store: Meta2dStore
 ) {
-  if (!arrows[pen.toArrow] || pen.calculative.worldAnchors.length < 2) {
+  if (!arrows[pen.toArrow] || pen.calculative!.worldAnchors.length < 2) {
     return;
   }
   ctx.save();
@@ -64,7 +64,7 @@ export function renderToArrow(
     pt.rotate = calcRotate(to.prev, to) + 90;
   } else {
     const p =
-      pen.calculative.worldAnchors[pen.calculative.worldAnchors.length - 2];
+      pen.calculative!.worldAnchors[pen.calculative!.worldAnchors.length - 2];
     if (p.next) {
       pt.rotate = calcRotate(p.next, to) + 90;
     } else {
@@ -73,7 +73,7 @@ export function renderToArrow(
   }
   ctx.beginPath();
   ctx.setLineDash([]);
-  const toArrowColor = pen.toArrowColor || pen.calculative.color;
+  const toArrowColor = pen.toArrowColor || pen.calculative!.color;
   toArrowColor && (ctx.strokeStyle = toArrowColor);
   arrows[pen.toArrow](ctx, pen, store, pt);
   ctx.restore();

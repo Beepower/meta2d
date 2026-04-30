@@ -5,37 +5,37 @@ import { Meta2dStore } from '../../store';
 import { s8 } from '../../utils';
 
 export function curve(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
-  if (!pen.calculative.worldAnchors) {
-    pen.calculative.worldAnchors = [];
+  if (!pen.calculative!.worldAnchors) {
+    pen.calculative!.worldAnchors = [];
   }
 
   if (mousedwon) {
-    if (pen.calculative.activeAnchor) {
-      pen.calculative.activeAnchor.next = {
+    if (pen.calculative!.activeAnchor) {
+      pen.calculative!.activeAnchor.next = {
         penId: pen.id,
         x: mousedwon.x,
         y: mousedwon.y,
       };
       if (
         distance(
-          pen.calculative.activeAnchor.next,
-          pen.calculative.activeAnchor
+          pen.calculative!.activeAnchor.next,
+          pen.calculative!.activeAnchor
         ) < 5
       ) {
-        pen.calculative.activeAnchor.next = undefined;
+        pen.calculative!.activeAnchor.next = undefined;
       } else {
-        pen.calculative.activeAnchor.prev = {
-          ...pen.calculative.activeAnchor.next,
+        pen.calculative!.activeAnchor.prev = {
+          ...pen.calculative!.activeAnchor.next,
         };
         rotatePoint(
-          pen.calculative.activeAnchor.prev,
+          pen.calculative!.activeAnchor.prev,
           180,
-          pen.calculative.activeAnchor
+          pen.calculative!.activeAnchor
         );
       }
     }
   } else {
-    const from = pen.calculative.worldAnchors[0];
+    const from = pen.calculative!.worldAnchors[0];
     if (!from.next) {
       const fromFace = facePen(from, store.pens[from.connectTo]);
       calcCurveCP(from, fromFace, 50);
@@ -43,7 +43,7 @@ export function curve(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     }
 
     const to =
-      pen.calculative.worldAnchors[pen.calculative.worldAnchors.length - 1];
+      pen.calculative!.worldAnchors[pen.calculative!.worldAnchors.length - 1];
     if (to && to !== from && !to.prev) {
       const toFace = facePen(to, store.pens[to.connectTo]);
       calcCurveCP(to, toFace, -50);
@@ -155,10 +155,10 @@ function lerp(pt1: Point, pt2: Point, t: number) {
 }
 
 export function getSplitAnchor(pen: Pen, pt: Point, index: number) {
-  let from = pen.calculative.worldAnchors[index];
-  let to = pen.calculative.worldAnchors[index + 1];
+  let from = pen.calculative!.worldAnchors[index];
+  let to = pen.calculative!.worldAnchors[index + 1];
   if(!to && pen.close){
-    to = pen.calculative.worldAnchors[0];
+    to = pen.calculative!.worldAnchors[0];
   }
   const t = pt.step;
   let anchor: Point;
@@ -206,15 +206,15 @@ export function getSplitAnchor(pen: Pen, pt: Point, index: number) {
 }
 
 export function mind(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
-  if (!pen.calculative.worldAnchors) {
-    pen.calculative.worldAnchors = [];
+  if (!pen.calculative!.worldAnchors) {
+    pen.calculative!.worldAnchors = [];
   }
 
-  if (pen.calculative.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors.length < 2) {
     return;
   }
 
-  let from = pen.calculative.activeAnchor;
+  let from = pen.calculative!.activeAnchor;
   let to = mousedwon || getToAnchor(pen);
   if (!from || !to) {
     return;

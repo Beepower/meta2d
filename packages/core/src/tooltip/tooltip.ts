@@ -153,26 +153,20 @@ export class Tooltip {
 
     this.setText(pen);
     const elemRect = this.box.getBoundingClientRect();
-    const rect = pen.calculative.worldRect;
-    let x = pen.calculative.canvas.store.data.x + pos.x - elemRect.width / 2;
-    let y = pen.calculative.canvas.store.data.y + pos.y - elemRect.height;
+    const rect = pen.calculative!.worldRect!;
+    const data = pen.calculative!.canvas!.store.data;
+    let x = data.x + pos.x - elemRect.width / 2;
+    let y = data.y + pos.y - elemRect.height;
     if (!pen.type) {
-      x =
-        pen.calculative.canvas.store.data.x +
-        rect.x -
-        (elemRect.width - rect.width) / 2;
-      y =
-        pen.calculative.canvas.store.data.y +
-        rect.ey -
-        elemRect.height -
-        rect.height;
+      x = data.x + (rect.x ?? 0) - (elemRect.width - (rect.width ?? 0)) / 2;
+      y = data.y + (rect.ey ?? 0) - elemRect.height - (rect.height ?? 0);
     }
 
     if (y > 0) {
       this.arrowUp.style.borderBottomColor = 'transparent';
       this.arrowDown.style.borderTopColor = '#777777';
     } else {
-      y += elemRect.height + rect.height + 5;
+      y += elemRect.height + (rect.height ?? 0) + 5;
       this.arrowUp.style.borderBottomColor = '#777777';
       this.arrowDown.style.borderTopColor = 'transparent';
     }
@@ -184,7 +178,7 @@ export class Tooltip {
   }
 
   hide() {
-    this.currentPen = null;
+    this.currentPen = null as any;
     this.x = -9999;
     this.box.style.left = '-9999px';
   }

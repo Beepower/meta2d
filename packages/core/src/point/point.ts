@@ -80,26 +80,27 @@ export function rotatePoint(pt: Point, angle: number, center: Point) {
 
 export function hitPoint(pt: Point, target: Point, radius = 5, pen?: Pen) {
   if (target.type === PointType.Line) {
-    let _rotate = pen.rotate;
+    if (!pen) return false;
+    let _rotate = pen.rotate ?? 0;
     if (pen.flipX) {
       _rotate *= -1;
     }
     if (pen.flipY) {
       _rotate *= -1;
     }
-    let rotate = target.rotate + _rotate;
+    let rotate = (target.rotate ?? 0) + _rotate;
     if (pen.flipX) {
       rotate *= -1;
     }
     if (pen.flipY) {
       rotate *= -1;
     }
+    const targetLen = target.length ?? 0;
+    const scale = pen.calculative!.canvas!.store.data.scale;
     return pointInRect(pt, {
-      x:
-        target.x -
-        (target.length * pen.calculative.canvas.store.data.scale) / 2,
+      x: target.x - (targetLen * scale) / 2,
       y: target.y - radius,
-      width: target.length * pen.calculative.canvas.store.data.scale,
+      width: targetLen * scale,
       height: radius * 2,
       rotate: rotate,
     });
@@ -209,21 +210,21 @@ export function getDistance(form: Point, to: Point, store: Meta2dStore) {
 
   if (to.rotate === 0) {
     if (form.x < to.x) {
-      if (!store.pens[to.penId].flipX) {
+      if (!store.pens[to.penId!].flipX) {
         dis *= -1;
       }
     } else {
-      if (store.pens[to.penId].flipX) {
+      if (store.pens[to.penId!].flipX) {
         dis *= -1;
       }
     }
   } else {
     if (form.y < to.y) {
-      if (!store.pens[to.penId].flipY) {
+      if (!store.pens[to.penId!].flipY) {
         dis *= -1;
       }
     } else {
-      if (store.pens[to.penId].flipY) {
+      if (store.pens[to.penId!].flipY) {
         dis *= -1;
       }
     }

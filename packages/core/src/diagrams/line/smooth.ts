@@ -2,7 +2,8 @@ import { Point, PrevNextType } from '../../point';
 
 export function simplify(points: Point[], length: number, start: number, end: number) {
   const newPoints: Point[] = [];
-  let maxDist, index, xx, yy, dx, dy, ddx, ddy, p1, p2, p, t, dist, dist1;
+  let maxDist = 0, index = 0, xx = 0, yy = 0, dx = 0, dy = 0, ddx = 0, ddy = 0;
+  let p1: Point, p2: Point, p: Point, t = 0, dist = 0, dist1 = 0;
   p1 = points[start];
   p2 = points[end];
   xx = p1.x;
@@ -61,7 +62,7 @@ export function smoothLine(points: Point[], cornerThres = 0.8, match = false) {
   }
 
   // adds bezier control points at points if lines have angle less than thres
-  let p1: any, p2: any, p3: any, dist1: number, dist2: number, x: number, y: number, endP: any, len: number, angle: number, newPoints: any[], aLen: number, nx1: number, nx2: number, ny1: number, ny2: number;
+  let p1: any = null, p2: any = null, p3: any = null, dist1 = 0, dist2 = 0, x = 0, y = 0, endP: any = null, len = 0, angle = 0, newPoints: any[] = [], aLen = 0, nx1 = 0, nx2 = 0, ny1 = 0, ny2 = 0;
   const dot = (x: number, y: number, xx: number, yy: number) => {
     dist1 = Math.sqrt(x * x + y * y);
     if (dist1 > 0) {

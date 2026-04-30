@@ -24,7 +24,7 @@ export class MagnifierCanvas {
     this.canvas.style.pointerEvents = 'none';
   }
 
-  resize(w?: number, h?: number) {
+  resize(w = 0, h = 0) {
     this.canvas.style.width = w + 'px';
     this.canvas.style.height = h + 'px';
 
@@ -38,14 +38,14 @@ export class MagnifierCanvas {
     this.offscreen.height = h;
 
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.offscreen.getContext('2d').textBaseline = 'middle';
+    this.offscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.domOffscreen.width = w;
     this.domOffscreen.height = h;
-    this.domOffscreen.getContext('2d').scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.domOffscreen.getContext('2d').textBaseline = 'middle';
+    this.domOffscreen.getContext('2d')!.scale(this.store.dpiRatio, this.store.dpiRatio);
+    this.domOffscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.magnifierScreen.width = this.magnifierSize + 5;
     this.magnifierScreen.height = this.magnifierSize + 5;
@@ -81,10 +81,10 @@ export class MagnifierCanvas {
     ctx.scale(2, 2);
     const pt = {
       x:
-        (this.parentCanvas.mousePos.x + this.store.data.x) *
+        (this.parentCanvas.mousePos!.x + this.store.data.x) *
         this.store.dpiRatio,
       y:
-        (this.parentCanvas.mousePos.y + this.store.data.y) *
+        (this.parentCanvas.mousePos!.y + this.store.data.y) *
         this.store.dpiRatio,
     };
     const drawOffscreens = [
@@ -124,7 +124,7 @@ export class MagnifierCanvas {
     ctx.stroke();
     ctx.restore();
 
-    const offscreenCtx = this.offscreen.getContext('2d');
+    const offscreenCtx = this.offscreen.getContext('2d')!;
     offscreenCtx.drawImage(
       this.magnifierScreen,
       0,
@@ -139,15 +139,15 @@ export class MagnifierCanvas {
   }
 
   updateDomOffscreen(){
-    const domCtx =  this.domOffscreen.getContext('2d');
+    const domCtx =  this.domOffscreen.getContext('2d')!;
     domCtx.clearRect(0, 0, this.domOffscreen.width, this.domOffscreen.height);
     for (const pen of this.store.data.pens) {
       if(pen.externElement||pen.name==='gif'){
-        if(pen.calculative.img){
+        if(pen.calculative!.img){
           domCtx.save();
           domCtx.translate(this.store.data.x, this.store.data.y);
-          const { x, y, width, height } = pen.calculative.worldRect;
-          domCtx.drawImage(pen.calculative.img as HTMLImageElement, x, y, width, height);
+          const { x = 0, y = 0, width = 0, height = 0 } = pen.calculative!.worldRect!;
+          domCtx.drawImage(pen.calculative!.img as HTMLImageElement, x, y, width, height);
           domCtx.restore();
         }
       }
@@ -156,10 +156,10 @@ export class MagnifierCanvas {
 
   render() {
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderMagnifier();
-    const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext('2d')!;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     ctx.drawImage(this.offscreen, 0, 0, this.canvas.width, this.canvas.height);
   }

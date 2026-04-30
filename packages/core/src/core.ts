@@ -1300,7 +1300,7 @@ export class Meta2d {
 
       //无效连线 单个锚点连线
       if(pen.name==='line'){
-        if(pen.anchors.length < 2){
+        if(pen.anchors!.length < 2){
           dirtyPens.push(pen);
         }
       }
@@ -5130,11 +5130,11 @@ export class Meta2d {
           pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
           pen.calculative!.worldRect!.width = worldRect.width + wGap;
           pen.calculative!.worldRect!.ex = worldRect.ex + wGap;
-          pen.operationalRect.x =
-            (pen.operationalRect.x * bfW) / pen.calculative!.worldRect!.width;
-          pen.operationalRect.width =
+          pen.operationalRect!.x =
+            (pen.operationalRect!.x * bfW) / pen.calculative!.worldRect!.width;
+          pen.operationalRect!.width =
             (pen.calculative!.worldRect!.width -
-              (1 - pen.operationalRect.width) * bfW) /
+              (1 - pen.operationalRect!.width) * bfW) /
             pen.calculative!.worldRect!.width;
           pen.onBeforeValue?.(pen, {
             operationalRect: pen.operationalRect,
@@ -5247,11 +5247,11 @@ export class Meta2d {
           pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
           pen.calculative!.worldRect!.height = worldRect.height + hGap;
           pen.calculative!.worldRect!.ey = worldRect.ey + hGap;
-          pen.operationalRect.y =
-            (pen.operationalRect.y * bfH) / pen.calculative!.worldRect!.width;
-          pen.operationalRect.height =
+          pen.operationalRect!.y =
+            (pen.operationalRect!.y * bfH) / pen.calculative!.worldRect!.width;
+          pen.operationalRect!.height =
             (pen.calculative!.worldRect!.height -
-              (1 - pen.operationalRect.height) * bfH) /
+              (1 - pen.operationalRect!.height) * bfH) /
             pen.calculative!.worldRect!.height;
           pen.onBeforeValue?.(pen, {
             operationalRect: pen.operationalRect,
@@ -5325,7 +5325,7 @@ export class Meta2d {
   trimPens() {
     //去除空连线
     let pens = this.store.data.pens.filter(
-      (pen) => pen.name === 'line' && pen.anchors.length < 2
+      (pen) => pen.name === 'line' && pen.anchors!.length < 2
     );
     this.delete(pens);
   }
@@ -6567,17 +6567,17 @@ export class Meta2d {
     }
     if (pen.type === PenType.Line) {
       if (index < 0) {
-        index = pen.anchors.length + 1 + index;
+        index = pen.anchors!.length + 1 + index;
       }
-      if (index > pen.anchors.length) {
-        index = pen.anchors.length;
+      if (index > pen.anchors!.length) {
+        index = pen.anchors!.length;
       }
       if (index < 0) {
         index = 0;
       }
       if (
         (index == 0 && pen.anchors[0].connectTo) ||
-        (index == pen.anchors.length && pen.anchors[index - 1].connectTo)
+        (index == pen.anchors!.length && pen.anchors[index - 1].connectTo)
       ) {
         console.warn('端点存在连接关系');
         return;
@@ -6640,14 +6640,14 @@ export class Meta2d {
     if (pen.type === PenType.Line) {
       //Line
       pen.calculative!.worldAnchors!.splice(index, 0, _worldAnchor);
-      pen.anchors.splice(index, 0, _anchor);
+      pen.anchors!.splice(index, 0, _anchor);
       this.canvas.updateLines(pen);
       this.canvas.initLineRect(pen);
       this.render();
     } else {
       //Node
       pen.calculative!.worldAnchors!.push(_worldAnchor);
-      pen.anchors.push(_anchor);
+      pen.anchors!.push(_anchor);
     }
   }
   /**

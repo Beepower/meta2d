@@ -3022,7 +3022,7 @@ export function pushPenAnchor(pen: Pen, pt: Point) {
       y:
         (pt.y - pen.calculative!.worldRect!.y) / pen.calculative!.worldRect!.height,
     };
-    pen.anchors.push(anchor);
+    pen.anchors!.push(anchor);
   }
 
   return worldAnchor;
@@ -3038,7 +3038,7 @@ export function addLineAnchor(pen: Pen, pt: Point, index: number) {
 
   const worldAnchor = getSplitAnchor(pen, pt, index);
   pen.calculative!.worldAnchors!.splice(index + 1, 0, worldAnchor);
-  pen.anchors.splice(
+  pen.anchors!.splice(
     index + 1,
     0,
     calcRelativePoint(worldAnchor, pen.calculative!.worldRect)
@@ -3056,9 +3056,9 @@ export function removePenAnchor(pen: Pen, anchor: Point) {
     pen.calculative!.worldAnchors!.splice(i, 1);
   }
 
-  i = pen.anchors.findIndex((a) => a.id === anchor.id);
+  i = pen.anchors!.findIndex((a) => a.id === anchor.id);
   if (i > -1) {
-    pen.anchors.splice(i, 1);
+    pen.anchors!.splice(i, 1);
   }
 }
 
@@ -3067,7 +3067,7 @@ export function facePen(pt: Point, pen?: Pen) {
     return Direction.None;
   }
   if (pt.anchorId) {
-    let anchor = pen.anchors.filter((_anchor) => _anchor.id === pt.anchorId);
+    let anchor = pen.anchors!.filter((_anchor) => _anchor.id === pt.anchorId);
     if (anchor.length) {
       if (anchor[0].direction > -1) {
         return anchor[0].direction;
@@ -3096,7 +3096,7 @@ export function translateLine(pen: Pen, x: number, y: number) {
   pen.y += y;
 
   if (pen.anchors) {
-    pen.anchors.forEach((a) => {
+    pen.anchors!.forEach((a) => {
       translatePoint(a, x, y);
     });
   }
@@ -3113,7 +3113,7 @@ export function deleteTempAnchor(pen: Pen) {
     let to: Point = getToAnchor(pen);
 
     // 第一次画线
-    if (!pen.anchors || !pen.anchors.length) {
+    if (!pen.anchors || !pen.anchors!.length) {
       while (
         pen.calculative!.worldAnchors!.length &&
         to !== pen.calculative!.activeAnchor

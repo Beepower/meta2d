@@ -34,7 +34,7 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     from = to;
     to = getFromAnchor(pen);
   } else if (
-    (!pen.anchors || !pen.anchors.length) &&
+    (!pen.anchors || !pen.anchors!.length) &&
     from !== pen.calculative!.activeAnchor
   ) {
     from = pen.calculative!.activeAnchor;

@@ -13,9 +13,9 @@ export function mindNode(pen: Pen, ctx?: CanvasRenderingContext2D) {
 
 function resize(pen: Pen) {
   // 过滤出非默认锚点，即自定义锚点
-  const manualPoints = pen.anchors.filter((point: Point) => point.flag !== 1);
+  const manualPoints = pen.anchors!.filter((point: Point) => point.flag !== 1);
   mindNodeAnchors(pen);
-  pen.anchors = pen.anchors.concat(...manualPoints);
+  pen.anchors = pen.anchors!.concat(...manualPoints);
 }
 
 function value(pen: Pen) {

@@ -148,23 +148,23 @@ function beforeValue(pen: Pen, value: any) {
       } else {
         //有更新值
         pen.calculative!.singleton.div.children[1].style.height =
-          pen.operationalRect.y * 100 + '%';
+          pen.operationalRect!.y * 100 + '%';
         pen.calculative!.singleton.div.children[1].style.left =
-          pen.operationalRect.x * 100 + '%';
+          pen.operationalRect!.x * 100 + '%';
         pen.calculative!.singleton.div.children[1].style.width =
-          pen.operationalRect.width * 100 + '%';
+          pen.operationalRect!.width * 100 + '%';
         pen.calculative!.singleton.div.children[2].style.width =
-          (1 - pen.operationalRect.x - pen.operationalRect.width) * 100 + '%';
+          (1 - pen.operationalRect!.x - pen.operationalRect!.width) * 100 + '%';
 
         pen.calculative!.singleton.div.children[3].style.height =
-          (1 - pen.operationalRect.y - pen.operationalRect.height) * 100 + '%';
+          (1 - pen.operationalRect!.y - pen.operationalRect!.height) * 100 + '%';
         pen.calculative!.singleton.div.children[3].style.left =
-          pen.operationalRect.x * 100 + '%';
+          pen.operationalRect!.x * 100 + '%';
         pen.calculative!.singleton.div.children[3].style.width =
-          pen.operationalRect.width * 100 + '%';
+          pen.operationalRect!.width * 100 + '%';
 
         pen.calculative!.singleton.div.children[4].style.width =
-          pen.operationalRect.x * 100 + '%';
+          pen.operationalRect!.x * 100 + '%';
       }
     }
   }
@@ -191,14 +191,14 @@ function mouseMove(pen: Pen, e: Point) {
   if (initOperationalRect(pen.operationalRect)) {
     if (
       pen.calculative!.zIndex < 5 &&
-      e.x > pen.x + pen.width * pen.operationalRect.x &&
+      e.x > pen.x + pen.width * pen.operationalRect!.x &&
       e.x <
         pen.x +
-          pen.width * (pen.operationalRect.x + pen.operationalRect.width) &&
-      e.y > pen.y + pen.height * pen.operationalRect.y &&
+          pen.width * (pen.operationalRect!.x + pen.operationalRect!.width) &&
+      e.y > pen.y + pen.height * pen.operationalRect!.y &&
       e.y <
         pen.y +
-          pen.height * (pen.operationalRect.y + pen.operationalRect.height)
+          pen.height * (pen.operationalRect!.y + pen.operationalRect!.height)
     ) {
       if (pen.calculative!.singleton.div) {
         let children: HTMLElement[] =
@@ -248,10 +248,10 @@ function generateAroundDiv(pen: Pen) {
   const isLinux = navigator.userAgent.indexOf('Linux') > -1; //Kylin OS会闪屏
   const top = document.createElement('div');
   top.style.position = 'absolute';
-  top.style.left = pen.operationalRect.x * 100 + '%';
+  top.style.left = pen.operationalRect!.x * 100 + '%';
   top.style.top = '0px';
-  top.style.width = pen.operationalRect.width * 100 + '%';
-  top.style.height = pen.operationalRect.y * 100 + '%';
+  top.style.width = pen.operationalRect!.width * 100 + '%';
+  top.style.height = pen.operationalRect!.y * 100 + '%';
   if(!isLinux && pen.blur){
     (top.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
@@ -263,7 +263,7 @@ function generateAroundDiv(pen: Pen) {
   right.style.right = '0px';
   right.style.top = '0px';
   right.style.width =
-    (1 - pen.operationalRect.x - pen.operationalRect.width) * 100 + '%';
+    (1 - pen.operationalRect!.x - pen.operationalRect!.width) * 100 + '%';
   right.style.height = '100%';
   if(!isLinux && pen.blur){
     (right.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
@@ -273,11 +273,11 @@ function generateAroundDiv(pen: Pen) {
 
   const bottom = document.createElement('div');
   bottom.style.position = 'absolute';
-  bottom.style.left = pen.operationalRect.x * 100 + '%';
+  bottom.style.left = pen.operationalRect!.x * 100 + '%';
   bottom.style.bottom = '0px';
-  bottom.style.width = pen.operationalRect.width * 100 + '%';
+  bottom.style.width = pen.operationalRect!.width * 100 + '%';
   bottom.style.height =
-    (1 - pen.operationalRect.y - pen.operationalRect.height) * 100 + '%';
+    (1 - pen.operationalRect!.y - pen.operationalRect!.height) * 100 + '%';
   if(!isLinux && pen.blur){
     (bottom.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
@@ -288,7 +288,7 @@ function generateAroundDiv(pen: Pen) {
   left.style.position = 'absolute';
   left.style.left = '0px';
   left.style.top = '0px';
-  left.style.width = pen.operationalRect.x * 100 + '%';
+  left.style.width = pen.operationalRect!.x * 100 + '%';
   left.style.height = '100%';
   if(!isLinux && pen.blur){
     (left.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;

@@ -7048,16 +7048,16 @@ export class Canvas {
     let precCopyPens = deepClone(pens, true);
     if(!precCopyPens){
       precCopyPens = deepClone(this.store.active, true);
-      if(precCopyPens.length === 1&& precCopyPens[0].parentId){
+      if(precCopyPens!.length === 1&& precCopyPens![0]!.parentId){
         //复制子图元
-        precCopyPens[0].parentId = undefined;
-        precCopyPens[0].x = precCopyPens[0].calculative.worldRect.x;
-        precCopyPens[0].y = precCopyPens[0].calculative.worldRect.y;
-        precCopyPens[0].width = precCopyPens[0].calculative.worldRect.width;
-        precCopyPens[0].height = precCopyPens[0].calculative.worldRect.height;
+        precCopyPens![0]!.parentId = undefined;
+        precCopyPens![0]!.x = precCopyPens![0]!.calculative!.worldRect!.x;
+        precCopyPens![0]!.y = precCopyPens![0]!.calculative!.worldRect!.y;
+        precCopyPens![0]!.width = precCopyPens![0]!.calculative!.worldRect!.width;
+        precCopyPens![0]!.height = precCopyPens![0]!.calculative!.worldRect!.height;
       }
     }
-    let copyPens: Pen[] = this.getAllByPens(precCopyPens);
+    let copyPens: Pen[] = this.getAllByPens(precCopyPens!);
     //根据pens顺序复制
     copyPens.forEach((activePen: any) => {
       activePen.copyIndex = this.store.data.pens.findIndex(
@@ -7068,7 +7068,7 @@ export class Canvas {
       }
       if(activePen.pathId){
         //复制svgpath
-        activePen.path = this.store.data.paths[activePen.pathId];
+        activePen.path = this.store.data.paths![activePen.pathId];
       }
     });
     copyPens.sort((a: any, b: any) => {
@@ -7113,8 +7113,8 @@ export class Canvas {
   }
 
   async paste() {
-    let clipboardText: string;
-    let clipboard: Meta2dClipboard;
+    let clipboardText: string | null = null;
+    let clipboard: Meta2dClipboard | undefined;
 
     if (
       navigator.clipboard &&
@@ -7122,7 +7122,7 @@ export class Canvas {
       !navigator.userAgent.includes('Firefox')
     ) {
       try {
-        clipboardText = await navigator.clipboard?.readText();
+        clipboardText = (await navigator.clipboard?.readText()) ?? null;
       } catch {
         clipboardText = localStorage.getItem(this.clipboardName);
       }
@@ -7132,7 +7132,7 @@ export class Canvas {
     if (clipboardText) {
       try {
         clipboard = JSON.parse(clipboardText);
-      } catch (e) {
+      } catch (e: any) {
         console.warn('剪切板数据不是json', e.message);
         return;
       }
@@ -7145,7 +7145,7 @@ export class Canvas {
 
     if (
       this.beforeAddPens &&
-      (await this.beforeAddPens(clipboard.pens)) != true
+      (await this.beforeAddPens(clipboard!.pens)) != true
     ) {
       return;
     }
@@ -7153,56 +7153,56 @@ export class Canvas {
     let offset: any;
     let pos: any;
     if (this.store.clipboard) {
-      offset = this.store.clipboard.offset + 10;
+      offset = this.store.clipboard.offset! + 10;
       pos = this.store.clipboard.pos;
     }
     this.store.clipboard = deepClone(clipboard);
 
     const curPage = sessionStorage.getItem('page');
     const scale = this.store.data.scale;
-    if(this.store.clipboard.mousePos&&(Math.abs(this.store.clipboard.mousePos.x-this.mousePos.x)>100*scale||Math.abs(this.store.clipboard.mousePos.y-this.mousePos.y)>100*scale)){
-      let _x = -this.store.clipboard.initRect.width/this.store.clipboard.scale/10/(scale);
-      let _y = -this.store.clipboard.initRect.height/this.store.clipboard.scale/10/(scale);
-      let offsetX = (scale-this.store.clipboard.scale)*this.store.clipboard.initRect.width/2+_x;
-      let offsetY = (scale-this.store.clipboard.scale)*this.store.clipboard.initRect.height/2+_y;
-      if(scale<this.store.clipboard.scale){
+    if(this.store.clipboard!.mousePos&&(Math.abs(this.store.clipboard!.mousePos.x!-this.mousePos.x)>100*scale||Math.abs(this.store.clipboard!.mousePos.y!-this.mousePos.y)>100*scale)){
+      let _x = -this.store.clipboard!.initRect!.width!/this.store.clipboard!.scale!/10/(scale);
+      let _y = -this.store.clipboard!.initRect!.height!/this.store.clipboard!.scale!/10/(scale);
+      let offsetX = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.width!/2+_x;
+      let offsetY = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.height!/2+_y;
+      if(scale<this.store.clipboard!.scale!){
         // 减小粘贴偏移量
-        offsetX = (scale-this.store.clipboard.scale)/((this.store.clipboard.scale-scale)*100)*this.store.clipboard.initRect.width/2+_x;
-        offsetY = (scale-this.store.clipboard.scale)/((this.store.clipboard.scale-scale)*100)*this.store.clipboard.initRect.height/2+_y;
+        offsetX = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.width!/2+_x;
+        offsetY = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.height!/2+_y;
       }
-      if(this.store.clipboard.pens.length>1){
-        offsetX = (scale-1)*this.store.clipboard.initRect.width/this.store.clipboard.scale/2;
-        offsetY = (scale-1)*this.store.clipboard.initRect.height/this.store.clipboard.scale/2;
+      if(this.store.clipboard!.pens!.length>1){
+        offsetX = (scale-1)*this.store.clipboard!.initRect!.width!/this.store.clipboard!.scale!/2;
+        offsetY = (scale-1)*this.store.clipboard!.initRect!.height!/this.store.clipboard!.scale!/2;
       }
-      this.store.clipboard.pos = { x: this.mousePos.x-offsetX, y: this.mousePos.y-offsetY };
-      this.store.clipboard.offset = 0;
-    }else if (curPage !== clipboard.page) {
-      this.store.clipboard.pos = { x: this.mousePos.x, y: this.mousePos.y };
-      this.store.clipboard.offset = 0;
+      this.store.clipboard!.pos = { x: this.mousePos.x-offsetX, y: this.mousePos.y-offsetY };
+      this.store.clipboard!.offset = 0;
+    }else if (curPage !== clipboard!.page) {
+      this.store.clipboard!.pos = { x: this.mousePos.x, y: this.mousePos.y };
+      this.store.clipboard!.offset = 0;
     } else if (!this.pasteOffset) {
-      this.store.clipboard.offset = 0;
+      this.store.clipboard!.offset = 0;
       this.pasteOffset = true;
     } else {
-      offset && (this.store.clipboard.offset = offset);
-      pos && (this.store.clipboard.pos = pos);
+      offset && (this.store.clipboard!.offset = offset);
+      pos && (this.store.clipboard!.pos = pos);
     }
 
-    const rootPens = this.store.clipboard.pens.filter((pen) => !pen.parentId);
+    const rootPens = this.store.clipboard!.pens!.filter((pen) => !pen.parentId);
     for (const pen of rootPens) {
       this.pastePen(pen, undefined);
     }
 
     if(!this.keyOptions?.F){
-      this.store.clipboard.pens.forEach((pen: Pen) => {
+      this.store.clipboard!.pens!.forEach((pen: Pen) => {
         delete pen.copyIndex;
       });
     }
-    sessionStorage.setItem('page', clipboard.page);
+    sessionStorage.setItem('page', clipboard!.page!);
     this.active(rootPens);
-    this.pushHistory({ type: EditType.Add, pens: this.store.clipboard.pens });
+    this.pushHistory({ type: EditType.Add, pens: this.store.clipboard!.pens });
     this.render();
-    this.store.emitter.emit('add', this.store.clipboard.pens);
-    this.store.emitter.emit('paste', this.store.clipboard.pens);
+    this.store.emitter.emit('add', this.store.clipboard!.pens);
+    this.store.emitter.emit('paste', this.store.clipboard!.pens);
   }
 
   /**
@@ -7233,23 +7233,23 @@ export class Canvas {
     return retPens
   }
 
-  setFollowers(pens: Pen[] = this.store.active){
+  setFollowers(pens: Pen[] = this.store.active!){
     if (!pens) {
       return;
     }
     if(pens.length < 2){
-      pens[0].followers = [];
+      pens[0]!.followers = [];
     }else{
       //以最后一个
-      let ids = pens.map((pen)=>pen.id);
+      let ids = pens.map((pen)=>pen.id!);
       ids.pop();
-      const lastPen = pens[pens.length-1];
+      const lastPen = pens[pens.length-1]!;
       if(!lastPen.followers){
         lastPen.followers = ids;
       }else{
         ids.forEach((id)=>{
-          if(!lastPen.followers.includes(id)){
-            lastPen.followers.push(id);
+          if(!lastPen.followers!.includes(id)){
+            lastPen.followers!.push(id);
           }
         });
       }
@@ -7270,9 +7270,9 @@ export class Canvas {
     pen.parentId = parentId;
 
     if (pen.type === PenType.Line) {
-      this.changeNodeConnectedLine(oldId, pen, this.store.clipboard.pens);
+      this.changeNodeConnectedLine(oldId!, pen, this.store.clipboard!.pens!);
     } else {
-      this.changeLineAnchors(oldId, pen, this.store.clipboard.pens);
+      this.changeLineAnchors(oldId!, pen, this.store.clipboard!.pens!);
     }
 
     if (!pen.parentId) {

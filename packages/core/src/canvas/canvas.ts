@@ -3200,20 +3200,20 @@ export class Canvas {
   };
 
   inactive(drawing?: boolean) {
-    if (!this.store.active.length) {
+    if (!this.store.active!.length) {
       return;
     }
-    this.initTemplateCanvas(this.store.active);
-    this.store.active.forEach((pen) => {
+    this.initTemplateCanvas(this.store.active!);
+    this.store.active!.forEach((pen) => {
       pen.calculative!.active = undefined;
       pen.calculative!.activeAnchor = undefined;
       pen.calculative!.hover = false;
       setChildrenActive(pen, false);
     });
-    const activePens = [...this.store.active];
+    const activePens = [...this.store.active!];
     this.store.active = [];
-    this.activeRect = undefined;
-    this.sizeCPs = undefined;
+    this.activeRect = undefined as any;
+    this.sizeCPs = undefined as any;
     this.store.activeAnchor = undefined;
     this.patchFlags = true;
     !drawing && this.store.emitter.emit('inactive', activePens);
@@ -3234,7 +3234,7 @@ export class Canvas {
         setChildrenActive(pen);
     });
     this.store.active.push(...pens);
-    this.activeRect = undefined;
+    this.activeRect = undefined as any;
     this.calcActiveRect();
     this.initTemplateCanvas(pens);
     this.patchFlags = true;
@@ -3242,7 +3242,7 @@ export class Canvas {
   }
 
   getSizeCPs() {
-    this.sizeCPs = rectToPoints(this.activeRect);
+    this.sizeCPs = rectToPoints(this.activeRect!) as Point[];
     // 正上 正右 正下 正左
     const pts = [
       { x: 0.5, y: 0 },
@@ -3250,13 +3250,13 @@ export class Canvas {
       { x: 0.5, y: 1 },
       { x: 0, y: 0.5 },
     ] as const;
-    const { x, y, width, height, rotate, center } = this.activeRect;
+    const { x, y, width, height, rotate, center } = this.activeRect!;
     pts.forEach((pt) => {
       const p = {
-        x: pt.x * width + x,
-        y: pt.y * height + y,
+        x: pt.x * width! + x!,
+        y: pt.y * height! + y!,
       };
-      rotatePoint(p, rotate, center);
+      rotatePoint(p, rotate!, center!);
       this.sizeCPs.push(p);
     });
   }
@@ -3339,8 +3339,8 @@ export class Canvas {
 
   clearHover() {
     this.hoverType = HoverType.None;
-    this.store.hover = null;
-    this.store.hoverAnchor = null;
+    this.store.hover = null as any;
+    this.store.hoverAnchor = null as any;
   }
 
   private getContainerHover = (pt: Point) => {
@@ -3348,10 +3348,10 @@ export class Canvas {
       return;
     }
     // this.store.hoverContainer = undefined;
-    const containerPens:Pen[] = this.store.data.pens.filter((pen)=>pen.container||this.store.options.containerShapes?.includes(pen.name));
+    const containerPens:Pen[] = this.store.data.pens.filter((pen)=>pen.container||this.store.options.containerShapes?.includes(pen.name!));
     if(containerPens.length){
       for(let i=containerPens.length-1;i>=0;--i){
-        const pen = containerPens[i];
+        const pen = containerPens[i]!;
         if (
           pen.visible == false ||
           pen.calculative!.inView == false ||
@@ -3361,7 +3361,7 @@ export class Canvas {
         }
 
         if (
-          pointInRect(pt, pen.calculative!.worldRect)
+          pointInRect(pt, pen.calculative!.worldRect!)
         ) {
           this.store.hoverContainer = pen;
           pen?.onMouseMove?.(pen, pt);
@@ -3383,7 +3383,7 @@ export class Canvas {
             if(this.store.lastHoverContainer !== this.store.hoverContainer){
               this.patchFlags = true;
               const movingPen =
-              this.store.lastHoverContainer.calculative!.canvas.store.pens[this.store.lastHoverContainer.id + movingSuffix];
+              this.store.lastHoverContainer!.calculative!.canvas!.store.pens[this.store.lastHoverContainer!.id! + movingSuffix];
               if (this.store.lastHoverContainer && !movingPen) {
                 this.store.lastHoverContainer.calculative!.containerHover = false;
                 this.store.emitter.emit('leave', this.store.lastHoverContainer);
@@ -3412,7 +3412,7 @@ export class Canvas {
     this.store.pointAt = undefined;
     this.store.pointAtIndex = undefined;
     const activeLine =
-      this.store.active.length === 1 && this.store.active[0].type;
+      this.store.active!.length === 1 && this.store.active![0]!.type;
     if (
       !this.drawingLineName &&
       this.hotkeyType !== HotkeyType.AddAnchor &&
@@ -3420,23 +3420,23 @@ export class Canvas {
       !activeLine &&
       !this.store.data.locked
     ) {
-      const activePensLock = getPensLock(this.store.active);
+      const activePensLock = getPensLock(this.store.active!);
       const activePensDisableRotate =
-        getPensDisableRotate(this.store.active) ||
+        getPensDisableRotate(this.store.active!) ||
         this.store.options.disableRotate;
       const activePensDisableResize =
-        getPensDisableResize(this.store.active) ||
+        getPensDisableResize(this.store.active!) ||
         this.store.options.disableSize;
       if (!activePensLock && !activePensDisableRotate) {
         // BeePower fork (KD-008 PoC): rotate handle at top-LEFT corner, not top-center.
         // Reason: top-center handle visually competes with bbox top edge; top-left
         // is more natural anchor for "rotate this bounding box".
         const rotatePt = {
-          x: this.activeRect.x,
-          y: this.activeRect.y - 30,
+          x: this.activeRect.x!,
+          y: this.activeRect.y! - 30,
         };
         if (this.activeRect.rotate) {
-          rotatePoint(rotatePt, this.activeRect.rotate, this.activeRect.pivot || this.activeRect.center);
+          rotatePoint(rotatePt, this.activeRect.rotate, this.activeRect.pivot || this.activeRect.center!);
         }
         // 旋转控制点
         if (!this.hotkeyType && hitPoint(pt, rotatePt, this.pointSize)) {
@@ -3452,20 +3452,20 @@ export class Canvas {
           const hotKeyIsResize =
             this.hotkeyType === HotkeyType.Resize ||
             (firstFour && !this.hotkeyType);
-          if (hotKeyIsResize && hitPoint(pt, this.sizeCPs[i], this.pointSize)) {
+          if (hotKeyIsResize && hitPoint(pt, this.sizeCPs[i]!, this.pointSize)) {
             let cursors = firstFour ? defaultCursors : rotatedCursors;
             let offset = 0;
-            if (Math.abs((this.activeRect.rotate % 90) - 45) < 25) {
+            if (Math.abs((this.activeRect.rotate! % 90) - 45) < 25) {
               cursors = firstFour ? rotatedCursors : defaultCursors;
               offset =
-                Math.round((this.activeRect.rotate - 45) / 90) +
+                Math.round((this.activeRect.rotate! - 45) / 90) +
                 (firstFour ? 0 : 1);
             } else {
-              offset = Math.round(this.activeRect.rotate / 90);
+              offset = Math.round(this.activeRect.rotate! / 90);
             }
             hoverType = HoverType.Resize;
             this.resizeIndex = i;
-            this.externalElements.style.cursor = cursors[(i + offset) % 4];
+            this.externalElements.style.cursor = cursors[(i + offset) % 4]!;
             break;
           }
         }
@@ -3497,16 +3497,16 @@ export class Canvas {
           getParent(this.store.lastHover, true) || this.store.lastHover,
           false
         );
-        if(this.store.pens[this.store.lastHover.id]){
+        if(this.store.pens[this.store.lastHover.id!]){
           this.store.emitter.emit('leave', this.store.lastHover);
         }
         this.tooltip.hide();
       }
       if (this.store.hover) {
-        this.store.hover.calculative!.hover = true;
-        setHover(getParent(this.store.hover, true) || this.store.hover);
+        (this.store.hover as Pen).calculative!.hover = true;
+        setHover(getParent(this.store.hover, true) || (this.store.hover as Pen));
         this.store.emitter.emit('enter', this.store.hover);
-        this.tooltip.show(this.store.hover, pt);
+        this.tooltip.show(this.store.hover as Pen, pt);
       }
       this.store.lastHover = this.store.hover;
     }
@@ -3527,7 +3527,7 @@ export class Canvas {
   private inPens = (pt: Point, pens: Pen[]): HoverType => {
     let hoverType = HoverType.None;
     outer: for (let i = pens.length - 1; i >= 0; --i) {
-      const pen = pens[i];
+      const pen = pens[i]!;
       if (
         pen.visible == false ||
         pen.calculative!.inView == false ||
@@ -3541,8 +3541,8 @@ export class Canvas {
       const r = getLineR(pen);
       if (
         !pen.calculative!.active &&
-        !pointInSimpleRect(pt, pen.calculative!.worldRect, r) &&
-        !pointInRect(pt, pen.calculative!.worldRect)
+        !pointInSimpleRect(pt, pen.calculative!.worldRect!, r) &&
+        !pointInRect(pt, pen.calculative!.worldRect!)
       ) {
         continue;
       }
@@ -3602,7 +3602,7 @@ export class Canvas {
               this.externalElements.style.cursor = 'move';
             }
           } else {
-            this.externalElements.style.cursor = pen.hoverCursor || this.store.options.hoverCursor;
+            this.externalElements.style.cursor = pen.hoverCursor || this.store.options.hoverCursor!;
           }
           if(pen.calculative!.disabled){
             this.externalElements.style.cursor = 'not-allowed';
@@ -3619,7 +3619,7 @@ export class Canvas {
         if (pen.children) {
           const pens: Pen[] = []; // TODO: 只考虑了一级子
           pen.children.forEach((id) => {
-            this.store.pens[id] && pens.push(this.store.pens[id]);
+            this.store.pens[id] && pens.push(this.store.pens[id]!);
           });
           hoverType = this.inPens(pt, pens);
           if (hoverType) {
@@ -3629,17 +3629,17 @@ export class Canvas {
 
         let isIn = false;
         if (pen.name === 'line') {
-          isIn = pointInSimpleRect(
+          isIn = !!pointInSimpleRect(
             pt,
-            pen.calculative!.worldRect,
+            pen.calculative!.worldRect!,
             pen.lineWidth
           );
         } else {
-          isIn = pointInRect(pt, pen.calculative!.worldRect);
+          isIn = pointInRect(pt, pen.calculative!.worldRect!);
         }
         if (isIn) {
           if(pen.type === PenType.Node && pen.name==='line'){
-            let pIn =  pointInPolygon(pt,pen.calculative!.worldAnchors);
+            let pIn =  pointInPolygon(pt,pen.calculative!.worldAnchors!);
             if(!pIn){
               continue;
             }
@@ -3651,7 +3651,7 @@ export class Canvas {
               this.externalElements.style.cursor = 'move';
             }
           } else {
-            this.externalElements.style.cursor = pen.hoverCursor || this.store.options.hoverCursor;
+            this.externalElements.style.cursor = pen.hoverCursor || this.store.options.hoverCursor!;
           }
           if(pen.calculative!.disabled){
             this.externalElements.style.cursor = 'not-allowed';
@@ -3663,8 +3663,9 @@ export class Canvas {
           this.store.pointAt = pt;
           // 锚点贴边吸附
           if (!(pt as any).ctrlKey) {
-            let { x, y, ex, ey, rotate, center } =
-              this.store.hover.calculative!.worldRect;
+            const _wr = this.store.hover!.calculative!.worldRect!;
+            const x = _wr.x!, y = _wr.y!, ex = _wr.ex!, ey = _wr.ey!;
+            const rotate = _wr.rotate, center = _wr.center;
             if (rotate) {
               const pts: Point[] = [
                 { x, y },
@@ -3673,30 +3674,30 @@ export class Canvas {
                 { x: x, y: ey },
               ];
               pts.forEach((item: Point) => {
-                rotatePoint(item, rotate, center);
+                rotatePoint(item, rotate, center!);
               });
-              let last = pts[pts.length - 1];
+              let last = pts[pts.length - 1]!;
               for (const item of pts) {
-                if (last.y > pt.y !== item.y > pt.y) {
+                if (last.y! > pt.y! !== item.y! > pt.y!) {
                   const tempx =
-                    item.x +
-                    ((pt.y - item.y) * (last.x - item.x)) / (last.y - item.y);
-                  if (Math.abs(tempx - this.store.pointAt.x) < 10) {
-                    this.store.pointAt.x = tempx;
+                    item.x! +
+                    ((pt.y! - item.y!) * (last.x! - item.x!)) / (last.y! - item.y!);
+                  if (Math.abs(tempx - this.store.pointAt!.x!) < 10) {
+                    this.store.pointAt!.x = tempx;
                   }
                 }
                 last = item;
               }
             } else {
-              if (this.store.pointAt.x - 10 < x) {
-                this.store.pointAt.x = x;
-              } else if (this.store.pointAt.x + 10 > ex) {
-                this.store.pointAt.x = ex;
+              if (this.store.pointAt!.x! - 10 < x) {
+                this.store.pointAt!.x = x;
+              } else if (this.store.pointAt!.x! + 10 > ex) {
+                this.store.pointAt!.x = ex;
               }
-              if (this.store.pointAt.y - 10 < y) {
-                this.store.pointAt.y = y;
-              } else if (this.store.pointAt.y + 10 > ey) {
-                this.store.pointAt.y = ey;
+              if (this.store.pointAt!.y! - 10 < y) {
+                this.store.pointAt!.y = y;
+              } else if (this.store.pointAt!.y! + 10 > ey) {
+                this.store.pointAt!.y = ey;
               }
             }
           }

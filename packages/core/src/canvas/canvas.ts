@@ -3713,18 +3713,18 @@ export class Canvas {
     this.store.hover = undefined;
 
     for (let i = this.store.data.pens.length - 1; i >= 0; --i) {
-      const pen = this.store.data.pens[i];
+      const pen = this.store.data.pens[i]!;
       if (
         pen.visible == false ||
         pen.locked === LockState.Disable ||
-        pen === this.store.active[0]
+        pen === this.store.active![0]
       ) {
         continue;
       }
 
       let r = getLineR(pen);
-      r += 2 * this.store.options.anchorRadius;
-      if (!pointInSimpleRect(pt, pen.calculative!.worldRect, r)) {
+      r += 2 * this.store.options.anchorRadius!;
+      if (!pointInSimpleRect(pt, pen.calculative!.worldRect!, r)) {
         continue;
       }
 
@@ -3734,14 +3734,14 @@ export class Canvas {
         if (pen.calculative!.worldAnchors) {
           for (const anchor of pen.calculative!.worldAnchors) {
             if (anchor.twoWay === TwoWay.In) {
-              const to = getToAnchor(this.store.active[0]);
-              if (this.store.activeAnchor.id !== to.id) {
+              const to = getToAnchor(this.store.active![0]!);
+              if (this.store.activeAnchor!.id !== to!.id) {
                 continue;
               }
             }
             if (anchor.twoWay === TwoWay.Out) {
-              const from = getFromAnchor(this.store.active[0]);
-              if (this.store.activeAnchor.id !== from.id) {
+              const from = getFromAnchor(this.store.active![0]!);
+              if (this.store.activeAnchor!.id !== from!.id) {
                 continue;
               }
             }
@@ -3769,8 +3769,8 @@ export class Canvas {
 
   inAnchor(pt: Point, pen: Pen, anchor: Point): HoverType {
     this.store.hoverAnchor = undefined;
-    this.movingAnchor = undefined;
-    if (!anchor || anchor.locked > LockState.DisableEdit) {
+    this.movingAnchor = undefined as any;
+    if (!anchor || anchor.locked! > LockState.DisableEdit) {
       return HoverType.None;
     }
 
@@ -3790,7 +3790,7 @@ export class Canvas {
       const connectPen = this.findOne(anchor.connectTo);
       if (connectPen?.calculative && !connectPen?.calculative.active) {
         pen = connectPen;
-        const connectAnchor = connectPen.calculative!.worldAnchors.find(
+        const connectAnchor = connectPen.calculative!.worldAnchors!.find(
           (item) => item.id === anchor.anchorId
         );
         connectAnchor && (anchor = connectAnchor);
@@ -3801,7 +3801,7 @@ export class Canvas {
       return HoverType.None;
     }
     if (pen.name === 'line' && anchor.connectTo) {
-      let _anchor = this.findOne(anchor.connectTo)?.anchors.find(
+      let _anchor = this.findOne(anchor.connectTo)?.anchors!.find(
         (item) => item.id === anchor.anchorId
       );
       if (_anchor && _anchor.twoWay) {
@@ -3834,10 +3834,10 @@ export class Canvas {
 
       if (pen.type) {
         if (anchor.connectTo && !pen.calculative!.active) {
-          this.store.hover = this.store.pens[anchor.connectTo];
+          this.store.hover = this.store.pens[anchor.connectTo]!;
           if (this.store.hover) {
             this.store.hoverAnchor =
-              this.store.hover.calculative!.worldAnchors.find(
+              this.store.hover.calculative!.worldAnchors!.find(
                 (a) => a.id === anchor.anchorId
               );
             if (!this.store.hoverAnchor) {
@@ -4326,13 +4326,13 @@ export class Canvas {
       pen.id = s8();
     }
     if (
-      Math.abs(this.store.lastScale - this.store.data.scale) < 0.0001 &&
+      Math.abs(this.store.lastScale! - this.store.data.scale) < 0.0001 &&
       this.store.sameTemplate &&
-      this.store.templatePens[pen.id] &&
+      this.store.templatePens![pen.id!] &&
       // pen.template
       pen.canvasLayer === CanvasLayer.CanvasTemplate
     ) {
-      pen = this.store.templatePens[pen.id];
+      pen = this.store.templatePens![pen.id!]!;
       this.store.data.pens.push(pen);
       this.updatePenRect(pen);
       return;
@@ -4343,12 +4343,12 @@ export class Canvas {
     }else{
       this.store.data.pens.push(pen);
     }
-    this.store.pens[pen.id] = pen;
+    this.store.pens[pen.id!] = pen;
     // 集中存储path，避免数据冗余过大
     if (pen.path) {
       !pen.pathId && (pen.pathId = s8());
-      const paths = this.store.data.paths;
-      !paths[pen.pathId] && (paths[pen.pathId] = pen.path);
+      const paths = this.store.data.paths!;
+      !paths[pen.pathId!] && (paths[pen.pathId!] = pen.path);
 
       pen.path = undefined;
     }
@@ -4359,7 +4359,7 @@ export class Canvas {
     }
     const { fontSize, lineHeight } = this.store.options;
     if (!pen.fontSize!) {
-      pen.fontSize! = fontSize >= 0 ? fontSize : 12;
+      pen.fontSize! = fontSize! >= 0 ? fontSize! : 12;
     } else if(pen.fontSize! < 0) {
       pen.fontSize! = 0;
     }
@@ -4391,21 +4391,21 @@ export class Canvas {
     pen.calculative!.image = undefined;
     pen.calculative!.backgroundImage = undefined;
     pen.calculative!.strokeImage = undefined;
-    if (!pen.anchors && globalStore.anchors[pen.name]) {
+    if (!pen.anchors && globalStore.anchors[pen.name!]) {
       if (!pen.anchors) {
         pen.anchors = [];
       }
-      globalStore.anchors[pen.name](pen);
+      globalStore.anchors[pen.name!]!(pen);
     }
     if(!pen.anchors){
-      const anchors = deepClone(this.store.options.defaultAnchors)
-      anchors.forEach((item,index)=>{item.id = `${index}`;item.penId = pen.id});
+      const anchors = deepClone(this.store.options.defaultAnchors)!;
+      anchors.forEach((item: Point,index: number)=>{item.id = `${index}`;item.penId = pen.id});
       pen.anchors = anchors;
     }
     this.updatePenRect(pen);
     if (!pen.anchors && pen.calculative!.worldAnchors) {
       pen.anchors = pen.calculative!.worldAnchors!.map((pt) => {
-        return calcRelativePoint(pt, pen.calculative!.worldRect);
+        return calcRelativePoint(pt, pen.calculative!.worldRect!);
       });
     }
     !pen.rotate && (pen.rotate = 0);
@@ -4424,10 +4424,10 @@ export class Canvas {
       return;
     }
 
-    (this as any)[this.drawingLineName]?.(this.store, this.drawingLine, mouse);
+    (this as any)[this.drawingLineName!]?.(this.store, this.drawingLine, mouse);
     this.store.path2dMap.set(
       this.drawingLine,
-      globalStore.path2dDraws.line(this.drawingLine)
+      globalStore.path2dDraws.line!(this.drawingLine)
     );
     this.patchFlags = true;
   }
@@ -4452,7 +4452,7 @@ export class Canvas {
     }
     const { fontSize, lineHeight } = this.store.options;
     if (!pen.fontSize!) {
-      pen.fontSize! = fontSize >= 0 ? fontSize : 12;
+      pen.fontSize! = fontSize! >= 0 ? fontSize! : 12;
       pen.calculative!.fontSize = pen.fontSize! * this.store.data.scale;
     }
     if (!pen.lineHeight) {
@@ -4466,10 +4466,10 @@ export class Canvas {
     calcInView(pen);
     pen.calculative &&
     (pen.calculative!.gradientAnimatePath = undefined);
-    this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+    this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!]!(pen));
     if (pen.calculative!.worldAnchors) {
       pen.anchors = pen.calculative!.worldAnchors!.map((pt) => {
-        return calcRelativePoint(pt, pen.calculative!.worldRect);
+        return calcRelativePoint(pt, pen.calculative!.worldRect!);
       });
     }
   }
@@ -4594,11 +4594,11 @@ export class Canvas {
       p = getToAnchor(this.pencilLine);
       anchors.push({ id: p!.id, penId: p!.penId, x: p!.x, y: p!.y });
       this.pencilLine.calculative!.worldAnchors = smoothLine(anchors);
-      if (this.pencilLine.calculative!.worldAnchors.length > 1) {
+      if (this.pencilLine.calculative!.worldAnchors!.length > 1) {
         this.pencilLine.calculative!.pencil = false;
         this.store.path2dMap.set(
           this.pencilLine,
-          globalStore.path2dDraws[this.pencilLine.name](this.pencilLine)
+          globalStore.path2dDraws[this.pencilLine.name!]!(this.pencilLine)
         );
         const allowAdd =
           (!this.beforeAddPens ||
@@ -4607,7 +4607,7 @@ export class Canvas {
         if (allowAdd) {
           this.initLineRect(this.pencilLine);
           this.store.data.pens.push(this.pencilLine);
-          this.store.pens[this.pencilLine.id] = this.pencilLine;
+          this.store.pens[this.pencilLine.id!] = this.pencilLine;
           this.store.emitter.emit('add', [this.pencilLine]);
           this.active([this.pencilLine]);
           this.pushHistory({
@@ -4630,15 +4630,15 @@ export class Canvas {
     const img = new Image();
     // request the XML of your svg file
     const request = new XMLHttpRequest();
-    request.open('GET', pen.image, true);
+    request.open('GET', pen.image!, true);
 
     request.onload = () => {
       // once the request returns, parse the response and get the SVG
       const parser = new DOMParser();
       const result = parser.parseFromString(request.responseText, 'text/xml');
-      const inlineSVG = result.getElementsByTagName('svg')[0];
+      const inlineSVG = result.getElementsByTagName('svg')[0]!;
 
-      const { width, height } = pen.calculative!.worldRect;
+      const { width, height } = pen.calculative!.worldRect!;
       // add the attributes Firefox needs. These should be absolute values, not relative
       inlineSVG.setAttribute('width', `${width}px`);
       inlineSVG.setAttribute('height', `${height}px`);
@@ -4659,7 +4659,7 @@ export class Canvas {
         pen.calculative!.img = img;
         pen.calculative!.imgNaturalWidth = img.naturalWidth || pen.iconWidth;
         pen.calculative!.imgNaturalHeight = img.naturalHeight || pen.iconHeight;
-        globalStore.htmlElements[pen.image] = img;
+        globalStore.htmlElements[pen.image!] = img;
         this.imageLoaded();
         // if (pen.template) {
         if (pen.canvasLayer === CanvasLayer.CanvasTemplate) {
@@ -4676,7 +4676,7 @@ export class Canvas {
       pen.calculative!.img = undefined;
       if (pen.image) {
         if (globalStore.htmlElements[pen.image]) {
-          const img = globalStore.htmlElements[pen.image];
+          const img = globalStore.htmlElements[pen.image]!;
           pen.calculative!.img = img;
           pen.calculative!.imgNaturalWidth = img.naturalWidth || pen.iconWidth;
           pen.calculative!.imgNaturalHeight =
@@ -4696,9 +4696,9 @@ export class Canvas {
           } else {
             const img = new Image();
             img.crossOrigin =
-              pen.crossOrigin === 'undefined'
-                ? undefined
-                : pen.crossOrigin || this.store.options.crossOrigin || 'anonymous';
+              (pen.crossOrigin as any) === 'undefined'
+                ? null
+                : (pen.crossOrigin || this.store.options.crossOrigin || 'anonymous') as string;
             img.src = pen.image;
             if (
               this.store.options.cdn &&
@@ -4717,7 +4717,7 @@ export class Canvas {
                 img.naturalWidth || pen.iconWidth;
               pen.calculative!.imgNaturalHeight =
                 img.naturalHeight || pen.iconHeight;
-              globalStore.htmlElements[pen.image] = img;
+              globalStore.htmlElements[pen.image!] = img;
               this.imageLoaded();
               // if (pen.template) {
               if (pen.canvasLayer === CanvasLayer.CanvasTemplate) {
@@ -4734,7 +4734,7 @@ export class Canvas {
       pen.calculative!.backgroundImg = undefined;
       if (pen.backgroundImage) {
         if (globalStore.htmlElements[pen.backgroundImage]) {
-          const img = globalStore.htmlElements[pen.backgroundImage];
+          const img = globalStore.htmlElements[pen.backgroundImage]!;
           pen.calculative!.backgroundImg = img;
         } else {
           const img = new Image();
@@ -4752,7 +4752,7 @@ export class Canvas {
           }
           img.onload = () => {
             pen.calculative!.backgroundImg = img;
-            globalStore.htmlElements[pen.backgroundImage] = img;
+            globalStore.htmlElements[pen.backgroundImage!] = img;
             this.imageLoaded();
             // if (pen.template) {
             if (pen.canvasLayer === CanvasLayer.CanvasTemplate) {
@@ -4768,7 +4768,7 @@ export class Canvas {
       pen.calculative!.strokeImg = undefined;
       if (pen.strokeImage) {
         if (globalStore.htmlElements[pen.strokeImage]) {
-          const img = globalStore.htmlElements[pen.strokeImage];
+          const img = globalStore.htmlElements[pen.strokeImage]!;
           pen.calculative!.strokeImg = img;
         } else {
           const img = new Image();
@@ -4786,7 +4786,7 @@ export class Canvas {
           }
           img.onload = () => {
             pen.calculative!.strokeImg = img;
-            globalStore.htmlElements[pen.strokeImage] = img;
+            globalStore.htmlElements[pen.strokeImage!] = img;
             this.imageLoaded();
             if (
               // pen.template

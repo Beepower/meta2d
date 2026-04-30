@@ -65,14 +65,14 @@ function input(pen: Pen, text: string) {
   pen.text = text;
   pen.calculative!.text = pen.text;
   // this.inputDiv.dataset.penId = undefined;
-  pen.calculative!.canvas.updatePenRect(pen);
+  pen.calculative!.canvas!.updatePenRect(pen);
   // this.patchFlags = true;
   // this.store.emitter.emit('valueUpdate', pen);
 }
 
 function destory(pen: Pen) {
   pen.followers.forEach((id: string) =>{
-    let fpen = pen.calculative!.canvas.store.pens[id];
+    let fpen = pen.calculative!.canvas!.store.pens[id];
     fpen.formKey = undefined;
     fpen.formValue = undefined;
     fpen.formType = undefined;
@@ -83,7 +83,7 @@ function destory(pen: Pen) {
 function move(pen: Pen) {}
 
 function mouseEnter(pen: Pen) {
-  // const activePens = pen.calculative!.canvas.store.active;
+  // const activePens = pen.calculative!.canvas!.store.active;
   // if(activePens&&activePens.length){
   //   activePens.forEach((activePen:Pen)=>{
   //     if(rectInRect(activePen.calculative.worldRect,pen.calculative!.worldRect,true)){
@@ -99,7 +99,7 @@ function mouseEnter(pen: Pen) {
 }
 
 function mouseLeave(pen: Pen) {
-  const activePens = pen.calculative!.canvas.store.active;
+  const activePens = pen.calculative!.canvas!.store.active;
   if (activePens && activePens.length) {
     activePens.forEach((activePen: Pen) => {
       // if(!rectInRect(activePen.calculative.worldRect,pen.calculative!.worldRect,true)){
@@ -114,7 +114,7 @@ function mouseLeave(pen: Pen) {
         let idx = pen.followers.findIndex((id: string) => id === activePen.id);
         if (idx !== -1) {
           const movingPen =
-            pen.calculative!.canvas.store.pens[activePen.id + movingSuffix];
+            pen.calculative!.canvas!.store.pens[activePen.id + movingSuffix];
           if (movingPen && movingPen.calculative) {
             let isIn = rectInRect(
               movingPen.calculative.worldRect,
@@ -136,13 +136,13 @@ function mouseLeave(pen: Pen) {
 }
 
 function mouseUp(pen: Pen) {
-  const activePens = pen.calculative!.canvas.store.active;
+  const activePens = pen.calculative!.canvas!.store.active;
   if (activePens && activePens.length) {
     activePens.forEach((activePen: Pen) => {
       let movingPen =
-        pen.calculative!.canvas.store.pens[activePen.id + movingSuffix];
+        pen.calculative!.canvas!.store.pens[activePen.id + movingSuffix];
       if (!movingPen) {
-        movingPen = pen.calculative!.canvas.store.pens[activePen.id];
+        movingPen = pen.calculative!.canvas!.store.pens[activePen.id];
       }
       if (movingPen && movingPen.calculative) {
         let inRect = deepClone(pen.calculative!.worldRect);
@@ -166,14 +166,14 @@ function mouseUp(pen: Pen) {
 }
 
 function mouseMove(pen: Pen, e: Point) {
-  //  console.log(e,pen.calculative!.canvas.store.active);
+  //  console.log(e,pen.calculative!.canvas!.store.active);
 }
 
 //更新表单数据
 export function updateFormData(pen: any, key?: string) {
   if (pen.formId && pen.formKey && pen.formValue) {
     //表单图元更新值
-    const leaderPen = pen.calculative!.canvas.store.pens[pen.formId];
+    const leaderPen = pen.calculative!.canvas!.store.pens[pen.formId];
     if (leaderPen) {
       if (!leaderPen.formData) {
         leaderPen.formData = {};
@@ -188,11 +188,11 @@ export function submit(pen: Pen) {}
 
 //重置表单
 export function reset(pen: Pen) {
-  const formPen = pen.calculative!.canvas.store.pens[pen.formId];
+  const formPen = pen.calculative!.canvas!.store.pens[pen.formId];
   // formPen.followers.forEach((id:string,index:number)=>{
   for (let i = formPen.followers.length - 1; i >= 0; i--) {
     let id = formPen.followers[i];
-    const follower = pen.calculative!.canvas.store.pens[id];
+    const follower = pen.calculative!.canvas!.store.pens[id];
     if (
       follower &&
       follower.formId &&
@@ -206,7 +206,7 @@ export function reset(pen: Pen) {
       }
       // follower[follower.formValue] = data;
       // follower.calculative[follower.formValue] = data;
-      pen.calculative!.canvas.parent.setValue(
+      pen.calculative!.canvas!.parent.setValue(
         { id: follower.id, [follower.formValue]: data },
         { render: false, doEvent: false, history: false }
       );
@@ -216,7 +216,7 @@ export function reset(pen: Pen) {
     }
   }
   formPen.formData = {};
-  pen.calculative!.canvas.parent.render();
+  pen.calculative!.canvas!.parent.render();
 }
 
 const formValueMap = {

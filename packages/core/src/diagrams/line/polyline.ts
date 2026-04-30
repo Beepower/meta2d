@@ -16,7 +16,7 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     pen.calculative!.worldAnchors = [];
   }
   faceSpace = store.options.polylineSpace || 10;
-  if (pen.calculative!.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors!.length < 2) {
     return;
   }
 
@@ -103,23 +103,23 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   pts.forEach((anchor: Point) => {
     anchor.id = s8();
     anchor.penId = pen.id;
-    pen.calculative!.worldAnchors.push(anchor);
+    pen.calculative!.worldAnchors!.push(anchor);
   });
 
-  pen.calculative!.worldAnchors.push(to);
+  pen.calculative!.worldAnchors!.push(to);
   if (corner) {
-    pen.calculative!.worldAnchors.push(corner);
+    pen.calculative!.worldAnchors!.push(corner);
   }
   if (a) {
-    pen.calculative!.worldAnchors.push(end);
+    pen.calculative!.worldAnchors!.push(end);
   }
 
   if (dragFrom) {
-    pen.calculative!.worldAnchors.reverse();
+    pen.calculative!.worldAnchors!.reverse();
   }
 
   if (connected) {
-    const i = pen.calculative!.worldAnchors.length - 2;
+    const i = pen.calculative!.worldAnchors!.length - 2;
     pen.calculative!.worldAnchors[i].isTemp = false;
     pen.calculative!.worldAnchors[1].isTemp = false;
   }
@@ -402,7 +402,7 @@ function getNextPoints(pen: Pen, from: Point, to: Point) {
     pen.calculative!.drawlineH =
       Math.abs(to.x - from.x) > Math.abs(to.y - from.y);
   }
-  let index = pen.calculative!.worldAnchors.findIndex(
+  let index = pen.calculative!.worldAnchors!.findIndex(
     (anchor) => anchor.id == from.id
   );
   if (index > 1) {
@@ -418,7 +418,7 @@ function getNextPoints(pen: Pen, from: Point, to: Point) {
     }
   }
 
-  if (pen.calculative!.worldAnchors.length) {
+  if (pen.calculative!.worldAnchors!.length) {
     to.isTemp = undefined;
     if (pen.calculative!.drawlineH) {
       pts.push({ x: to.x, y: from.y });
@@ -440,7 +440,7 @@ export function anchorInHorizontal(pen: Pen, anchor: Point, from = true) {
   let anchors = pen.calculative!.worldAnchors;
   if (!from) {
     anchors = [];
-    pen.calculative!.worldAnchors.forEach((item) => {
+    pen.calculative!.worldAnchors!.forEach((item) => {
       anchors.unshift(item);
     });
   }
@@ -468,7 +468,7 @@ export function anchorInVertical(pen: Pen, anchor: Point, from = true) {
   let anchors = pen.calculative!.worldAnchors;
   if (!from) {
     anchors = [];
-    pen.calculative!.worldAnchors.forEach((item) => {
+    pen.calculative!.worldAnchors!.forEach((item) => {
       anchors.unshift(item);
     });
   }
@@ -501,7 +501,7 @@ export function translatePolylineAnchor(
     return;
   }
 
-  const i = pen.calculative!.worldAnchors.findIndex(
+  const i = pen.calculative!.worldAnchors!.findIndex(
     (item) => item.id === anchor.id
   );
 
@@ -577,7 +577,7 @@ export function translatePolylineAnchor(
     }
 
     d = undefined;
-    for (let pos = i + 1; pos < pen.calculative!.worldAnchors.length; pos++) {
+    for (let pos = i + 1; pos < pen.calculative!.worldAnchors!.length; pos++) {
       next = pen.anchors[pos];
       if (next) {
         if (d == undefined) {
@@ -646,7 +646,7 @@ export function translatePolylineAnchor(
     }
 
     d = undefined;
-    for (let pos = i + 1; pos < pen.calculative!.worldAnchors.length; pos++) {
+    for (let pos = i + 1; pos < pen.calculative!.worldAnchors!.length; pos++) {
       next = pen.anchors[pos];
       if (next) {
         if (d == undefined) {

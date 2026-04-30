@@ -23,7 +23,7 @@ async function add(pen: any) {
 }
 
 const getContainerPens = async (pen: any, vId?: string) => {
-  const store = pen.calculative!.canvas.store;
+  const store = pen.calculative!.canvas!.store;
   const origin = store.data.origin;
   const scale = store.data.scale;
   const _vId = vId || pen.vId;
@@ -46,7 +46,7 @@ const getContainerPens = async (pen: any, vId?: string) => {
       }
     });
 
-    const meta2d = pen.calculative!.canvas.parent;
+    const meta2d = pen.calculative!.canvas!.parent;
     meta2d.addPens(data.pens, false, true);
   }
 
@@ -68,7 +68,7 @@ const deleteContainerPens = (pen: Pen) => {
 
 const collectContainerPens = (pen: any) => {
   let pens: any[] = [];
-  const meta2d = pen.calculative!.canvas.parent;
+  const meta2d = pen.calculative!.canvas!.parent;
 
   meta2d.store.data.pens.forEach((cpen: any) => {
     if (
@@ -122,7 +122,7 @@ function onMouseUp(pen: any, e: Point) {
 }
 
 function moveToLast(pen: any) {
-  let array = pen.calculative!.canvas.store.data.pens;
+  let array = pen.calculative!.canvas!.store.data.pens;
   let index = array.findIndex((item: any) => item.id === pen.id);
 
   if (index < 0 || index >= array.length) return array;

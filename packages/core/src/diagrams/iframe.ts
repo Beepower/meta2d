@@ -60,7 +60,7 @@ export function iframe(pen: Pen) {
     div.style.top = '-9999px';
     div.style.width = worldRect.width + 'px';
     div.style.height = worldRect.height + 'px';
-    pen.calculative!.canvas.externalElements?.parentElement.appendChild(div);
+    pen.calculative!.canvas!.externalElements?.parentElement.appendChild(div);
     setElemPosition(pen, div);
     pen.calculative!.singleton.div = div;
     const iframe = document.createElement('iframe');
@@ -89,7 +89,7 @@ export function iframe(pen: Pen) {
 function destory(pen: Pen) {
   updatePointerEvents(pen);
   if (pen.calculative!.singleton && pen.calculative!.singleton.div) {
-    if (!pen.calculative!.canvas.store.data.locked) {
+    if (!pen.calculative!.canvas!.store.data.locked) {
       // 手动删除iframe
       pen.calculative!.singleton.div.remove();
       iframes[pen.calculative!.iframe] = null;
@@ -185,7 +185,7 @@ function beforeValue(pen: Pen, value: any) {
 }
 
 function mouseMove(pen: Pen, e: Point) {
-  if (!pen.calculative!.canvas.store.data.locked && !pen.locked) {
+  if (!pen.calculative!.canvas!.store.data.locked && !pen.locked) {
     return;
   }
   if (initOperationalRect(pen.operationalRect)) {
@@ -309,7 +309,7 @@ function generateAroundDiv(pen: Pen) {
 }
 
 function updatePointerEvents(pen: Pen) {
-  if (!pen.calculative!.canvas.store.data.locked && !pen.locked) {
+  if (!pen.calculative!.canvas!.store.data.locked && !pen.locked) {
     return;
   }
   if (pen.calculative!.zIndex < 5) {
@@ -327,16 +327,16 @@ function renderPenRaw(pen: Pen) {
       img.crossOrigin =
         pen.crossOrigin === 'undefined'
           ? undefined
-          : pen.crossOrigin || pen.calculative!.canvas.store.options.crossOrigin || 'anonymous';
+          : pen.crossOrigin || pen.calculative!.canvas!.store.options.crossOrigin || 'anonymous';
       if (
-        pen.calculative!.canvas.store.options.cdn &&
+        pen.calculative!.canvas!.store.options.cdn &&
         !(
           pen.thumbImg.startsWith('http') ||
           pen.thumbImg.startsWith('//') ||
           pen.thumbImg.startsWith('data:image')
         )
       ) {
-        img.src = pen.calculative!.canvas.store.options.cdn + pen.thumbImg;
+        img.src = pen.calculative!.canvas!.store.options.cdn + pen.thumbImg;
       } else {
         img.src = pen.thumbImg;
       }
@@ -385,7 +385,7 @@ async function handleSaveImg(pen: Pen) {
     img.crossOrigin =
       pen.crossOrigin === 'undefined'
         ? undefined
-        : pen.crossOrigin || pen.calculative!.canvas.store.options.crossOrigin || 'anonymous';
+        : pen.crossOrigin || pen.calculative!.canvas!.store.options.crossOrigin || 'anonymous';
     img.src = canvas.toDataURL('image/png', 0.1);
     if (img.src.length > 10) {
       pen.calculative!.img = img;

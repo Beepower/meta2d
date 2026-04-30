@@ -33,10 +33,10 @@ export function calcAnchorDock(
         return;
       }
       let distance =
-        (pen.calculative!.worldRect.center.x - e.x) *
-          (pen.calculative!.worldRect.center.x - e.x) +
-        (pen.calculative!.worldRect.center.y - e.y) *
-          (pen.calculative!.worldRect.center.y - e.y);
+        (pen.calculative!.worldRect!.center.x - e.x) *
+          (pen.calculative!.worldRect!.center.x - e.x) +
+        (pen.calculative!.worldRect!.center.y - e.y) *
+          (pen.calculative!.worldRect!.center.y - e.y);
       const disX = Math.abs(pt.x - e.x);
       if (disX > 0 && disX < size && distance < x) {
         xDock = {
@@ -106,7 +106,7 @@ export function getPointsByPen(pen: Pen): Point[] {
     return [
       ...pen.calculative!.worldAnchors,
       ...outerPoints,
-      pen.calculative!.worldRect.center,
+      pen.calculative!.worldRect!.center,
     ];
   } else if (pen.type === PenType.Line) {
     return pen.calculative!.worldAnchors;

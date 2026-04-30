@@ -87,7 +87,7 @@ export function video(pen: Pen) {
 
     media.loop = pen.playLoop;
     media.ontimeupdate = () => {
-      resizeProcessWidth(progress, media, pen.calculative!.worldRect.width);
+      resizeProcessWidth(progress, media, pen.calculative!.worldRect!.width);
     };
     media.onended = () => {
       pen.calculative!.onended && pen.calculative!.onended(pen);
@@ -102,7 +102,7 @@ export function video(pen: Pen) {
     media.style.objectFit = (pen as any).objectFit || 'contain';
     player.appendChild(media);
     videos[pen.id] = player;
-    pen.calculative!.canvas.externalElements?.parentElement.appendChild(player);
+    pen.calculative!.canvas!.externalElements?.parentElement.appendChild(player);
     setElemPosition(pen, player);
     if (pen.autoPlay) {
       media.autoplay = true;
@@ -153,7 +153,7 @@ function move(pen: Pen) {
   resizeProcessWidth(
     progress as HTMLDivElement,
     media as HTMLMediaElement,
-    pen.calculative!.worldRect.width
+    pen.calculative!.worldRect!.width
   );
 }
 

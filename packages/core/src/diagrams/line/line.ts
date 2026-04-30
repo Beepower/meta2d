@@ -43,7 +43,7 @@ export function lineSegment(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     pen.calculative!.worldAnchors = [];
   }
 
-  if (pen.calculative!.worldAnchors.length < 2 || pen.anchors?.length > 1) {
+  if (pen.calculative!.worldAnchors!.length < 2 || pen.anchors?.length > 1) {
     return;
   }
 
@@ -55,7 +55,7 @@ export function lineSegment(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   from.next = undefined;
   deleteTempAnchor(pen);
   to.prev = undefined;
-  pen.calculative!.worldAnchors.push(to);
+  pen.calculative!.worldAnchors!.push(to);
 }
 
 function draw(path: CanvasRenderingContext2D | Path2D, from: Point, to: Point) {
@@ -96,7 +96,7 @@ export function getLineRect(pen: Pen) {
 export function getLinePoints(pen: Pen) {
   const pts: Point[] = [];
   let from: Point; // 上一个点
-  pen.calculative!.worldAnchors.forEach((pt: Point) => {
+  pen.calculative!.worldAnchors!.forEach((pt: Point) => {
     if (!from) {
       pts.push(pt);
     } else {
@@ -105,7 +105,7 @@ export function getLinePoints(pen: Pen) {
     }
     from = pt;
   });
-  if (pen.close && pen.calculative!.worldAnchors.length > 1) {
+  if (pen.close && pen.calculative!.worldAnchors!.length > 1) {
     pts.push(...getPoints(from, pen.calculative!.worldAnchors[0], pen));
   }
   return pts;
@@ -173,7 +173,7 @@ export function pointInLine(pt: Point, pen: Pen) {
   }
   if (
     pen.close &&
-    pen.calculative!.worldAnchors.length > 1 &&
+    pen.calculative!.worldAnchors!.length > 1 &&
     (point = pointInLineSegment(pt, from, pen.calculative!.worldAnchors[0], r))
   ) {
     return {
@@ -266,13 +266,13 @@ function lineLen(from: Point, cp1?: Point, cp2?: Point, to?: Point): number {
 }
 
 export function getLineLength(pen: Pen): number {
-  if (pen.calculative!.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors!.length < 2) {
     return 0;
   }
 
   let len = 0;
   let from: Point; // 上一个点
-  pen.calculative!.worldAnchors.forEach((pt: Point) => {
+  pen.calculative!.worldAnchors!.forEach((pt: Point) => {
     if (from) {
       from.lineLength = lineLen(from, from.next, pt.prev, pt);
       len += from.lineLength;

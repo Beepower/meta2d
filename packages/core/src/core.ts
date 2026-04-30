@@ -1988,7 +1988,7 @@ export class Meta2d {
         if (!pen.type) {
           this.store.animateMap.set(
             pen,
-            pen.calculative!.canvas.getFrameProps(pen)
+            pen.calculative!.canvas!.getFrameProps(pen)
           );
         }
       }
@@ -5050,7 +5050,7 @@ export class Meta2d {
             (this.canvas.width - left - right) / (rect.width - left - right);
           pens.forEach((pen) => {
             if (pen.image && pen.imageRatio) {
-              if (pen.calculative!.worldRect.width / this.canvas.width > 0.1) {
+              if (pen.calculative!.worldRect!.width / this.canvas.width > 0.1) {
                 pen.imageRatio = false;
                 pen.ratio = false;
               }
@@ -5064,25 +5064,25 @@ export class Meta2d {
               });
             }
             if (Math.abs(fit.leftValue) < 1) {
-              pen.calculative!.worldRect.x =
+              pen.calculative!.worldRect!.x =
                 rect.x -
                 wGap / 2 +
                 left +
-                (pen.calculative!.worldRect.x - rect.x - left) * ratio;
+                (pen.calculative!.worldRect!.x - rect.x - left) * ratio;
             } else {
-              pen.calculative!.worldRect.x =
+              pen.calculative!.worldRect!.x =
                 rect.x -
                 wGap / 2 +
                 left +
-                (pen.calculative!.worldRect.x - rect.x) * ratio;
+                (pen.calculative!.worldRect!.x - rect.x) * ratio;
             }
-            pen.calculative!.worldRect.width *= ratio;
-            pen.calculative!.worldRect.ex =
-              pen.calculative!.worldRect.x + pen.calculative!.worldRect.width;
-            pen.calculative!.width = pen.calculative!.worldRect.width;
-            pen.calculative!.x = pen.calculative!.worldRect.x;
-            pen.width = pen.calculative!.worldRect.width;
-            pen.x = pen.calculative!.worldRect.x;
+            pen.calculative!.worldRect!.width *= ratio;
+            pen.calculative!.worldRect!.ex =
+              pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.width;
+            pen.calculative!.width = pen.calculative!.worldRect!.width;
+            pen.calculative!.x = pen.calculative!.worldRect!.x;
+            pen.width = pen.calculative!.worldRect!.width;
+            pen.x = pen.calculative!.worldRect!.x;
             pen.textWidth *= ratio
             pen.calculative!.textWidth *= ratio;
             this.canvas.updatePenRect(pen, { worldRectIsReady: false });
@@ -5127,15 +5127,15 @@ export class Meta2d {
         const worldRect = pen.calculative!.worldRect;
         if (worldRect.width / this.store.data.scale > rect.width * 0.8) {
           let bfW = worldRect.width;
-          pen.calculative!.worldRect.x = worldRect.x - wGap / 2;
-          pen.calculative!.worldRect.width = worldRect.width + wGap;
-          pen.calculative!.worldRect.ex = worldRect.ex + wGap;
+          pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
+          pen.calculative!.worldRect!.width = worldRect.width + wGap;
+          pen.calculative!.worldRect!.ex = worldRect.ex + wGap;
           pen.operationalRect.x =
-            (pen.operationalRect.x * bfW) / pen.calculative!.worldRect.width;
+            (pen.operationalRect.x * bfW) / pen.calculative!.worldRect!.width;
           pen.operationalRect.width =
-            (pen.calculative!.worldRect.width -
+            (pen.calculative!.worldRect!.width -
               (1 - pen.operationalRect.width) * bfW) /
-            pen.calculative!.worldRect.width;
+            pen.calculative!.worldRect!.width;
           pen.onBeforeValue?.(pen, {
             operationalRect: pen.operationalRect,
           } as any);
@@ -5150,9 +5150,9 @@ export class Meta2d {
         const worldRect = pen.calculative!.worldRect;
         if (worldRect.width / this.store.data.scale > rect.width * 0.8) {
           //作为背景的video
-          pen.calculative!.worldRect.x = worldRect.x - wGap / 2;
-          pen.calculative!.worldRect.width = worldRect.width + wGap;
-          pen.calculative!.worldRect.ex = worldRect.ex + wGap;
+          pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
+          pen.calculative!.worldRect!.width = worldRect.width + wGap;
+          pen.calculative!.worldRect!.ex = worldRect.ex + wGap;
           pen.onResize?.(pen);
         }
       });
@@ -5187,23 +5187,23 @@ export class Meta2d {
             (this.canvas.height - top - bottom) / (rect.height);
           pens.forEach((pen) => {
             if (pen.image && pen.imageRatio) {
-              if (pen.calculative!.worldRect.height / this.canvas.height > 0.1) {
+              if (pen.calculative!.worldRect!.height / this.canvas.height > 0.1) {
                 pen.imageRatio = false;
                 pen.ratio = false;
               }
             }
-            pen.calculative!.worldRect.y =
+            pen.calculative!.worldRect!.y =
               rect.y -
               hGap / 2 +
               top +
-              (pen.calculative!.worldRect.y - rect.y) * ratio; //(fit.leftValue || 0)+ (pen.calculative!.worldRect.x + pen.calculative!.worldRect.width/2)-( pen.calculative!.worldRect.width*ratio)*(range/2- (fit.rightValue || 0))/(range- (fit.leftValue || 0)-(fit.rightValue || 0));
-            pen.calculative!.worldRect.height *= ratio;
-            pen.calculative!.worldRect.ey =
-              pen.calculative!.worldRect.y + pen.calculative!.worldRect.height;
-            pen.calculative!.height = pen.calculative!.worldRect.height;
-            pen.calculative!.y = pen.calculative!.worldRect.y;
-            pen.height = pen.calculative!.worldRect.height;
-            pen.y = pen.calculative!.worldRect.y;
+              (pen.calculative!.worldRect!.y - rect.y) * ratio; //(fit.leftValue || 0)+ (pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.width/2)-( pen.calculative!.worldRect!.width*ratio)*(range/2- (fit.rightValue || 0))/(range- (fit.leftValue || 0)-(fit.rightValue || 0));
+            pen.calculative!.worldRect!.height *= ratio;
+            pen.calculative!.worldRect!.ey =
+              pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.height;
+            pen.calculative!.height = pen.calculative!.worldRect!.height;
+            pen.calculative!.y = pen.calculative!.worldRect!.y;
+            pen.height = pen.calculative!.worldRect!.height;
+            pen.y = pen.calculative!.worldRect!.y;
             this.canvas.updatePenRect(pen, { worldRectIsReady: false });
             if (pen.externElement) {
               pen.onResize?.(pen);
@@ -5244,15 +5244,15 @@ export class Meta2d {
         const worldRect = pen.calculative!.worldRect;
         if (worldRect.height / this.store.data.scale > rect.height * 0.8) {
           let bfH = worldRect.height;
-          pen.calculative!.worldRect.y = worldRect.y - hGap / 2;
-          pen.calculative!.worldRect.height = worldRect.height + hGap;
-          pen.calculative!.worldRect.ey = worldRect.ey + hGap;
+          pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
+          pen.calculative!.worldRect!.height = worldRect.height + hGap;
+          pen.calculative!.worldRect!.ey = worldRect.ey + hGap;
           pen.operationalRect.y =
-            (pen.operationalRect.y * bfH) / pen.calculative!.worldRect.width;
+            (pen.operationalRect.y * bfH) / pen.calculative!.worldRect!.width;
           pen.operationalRect.height =
-            (pen.calculative!.worldRect.height -
+            (pen.calculative!.worldRect!.height -
               (1 - pen.operationalRect.height) * bfH) /
-            pen.calculative!.worldRect.height;
+            pen.calculative!.worldRect!.height;
           pen.onBeforeValue?.(pen, {
             operationalRect: pen.operationalRect,
           } as any);
@@ -5266,9 +5266,9 @@ export class Meta2d {
         const worldRect = pen.calculative!.worldRect;
         if (worldRect.height / this.store.data.scale > rect.height * 0.8) {
           //作为背景的video
-          pen.calculative!.worldRect.y = worldRect.y - hGap / 2;
-          pen.calculative!.worldRect.height = worldRect.height + hGap;
-          pen.calculative!.worldRect.ey = worldRect.ey + hGap;
+          pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
+          pen.calculative!.worldRect!.height = worldRect.height + hGap;
+          pen.calculative!.worldRect!.ey = worldRect.ey + hGap;
           pen.onResize?.(pen);
         }
       });
@@ -6057,12 +6057,12 @@ export class Meta2d {
     const center = this.getViewCenter();
     const x =
       center.x -
-      pen.calculative!.worldRect.x -
-      pen.calculative!.worldRect.width / 2;
+      pen.calculative!.worldRect!.x -
+      pen.calculative!.worldRect!.width / 2;
     const y =
       center.y -
-      pen.calculative!.worldRect.y -
-      pen.calculative!.worldRect.height / 2;
+      pen.calculative!.worldRect!.y -
+      pen.calculative!.worldRect!.height / 2;
 
     if (this.canvas.scroll && this.canvas.scroll.isShow) {
       this.canvas.scroll.translate(
@@ -6279,8 +6279,8 @@ export class Meta2d {
       let zIndex = 0;
       // let zIndex = pen.calculative!.zIndex === undefined ? 5 : pen.calculative!.zIndex + 1;
       if (type === 'top') {
-        pen.calculative!.canvas.maxZindex += 1;
-        zIndex = pen.calculative!.canvas.maxZindex;
+        pen.calculative!.canvas!.maxZindex += 1;
+        zIndex = pen.calculative!.canvas!.maxZindex;
       } else if (type === 'up') {
         zIndex =
           pen.calculative!.zIndex === undefined ? 6 : pen.calculative!.zIndex + 1;
@@ -6591,18 +6591,18 @@ export class Meta2d {
         id: anchor.id || s8(),
         penId: pen.id,
         x:
-          pen.calculative!.worldRect.x +
-          pen.calculative!.worldRect.width * anchor.x,
+          pen.calculative!.worldRect!.x +
+          pen.calculative!.worldRect!.width * anchor.x,
         y:
-          pen.calculative!.worldRect.y +
-          pen.calculative!.worldRect.height * anchor.y,
+          pen.calculative!.worldRect!.y +
+          pen.calculative!.worldRect!.height * anchor.y,
       };
       if (pen.calculative!.worldRect) {
         if (pen.rotate % 360) {
           rotatePoint(
             _worldAnchor,
             pen.rotate,
-            pen.calculative!.worldRect.center
+            pen.calculative!.worldRect!.center
           );
         }
       }
@@ -6622,31 +6622,31 @@ export class Meta2d {
       };
       if (pen.calculative!.worldRect) {
         if (pen.rotate % 360) {
-          rotatePoint(anchor, -pen.rotate, pen.calculative!.worldRect.center);
+          rotatePoint(anchor, -pen.rotate, pen.calculative!.worldRect!.center);
         }
         _anchor = {
           id: _worldAnchor.id,
           penId: pen.id,
           x:
-            (anchor.x - pen.calculative!.worldRect.x) /
-            pen.calculative!.worldRect.width,
+            (anchor.x - pen.calculative!.worldRect!.x) /
+            pen.calculative!.worldRect!.width,
           y:
-            (anchor.y - pen.calculative!.worldRect.y) /
-            pen.calculative!.worldRect.height,
+            (anchor.y - pen.calculative!.worldRect!.y) /
+            pen.calculative!.worldRect!.height,
         };
       }
     }
 
     if (pen.type === PenType.Line) {
       //Line
-      pen.calculative!.worldAnchors.splice(index, 0, _worldAnchor);
+      pen.calculative!.worldAnchors!.splice(index, 0, _worldAnchor);
       pen.anchors.splice(index, 0, _anchor);
       this.canvas.updateLines(pen);
       this.canvas.initLineRect(pen);
       this.render();
     } else {
       //Node
-      pen.calculative!.worldAnchors.push(_worldAnchor);
+      pen.calculative!.worldAnchors!.push(_worldAnchor);
       pen.anchors.push(_anchor);
     }
   }

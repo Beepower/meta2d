@@ -2219,10 +2219,10 @@ export class Canvas {
           this.store.active.forEach((pen) => {
             this.activeInitPos.push({
               x:
-                (pen.calculative!.worldRect.x - this.activeRect.x) /
+                (pen.calculative!.worldRect!.x - this.activeRect.x) /
                 this.activeRect.width,
               y:
-                (pen.calculative!.worldRect.y - this.activeRect.y) /
+                (pen.calculative!.worldRect!.y - this.activeRect.y) /
                 this.activeRect.height,
             });
           });
@@ -4194,7 +4194,7 @@ export class Canvas {
             const rect = this.getPenRect(pen, action.origin, action.scale);
             this.setPenRect(pen, rect, false);
             this.updateLines(pen, true);
-            if (pen.calculative!.canvas.parent.isCombine(pen)) {
+            if (pen.calculative!.canvas!.parent.isCombine(pen)) {
               let unPen: Pen = unPens.find((item) => item.id === pen.id);
               inheritanceProps.forEach((key) => {
                 if ((pen as any)[key] !== (unPen as any)[key]) {
@@ -4403,7 +4403,7 @@ export class Canvas {
     }
     this.updatePenRect(pen);
     if (!pen.anchors && pen.calculative!.worldAnchors) {
-      pen.anchors = pen.calculative!.worldAnchors.map((pt) => {
+      pen.anchors = pen.calculative!.worldAnchors!.map((pt) => {
         return calcRelativePoint(pt, pen.calculative!.worldRect);
       });
     }
@@ -4467,7 +4467,7 @@ export class Canvas {
     (pen.calculative!.gradientAnimatePath = undefined);
     this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
     if (pen.calculative!.worldAnchors) {
-      pen.anchors = pen.calculative!.worldAnchors.map((pt) => {
+      pen.anchors = pen.calculative!.worldAnchors!.map((pt) => {
         return calcRelativePoint(pt, pen.calculative!.worldRect);
       });
     }
@@ -4880,7 +4880,7 @@ export class Canvas {
     pen.calculative!.letterSpacing = (pen.letterSpacing || 0) * scale;
     if (pen.fontSize < 1 && pen.fontSize > 0) {
       pen.calculative!.fontSize =
-        pen.fontSize * pen.calculative!.worldRect.height;
+        pen.fontSize * pen.calculative!.worldRect!.height;
     }
     if(isNumber(pen.iconSize)){
       pen.calculative!.iconSize = pen.iconSize * scale;
@@ -4916,12 +4916,12 @@ export class Canvas {
     if(isNumber(pen.textLeft)){
       pen.calculative!.textLeft =
         pen.textLeft < 1 && pen.textLeft > -1
-          ? pen.textLeft * pen.calculative!.worldRect.width
+          ? pen.textLeft * pen.calculative!.worldRect!.width
           : pen.textLeft * scale;
     }
     if(isNumber(pen.textTop)){
       pen.calculative!.textTop =
-         pen.textTop < 1 && pen.textTop > -1 ? pen.textTop * pen.calculative!.worldRect.height : pen.textTop * scale;
+         pen.textTop < 1 && pen.textTop > -1 ? pen.textTop * pen.calculative!.worldRect!.height : pen.textTop * scale;
     }
     if(isNumber(pen.borderWidth)){
       if (pen.type === PenType.Line && pen.borderWidth) {
@@ -5432,7 +5432,7 @@ export class Canvas {
     ctx.translate(0.5, 0.5);
     ctx.strokeStyle = pen.anchorColor || this.store.styles.anchorColor;
     ctx.fillStyle = pen.anchorBackground || this.store.options.anchorBackground;
-    pen.calculative!.worldAnchors.forEach((anchor) => {
+    pen.calculative!.worldAnchors!.forEach((anchor) => {
       if (anchor.hidden || anchor.locked > LockState.DisableEdit) {
         return;
       }
@@ -5656,7 +5656,7 @@ export class Canvas {
         // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
         const lineScale = 1 / s; //s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect.center;
+        const lineCenter = pen.calculative!.worldRect!.center;
         if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
@@ -5702,7 +5702,7 @@ export class Canvas {
         // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
         const lineScale = s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect.center;
+        const lineCenter = pen.calculative!.worldRect!.center;
         if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
@@ -5872,13 +5872,13 @@ export class Canvas {
     const scaleX = this.activeRect.width / w;
     const scaleY = this.activeRect.height / h;
     this.store.active.forEach((pen, i) => {
-      pen.calculative!.worldRect.x =
+      pen.calculative!.worldRect!.x =
         this.activeInitPos[i].x * this.activeRect.width + this.activeRect.x;
-      pen.calculative!.worldRect.y =
+      pen.calculative!.worldRect!.y =
         this.activeInitPos[i].y * this.activeRect.height + this.activeRect.y;
-      pen.calculative!.worldRect.width *= scaleX;
+      pen.calculative!.worldRect!.width *= scaleX;
       pen.calculative!.iconWidth && (pen.calculative!.iconWidth *= scaleX);
-      pen.calculative!.worldRect.height *= scaleY;
+      pen.calculative!.worldRect!.height *= scaleY;
       pen.calculative!.iconHeight && (pen.calculative!.iconHeight *= scaleY);
       calcRightBottom(pen.calculative!.worldRect);
       calcCenter(pen.calculative!.worldRect);
@@ -6029,7 +6029,7 @@ export class Canvas {
       });
     }
     if (pen.type && pen.calculative!.worldAnchors) {
-      pen.calculative!.worldAnchors = pen.calculative!.worldAnchors.map(
+      pen.calculative!.worldAnchors = pen.calculative!.worldAnchors!.map(
         (anchor) => {
           if (anchor.connectTo && pens.find((p) => p.id === anchor.connectTo)) {
             anchor.connectTo += movingSuffix;
@@ -6598,7 +6598,7 @@ export class Canvas {
           ) {
             if (k === 'fontSize' || k === 'lineWidth') {
               (pen as any)[k] =
-                (pen.calculative as any)[k] / pen.calculative!.canvas.store.data.scale;
+                (pen.calculative as any)[k] / pen.calculative!.canvas!.store.data.scale;
             } else {
               (pen as any)[k] = (pen.calculative as any)[k];
             }
@@ -6794,7 +6794,7 @@ export class Canvas {
       return;
     }
     if (pen.name === 'line') {
-      pen.calculative!.worldAnchors.forEach((anchor) => {
+      pen.calculative!.worldAnchors!.forEach((anchor) => {
         rotatePoint(anchor, angle, rect.center);
       });
       this.initLineRect(pen);
@@ -6805,19 +6805,19 @@ export class Canvas {
       } else {
         pen.calculative!.rotate = angle;
       }
-      rotatePoint(pen.calculative!.worldRect.center, angle, rect.center);
+      rotatePoint(pen.calculative!.worldRect!.center, angle, rect.center);
       if (pen.parentId) {
-        pen.calculative!.worldRect.x =
-          pen.calculative!.worldRect.center.x -
-          pen.calculative!.worldRect.width / 2;
-        pen.calculative!.worldRect.y =
-          pen.calculative!.worldRect.center.y -
-          pen.calculative!.worldRect.height / 2;
-        pen.x = (pen.calculative!.worldRect.x - rect.x) / rect.width;
-        pen.y = (pen.calculative!.worldRect.y - rect.y) / rect.height;
+        pen.calculative!.worldRect!.x =
+          pen.calculative!.worldRect!.center.x -
+          pen.calculative!.worldRect!.width / 2;
+        pen.calculative!.worldRect!.y =
+          pen.calculative!.worldRect!.center.y -
+          pen.calculative!.worldRect!.height / 2;
+        pen.x = (pen.calculative!.worldRect!.x - rect.x) / rect.width;
+        pen.y = (pen.calculative!.worldRect!.y - rect.y) / rect.height;
       } else {
-        pen.x = pen.calculative!.worldRect.center.x - pen.width / 2;
-        pen.y = pen.calculative!.worldRect.center.y - pen.height / 2;
+        pen.x = pen.calculative!.worldRect!.center.x - pen.width / 2;
+        pen.y = pen.calculative!.worldRect!.center.y - pen.height / 2;
       }
       pen.rotate = pen.calculative!.rotate;
       this.updatePenRect(pen);
@@ -6993,7 +6993,7 @@ export class Canvas {
                   if (k === 'lineWidth') {
                     (pen as any)[k] =
                       (pen.calculative as any)[k] /
-                      pen.calculative!.canvas.store.data.scale;
+                      pen.calculative!.canvas!.store.data.scale;
                   } else {
                     (pen as any)[k] = (pen.calculative as any)[k];
                   }
@@ -7005,7 +7005,7 @@ export class Canvas {
                 if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
                   if (k === 'lineWidth') {
                     (pen.calculative as any)[k] =
-                      (pen as any)[k] * pen.calculative!.canvas.store.data.scale;
+                      (pen as any)[k] * pen.calculative!.canvas!.store.data.scale;
                   } else {
                     (pen.calculative as any)[k] = (pen as any)[k];
                   }
@@ -7603,7 +7603,7 @@ export class Canvas {
               this.store.pens[this.store.hover.parentId]?.children?.forEach((_id)=>{
                 const pen = this.store.pens[_id];
                 if(pointInRect(pt, pen.calculative!.worldRect)){
-                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect.center.x) ** 2  +(pt.y - pen.calculative!.worldRect.center.y) ** 2 );
+                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect!.center.x) ** 2  +(pt.y - pen.calculative!.worldRect!.center.y) ** 2 );
                   if(dis < distance){
                     distance = dis;
                     id = _id;
@@ -7810,7 +7810,7 @@ export class Canvas {
           : pen.textHeight * font_scale
       }px;`;
     } else {
-      let tem = pen.calculative!.worldRect.height / scale;
+      let tem = pen.calculative!.worldRect!.height / scale;
       if (tem < 0) {
         tem = 0;
       }
@@ -7830,7 +7830,7 @@ export class Canvas {
     if (pen.textWidth) {
       // _textWidth =
       //   pen.textWidth < 1 && pen.textWidth > -1
-      //     ? pen.textWidth * pen.calculative!.worldRect.width
+      //     ? pen.textWidth * pen.calculative!.worldRect!.width
       //     : pen.textWidth;
       _textWidth = pen.calculative!.textWidth;
       if (pen.whiteSpace !== 'pre-line') {
@@ -7875,9 +7875,9 @@ export class Canvas {
     if (pen.whiteSpace !== 'nowrap') {
       let textWidth = pen.fontSize * 1.2 * pen.text.length;
       let contentWidth =
-        (_textWidth || pen.calculative!.worldRect.width / scale) *
+        (_textWidth || pen.calculative!.worldRect!.width / scale) *
         Math.floor(
-          pen.calculative!.worldRect.height /
+          pen.calculative!.worldRect!.height /
             scale /
             (pen.lineHeight * pen.fontSize)
         );

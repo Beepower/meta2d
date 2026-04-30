@@ -390,6 +390,6 @@ export function calcTextAutoWidth(pen: Pen) {
   pen.height = textHeight + 5;
   // }
   pen.width = textWidth + 5; //误差
-  pen.calculative!.canvas.updatePenRect(pen);
-  pen.calculative!.canvas.calcActiveRect();
+  pen.calculative!.canvas!.updatePenRect(pen);
+  pen.calculative!.canvas!.calcActiveRect();
 }

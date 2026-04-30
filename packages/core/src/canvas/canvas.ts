@@ -2015,16 +2015,16 @@ export class Canvas {
       if (this.store.hoverAnchor) {
         const to = getToAnchor(this.drawingLine);
         if (this.store.hoverAnchor.type === PointType.Line) {
-          getDistance(to, this.store.hoverAnchor, this.store);
+          getDistance(to!, this.store.hoverAnchor, this.store);
         } else {
-          to.x = this.store.hoverAnchor.x;
-          to.y = this.store.hoverAnchor.y;
+          to!.x = this.store.hoverAnchor.x;
+          to!.y = this.store.hoverAnchor.y;
         }
         connectLine(
-          this.store.hover,
+          this.store.hover!,
           this.store.hoverAnchor,
           this.drawingLine,
-          to
+          to!
         );
         this.drawline();
         this.finishDrawline(true);
@@ -2034,15 +2034,15 @@ export class Canvas {
       //shift快捷添加锚点并完成连线
       if (!this.store.options.autoAnchor) {
         if (e.shiftKey && e.altKey && e.ctrlKey) {
-          this.setAnchor(this.store.pointAt);
+          this.setAnchor(this.store.pointAt!);
           const to = getToAnchor(this.drawingLine);
           const anchor = this.store.activeAnchor;
           if (!anchor) {
             return;
           }
-          to.x = anchor.x;
-          to.y = anchor.y;
-          connectLine(this.store.hover, anchor, this.drawingLine, to);
+          to!.x = anchor.x;
+          to!.y = anchor.y;
+          connectLine(this.store.hover!, anchor, this.drawingLine, to!);
           this.drawline();
           this.finishDrawline(true);
           return;
@@ -2053,13 +2053,13 @@ export class Canvas {
       if (
         e.buttons === 2 ||
         (this.drawingLineName === 'mind' &&
-          this.drawingLine?.calculative.worldAnchors.length > 1) ||
+          (this.drawingLine?.calculative!.worldAnchors?.length ?? 0) > 1) ||
         (this.store.options.drawingLineLength &&
-          this.drawingLine?.calculative.worldAnchors.length >
+          (this.drawingLine?.calculative!.worldAnchors?.length ?? 0) >
             this.store.options.drawingLineLength)
       ) {
         this.finishDrawline(true);
-        if (this.store.active[0]?.anchors[0].connectTo || this.store.active.length == 0) {
+        if (this.store.active![0]?.anchors![0]!.connectTo || this.store.active!.length == 0) {
           this.drawingLineName = '';
         } else {
           this.drawingLineName = this.store.options.drawingLineName;
@@ -2070,11 +2070,11 @@ export class Canvas {
       // 自动锚点（单击节点），完成绘画
       if (this.store.options.autoAnchor && this.hoverType === HoverType.Node) {
         const to = getToAnchor(this.drawingLine);
-        const anchor = nearestAnchor(this.store.hover, e);
-        to.x = anchor.x;
-        to.y = anchor.y;
+        const anchor = nearestAnchor(this.store.hover!, e);
+        to!.x = anchor!.x;
+        to!.y = anchor!.y;
         this.drawingLine.autoTo = true;
-        connectLine(this.store.hover, anchor, this.drawingLine, to);
+        connectLine(this.store.hover!, anchor!, this.drawingLine, to!);
         this.drawline();
         this.finishDrawline(true);
 
@@ -2084,18 +2084,18 @@ export class Canvas {
       // 添加点
       const to = getToAnchor(this.drawingLine);
 
-      if (to.isTemp) {
+      if (to!.isTemp) {
         this.drawingLine.calculative!.activeAnchor =
-          this.drawingLine.calculative!.worldAnchors[
-            this.drawingLine.calculative!.worldAnchors.length - 2
+          this.drawingLine.calculative!.worldAnchors![
+            this.drawingLine.calculative!.worldAnchors!.length - 2
           ];
-        to.isTemp = undefined;
+        to!.isTemp = undefined;
       } else {
         this.drawingLine.calculative!.activeAnchor = to;
-        this.drawingLine.calculative!.worldAnchors.push({
-          x: to.x,
-          y: to.y,
-          penId: to.penId,
+        this.drawingLine.calculative!.worldAnchors!.push({
+          x: to!.x,
+          y: to!.y,
+          penId: to!.penId,
         });
       }
       this.drawingLine.calculative!.drawlineH = undefined;
@@ -2107,12 +2107,12 @@ export class Canvas {
       if (this.hoverType === HoverType.Node) {
         if (this.store.options.autoAnchor) {
           this.inactive(true);
-          const anchor = nearestAnchor(this.store.hover, e);
+          const anchor = nearestAnchor(this.store.hover!, e);
           this.store.hoverAnchor = anchor;
-          const pt: Point = { id: s8(), x: anchor.x, y: anchor.y };
+          const pt: Point = { id: s8(), x: anchor!.x, y: anchor!.y };
           this.drawingLine = this.createDrawingLine(pt);
           this.drawingLine.autoFrom = true;
-          connectLine(this.store.hover, anchor, this.drawingLine, pt);
+          connectLine(this.store.hover!, anchor!, this.drawingLine, pt);
         } else {
           this.inactive();
           this.hoverType = HoverType.None;
@@ -2122,14 +2122,14 @@ export class Canvas {
         this.drawingLineName = this.store.options.drawingLineName;
         const pt: Point = {
           id: s8(),
-          x: this.store.hoverAnchor.x,
-          y: this.store.hoverAnchor.y,
+          x: this.store.hoverAnchor!.x,
+          y: this.store.hoverAnchor!.y,
         };
         this.drawingLine = this.createDrawingLine(pt);
         this.drawingLine.calculative!.activeAnchor = pt;
         connectLine(
-          this.store.hover,
-          this.store.hoverAnchor,
+          this.store.hover!,
+          this.store.hoverAnchor!,
           this.drawingLine,
           pt
         );
@@ -2161,7 +2161,7 @@ export class Canvas {
         case HoverType.Line:
           if (this.store.hover) {
             if(this.store.active?.length && this.store.active.length === 1){
-              if(this.store.hover.id === this.store.active[0].id){
+              if(this.store.hover.id === this.store.active[0]!.id){
                 //准备移动子图元
                 this.calcActiveRect();
                 break;
@@ -2169,18 +2169,18 @@ export class Canvas {
             }
             const parentPen = getParent(this.store.hover, true);
             let pen = parentPen || this.store.hover;
-            if(parentPen && (parentPen.container || this.store.options.containerShapes?.includes(parentPen.name))){
+            if(parentPen && (parentPen.container || this.store.options.containerShapes?.includes(parentPen.name!))){
               pen = this.store.hover;
             }
             // const pen = getParent(this.store.hover, true) || this.store.hover;
             if (e.ctrlKey && !e.shiftKey) {
-              if (pen.calculative!.active) {
+              if (pen!.calculative!.active) {
                 this.willInactivePen = pen;
               } else {
-                if(this.store.active.length > 0){
-                  pen.calculative!.active = true;
-                  setChildrenActive(pen); // 子节点也设置为active
-                  this.store.active.push(pen);
+                if(this.store.active!.length > 0){
+                  pen!.calculative!.active = true;
+                  setChildrenActive(pen!); // 子节点也设置为active
+                  this.store.active!.push(pen!);
                   this.store.emitter.emit('active', this.store.active);
                 }
               }
@@ -2188,9 +2188,9 @@ export class Canvas {
             } else if (e.ctrlKey && e.shiftKey && this.store.hover.parentId) {
               this.active([this.store.hover]);
             } else {
-              if(!(this.activeRect && pointInRect({x:e.x,y:e.y},this.activeRect)) || this.store.active.length == 1){
-                if (!pen.calculative!.active) {
-                  this.active([pen]);
+              if(!(this.activeRect && pointInRect({x:e.x,y:e.y},this.activeRect)) || this.store.active!.length == 1){
+                if (!pen!.calculative!.active) {
+                  this.active([pen!]);
                   if (this.store.options.resizeMode) {
                     this.hotkeyType = HotkeyType.Resize;
                   }
@@ -2203,27 +2203,27 @@ export class Canvas {
           break;
         case HoverType.LineAnchor:
           this.store.activeAnchor = this.store.hoverAnchor;
-          this.store.hover.calculative!.activeAnchor = this.store.hoverAnchor;
-          this.active([this.store.hover]);
+          this.store.hover!.calculative!.activeAnchor = this.store.hoverAnchor;
+          this.active([this.store.hover!]);
           break;
         case HoverType.LineAnchorPrev:
         case HoverType.LineAnchorNext:
           if (this.store.activeAnchor) {
             // 备份，方便移动锚点方向
-            this.prevAnchor = { ...this.store.activeAnchor.prev };
-            this.nextAnchor = { ...this.store.activeAnchor.next };
+            this.prevAnchor = { ...this.store.activeAnchor.prev } as Point;
+            this.nextAnchor = { ...this.store.activeAnchor.next } as Point;
           }
           break;
         case HoverType.Resize:
           this.activeInitPos = [];
-          this.store.active.forEach((pen) => {
+          this.store.active!.forEach((pen) => {
             this.activeInitPos.push({
               x:
-                (pen.calculative!.worldRect!.x - this.activeRect.x) /
-                this.activeRect.width,
+                (pen.calculative!.worldRect!.x! - this.activeRect!.x!) /
+                this.activeRect!.width!,
               y:
-                (pen.calculative!.worldRect!.y - this.activeRect.y) /
-                this.activeRect.height,
+                (pen.calculative!.worldRect!.y! - this.activeRect!.y!) /
+                this.activeRect!.height!,
             });
           });
           break;

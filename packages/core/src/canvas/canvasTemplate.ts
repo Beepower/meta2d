@@ -300,7 +300,7 @@ export class CanvasTemplate {
   }
 }
 
-function drawParallelLines(ctx, width, height, spacing, angle) {
+function drawParallelLines(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, width: number, height: number, spacing: number, angle: number) {
   const radian = (angle * Math.PI) / 180;
   const cos = Math.cos(radian);
   const sin = Math.sin(radian);
@@ -325,7 +325,7 @@ function drawParallelLines(ctx, width, height, spacing, angle) {
   ctx.stroke();
 }
 
-function drawPreciseLines(ctx, width, height, spacing, normal, angle) {
+function drawPreciseLines(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, width: number, height: number, spacing: number, normal: { x: number; y: number }, angle: number) {
   // 计算边界点
   const corners = [
     { x: 0, y: 0 },
@@ -379,7 +379,7 @@ function drawPreciseLines(ctx, width, height, spacing, normal, angle) {
   ctx.stroke();
 }
 
-function drawPreciseLinesInRect(ctx, x, y, width, height, spacing, normal, angle) {
+function drawPreciseLinesInRect(ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D, x: number, y: number, width: number, height: number, spacing: number, normal: { x: number; y: number }, angle: number) {
     const corners = [
         { x, y }, // 左上
         { x: x + width, y }, // 右上

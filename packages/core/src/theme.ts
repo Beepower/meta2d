@@ -184,8 +184,8 @@ export const le5leTheme = {
    * @param {*} str
    * @returns {*}  
    */
-  camelCaseToHyphenated(str) {
-    return str.replace(/[A-Z]/g, (match) => {
+  camelCaseToHyphenated(str: string) {
+    return str.replace(/[A-Z]/g, (match: string) => {
         return '-' + match.toLowerCase();
     });
   },
@@ -196,8 +196,8 @@ export const le5leTheme = {
    * @param {*} theme
    * @returns {*}  
    */
-  _addVendorCssPrefix(themeList) {
-    return themeList.map(item =>{
+  _addVendorCssPrefix(themeList: string[]) {
+    return themeList.map((item: string) =>{
       const [key, value] = item.split(':');
       return `${this.vendor_css_prefix}${this.camelCaseToHyphenated(key.trim())}:${value.trim()}`;
     })
@@ -209,7 +209,7 @@ export const le5leTheme = {
    * @param {*} theme 主题名
    * @param {*} id 样式表id，用于查找样式表，确保唯一
    */
-  createThemeSheet(theme,id) {
+  createThemeSheet(theme: string, id: string) {
     const style = document.createElement('style');
     style.type = 'text/css';
     style.id = this.style_prefix + id;
@@ -226,13 +226,13 @@ export const le5leTheme = {
    * @date 26/12/2024
    * @param {*} id
    */
-  destroyThemeSheet(id) {
+  destroyThemeSheet(id: string) {
     const styleSheet = this.findStyleSheet(this.style_prefix + id);
     if (styleSheet) {
       document.head.removeChild(styleSheet.ownerNode);
     }
   },
-  addTheme(name,theme){
+  addTheme(name: string, theme: any){
     Object.assign(this,{[name]:theme})
   },
   /**
@@ -242,13 +242,13 @@ export const le5leTheme = {
    * @param {*} theme
    * @returns {*}  
    */
-  getTheme(theme) {
-    return this._addVendorCssPrefix(this[theme] || this.light);
+  getTheme(theme: string) {
+    return this._addVendorCssPrefix((this as any)[theme] || this.light);
   },
-  getThemeObj(theme="dark"){
+  getThemeObj(theme: string = "dark"){
     // 将theme的list转换为对象
     const dot = ":";
-    const obj = this[theme]?.reduce((acc, curr) => {
+    const obj = (this as any)[theme]?.reduce((acc: any, curr: string) => {
       const [key, value] = curr.split(dot);
       acc[key] = value;
       return acc;
@@ -262,7 +262,7 @@ export const le5leTheme = {
    * @param {*} id
    * @returns {*}  
    */
-  findStyleSheet(id) {
+  findStyleSheet(id: string) {
     const styleSheets = document.styleSheets;
     for (let i = 0; i < styleSheets.length; i++) {
       const styleSheet = styleSheets[i];
@@ -279,7 +279,7 @@ export const le5leTheme = {
    * @param {*} id
    * @param {*} theme
    */
-  updateCssRule(id, themeName) {
+  updateCssRule(id: string, themeName: string) {
     const theme = this.getTheme(themeName)
     const newCssDeclarations = theme;
     const styleSheet = this.findStyleSheet(this.style_prefix + id);
@@ -312,7 +312,7 @@ export const le5leTheme = {
         const newRuleText = `${this.cssRuleSelector} { ${newCssDeclarations.join(';')} }`;
         styleSheet.insertRule(newRuleText, styleSheet.cssRules.length);
       } else if (styleSheet.addRule) {
-        const existingRootRule = styleSheet.cssRules.find(rule => rule.selectorText === this.cssRuleSelector);
+        const existingRootRule = (styleSheet.cssRules as any).find((rule: any) => rule.selectorText === this.cssRuleSelector);
         if (existingRootRule) {
           const declarationsToAdd = newCssDeclarations.join(';');
           existingRootRule.style.cssText += `; ${declarationsToAdd}`;

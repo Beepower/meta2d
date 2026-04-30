@@ -6304,32 +6304,32 @@ export class Canvas {
       this.initPens = deepClone(this.store.active, true);
     }
 
-    this.store.activeAnchor.next.x = e.x;
-    this.store.activeAnchor.next.y = e.y;
-    if (this.store.activeAnchor.prev) {
-      if (!this.store.activeAnchor.prevNextType) {
-        this.store.activeAnchor.prev.x = e.x;
-        this.store.activeAnchor.prev.y = e.y;
-        rotatePoint(this.store.activeAnchor.prev, 180, this.store.activeAnchor);
+    this.store.activeAnchor!.next!.x = e.x;
+    this.store.activeAnchor!.next!.y = e.y;
+    if (this.store.activeAnchor!.prev) {
+      if (!this.store.activeAnchor!.prevNextType) {
+        this.store.activeAnchor!.prev!.x = e.x;
+        this.store.activeAnchor!.prev!.y = e.y;
+        rotatePoint(this.store.activeAnchor!.prev!, 180, this.store.activeAnchor!);
       } else if (
-        this.store.activeAnchor.prevNextType === PrevNextType.Bilateral &&
+        this.store.activeAnchor!.prevNextType === PrevNextType.Bilateral &&
         this.nextAnchor
       ) {
-        const rotate = calcRotate(e, this.store.activeAnchor);
-        const nextRotate = calcRotate(this.nextAnchor, this.store.activeAnchor);
-        this.store.activeAnchor.prev.x = this.prevAnchor.x;
-        this.store.activeAnchor.prev.y = this.prevAnchor.y;
+        const rotate = calcRotate(e, this.store.activeAnchor!);
+        const nextRotate = calcRotate(this.nextAnchor, this.store.activeAnchor!);
+        this.store.activeAnchor!.prev!.x = this.prevAnchor!.x;
+        this.store.activeAnchor!.prev!.y = this.prevAnchor!.y;
         rotatePoint(
-          this.store.activeAnchor.prev,
+          this.store.activeAnchor!.prev!,
           rotate - nextRotate,
-          this.store.activeAnchor
+          this.store.activeAnchor!
         );
       }
     }
 
-    const line = this.store.active[0];
+    const line = this.store.active![0]!;
     this.patchFlagsLines.add(line);
-    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name](line));
+    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!]!(line));
     this.render();
 
     if (this.timer) {
@@ -6347,8 +6347,8 @@ export class Canvas {
   }
 
   async setAnchor(e: { x: number; y: number }) {
-    const initPens = [deepClone(this.store.hover, true)];
-    const hoverPen = this.store.hover;
+    const initPens = [deepClone(this.store.hover, true)!];
+    const hoverPen = this.store.hover!;
 
     if (this.store.hoverAnchor) {
       if (
@@ -6359,7 +6359,7 @@ export class Canvas {
       }
       if (
         hoverPen.type === PenType.Line &&
-        hoverPen.calculative!.worldAnchors?.length <= 2
+        (hoverPen.calculative!.worldAnchors?.length ?? 0) <= 2
       ) {
         this.delete([hoverPen]);
       } else {
@@ -6374,15 +6374,15 @@ export class Canvas {
     } else if (hoverPen) {
       if (
         this.beforeAddAnchor &&
-        !(await this.beforeAddAnchor(hoverPen, this.store.pointAt))
+        !(await this.beforeAddAnchor(hoverPen, this.store.pointAt!))
       ) {
         return;
       }
       if (hoverPen.type === PenType.Line) {
         this.store.activeAnchor = addLineAnchor(
           hoverPen,
-          this.store.pointAt,
-          this.store.pointAtIndex
+          this.store.pointAt!,
+          this.store.pointAtIndex!
         );
         this.initLineRect(hoverPen);
 
@@ -6410,9 +6410,9 @@ export class Canvas {
    * @param pens 本次移动的全部图形，包含子节点
    */
   private checkDisconnect(line: Pen, pens: Pen[]) {
-    if (line.id.indexOf(movingSuffix) > 0) {
-      const id = line.id;
-      line = this.store.pens[id.replace(movingSuffix, '')];
+    if (line.id!.indexOf(movingSuffix) > 0) {
+      const id = line.id!;
+      line = this.store.pens[id.replace(movingSuffix, '')]!;
     }
     // 连接
     line.anchors!.forEach((anchor) => {
@@ -6706,19 +6706,19 @@ export class Canvas {
       }
       let rotate = pen.rotate;
       if (pen.flipX) {
-        rotate *= -1;
+        rotate! *= -1;
       }
       if (pen.flipY) {
-        rotate *= -1;
+        rotate! *= -1;
       }
       let offsetX =
-        lineAnchor.distance *
+        lineAnchor.distance! *
           this.store.data.scale *
-          Math.cos(((rotate + penAnchor.rotate) / 180) * Math.PI) || 0;
+          Math.cos(((rotate! + penAnchor.rotate!) / 180) * Math.PI) || 0;
       let offsetY =
-        lineAnchor.distance *
+        lineAnchor.distance! *
           this.store.data.scale *
-          Math.sin(((rotate + penAnchor.rotate) / 180) * Math.PI) || 0;
+          Math.sin(((rotate! + penAnchor.rotate!) / 180) * Math.PI) || 0;
       if (pen.flipX) {
         offsetX = -offsetX;
       }
@@ -6727,8 +6727,8 @@ export class Canvas {
       }
       translatePoint(
         lineAnchor,
-        penAnchor.x - lineAnchor.x + offsetX,
-        penAnchor.y - lineAnchor.y + offsetY
+        penAnchor.x! - lineAnchor.x! + offsetX,
+        penAnchor.y! - lineAnchor.y! + offsetY
       );
       if (
         this.store.options.autoPolyline &&
@@ -6741,22 +6741,22 @@ export class Canvas {
 
         let found = false;
 
-        if (from.id === lineAnchor.id) {
+        if (from!.id === lineAnchor.id) {
           from = lineAnchor;
           found = true;
-        } else if (to.id === lineAnchor.id) {
+        } else if (to!.id === lineAnchor.id) {
           to = lineAnchor;
           found = true;
         }
         if (found) {
-          line.calculative!.worldAnchors = [from, to];
+          line.calculative!.worldAnchors = [from!, to!];
           line.calculative!.activeAnchor = from;
-          this.polyline(this.store, line, to);
+          this.polyline(this.store, line, to!);
           this.initLineRect(line);
         }
       }
 
-      this.store.path2dMap.set(line, globalStore.path2dDraws[line.name](line));
+      this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!]!(line));
       this.patchFlagsLines.add(line);
       if (line.calculative!.gradientSmooth) {
         line.calculative!.gradientAnimatePath = getGradientAnimatePath(line);
@@ -6768,7 +6768,7 @@ export class Canvas {
 
   calcActiveRect() {
     // TODO: visible 不可见， 目前只是不计算 activeRect，考虑它是否进入活动层 store.active
-    const canMovePens = this.store.active.filter(
+    const canMovePens = this.store.active!.filter(
       (pen: Pen) =>
         (!pen.locked || pen.locked < LockState.DisableMove) &&
         pen.visible != false
@@ -6776,11 +6776,11 @@ export class Canvas {
     if (!canMovePens.length) {
       return;
     } else if (canMovePens.length === 1) {
-      this.activeRect = deepClone(canMovePens[0].calculative.worldRect);
-      this.activeRect.rotate = canMovePens[0].calculative.rotate || 0;
+      this.activeRect = deepClone(canMovePens[0]!.calculative!.worldRect)!;
+      this.activeRect.rotate = canMovePens[0]!.calculative!.rotate || 0;
       calcCenter(this.activeRect);
     } else {
-      this.activeRect = getRect(canMovePens);
+      this.activeRect = getRect(canMovePens)!;
       this.activeRect.rotate = 0;
     }
     this.lastRotate = 0;
@@ -6798,7 +6798,7 @@ export class Canvas {
     }
     if (pen.name === 'line') {
       pen.calculative!.worldAnchors!.forEach((anchor) => {
-        rotatePoint(anchor, angle, rect.center);
+        rotatePoint(anchor, angle, rect.center!);
       });
       this.initLineRect(pen);
       calcPenRect(pen);
@@ -6808,27 +6808,27 @@ export class Canvas {
       } else {
         pen.calculative!.rotate = angle;
       }
-      rotatePoint(pen.calculative!.worldRect!.center, angle, rect.center);
+      rotatePoint(pen.calculative!.worldRect!.center!, angle, rect.center!);
       if (pen.parentId) {
         pen.calculative!.worldRect!.x =
-          pen.calculative!.worldRect!.center.x -
-          pen.calculative!.worldRect!.width / 2;
+          pen.calculative!.worldRect!.center!.x! -
+          pen.calculative!.worldRect!.width! / 2;
         pen.calculative!.worldRect!.y =
-          pen.calculative!.worldRect!.center.y -
-          pen.calculative!.worldRect!.height / 2;
-        pen.x! = (pen.calculative!.worldRect!.x - rect!.x) / rect!.width;
-        pen.y! = (pen.calculative!.worldRect!.y - rect!.y) / rect!.height;
+          pen.calculative!.worldRect!.center!.y! -
+          pen.calculative!.worldRect!.height! / 2;
+        pen.x! = (pen.calculative!.worldRect!.x! - rect!.x!) / rect!.width!;
+        pen.y! = (pen.calculative!.worldRect!.y! - rect!.y!) / rect!.height!;
       } else {
-        pen.x! = pen.calculative!.worldRect!.center.x - pen.width! / 2;
-        pen.y! = pen.calculative!.worldRect!.center.y - pen.height! / 2;
+        pen.x! = pen.calculative!.worldRect!.center!.x! - pen.width! / 2;
+        pen.y! = pen.calculative!.worldRect!.center!.y! - pen.height! / 2;
       }
       pen.rotate = pen.calculative!.rotate;
       this.updatePenRect(pen);
 
       if (pen.children) {
         pen.children.forEach((id) => {
-          const child = this.store.pens[id];
-          this.rotatePen(child, angle, pen.calculative!.worldRect);
+          const child = this.store.pens[id]!;
+          this.rotatePen(child, angle, pen.calculative!.worldRect!);
         });
       }
     }
@@ -6840,12 +6840,12 @@ export class Canvas {
     }
     this.store.emitter.emit('animateEnd', pen);
 
-    let pens: Pen[];
+    let pens: Pen[] = [];
     if (pen.nextAnimate) {
       pens = this.store.data.pens.filter((p) => {
         return (
           p.id === pen.nextAnimate ||
-          (p.tags && p.tags.indexOf(pen.nextAnimate) > -1)
+          (p.tags && p.tags.indexOf(pen.nextAnimate!) > -1)
         );
       });
     }
@@ -6858,8 +6858,8 @@ export class Canvas {
       if (pen.calculative!.pause) {
         const d = Date.now() - pen.calculative!.pause;
         pen.calculative!.pause = undefined;
-        pen.calculative!.frameStart += d;
-        pen.calculative!.frameEnd += d;
+        pen.calculative!.frameStart! += d;
+        pen.calculative!.frameEnd! += d;
       } else {
         if (pen.name === 'video') {
           pen.calculative!.media.currentTime = 0;

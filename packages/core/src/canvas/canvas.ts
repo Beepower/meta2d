@@ -5763,6 +5763,9 @@ export class Canvas {
   }
 
   resizePens(e: Point) {
+    if (!this.activeRect || !this.mouseDown) {
+      return;
+    }
     if (!this.initPens) {
       this.initPens = deepClone(this.store.active, true);
     }
@@ -5790,37 +5793,37 @@ export class Canvas {
       this.dock = resizeDock(
         this.store,
         rect,
-        this.store.active,
+        this.store.active!,
         this.resizeIndex
       );
       const { xDock, yDock } = this.dock;
       if (xDock) {
-        x += xDock.step;
-        const dockPen = this.store.pens[xDock.penId];
-        dockPen.calculative!.isDock = true;
+        x += xDock.step!;
+        const dockPen = this.store.pens[xDock.penId!];
+        dockPen!.calculative!.isDock = true;
       }
       if (yDock) {
-        y += yDock.step;
-        const dockPen = this.store.pens[yDock.penId];
-        dockPen.calculative!.isDock = true;
+        y += yDock.step!;
+        const dockPen = this.store.pens[yDock.penId!];
+        dockPen!.calculative!.isDock = true;
       }
     }
 
-    const w = this.activeRect.width;
-    const h = this.activeRect.height;
+    const w = this.activeRect.width!;
+    const h = this.activeRect.height!;
     let offsetX = x - this.lastOffsetX;
     let offsetY = y - this.lastOffsetY;
     this.lastOffsetX = x;
     this.lastOffsetY = y;
     if (
       (e as any).ctrlKey ||
-      (this.initPens.length === 1 && this.initPens[0].ratio)
+      (this.initPens!.length === 1 && this.initPens![0]!.ratio)
     ) {
       // 1，3 是右上角和左上角的点，此时的 offsetY 符号与 offsetX 是相反的
       const sign = [1, 3].includes(this.resizeIndex) ? -1 : 1;
       offsetY = (sign * (offsetX * h)) / w;
     }
-    (this.activeRect as any).ratio = this.initPens[0].ratio;
+    (this.activeRect as any).ratio = this.initPens![0]!.ratio;
     resizeRect(this.activeRect, offsetX, offsetY, this.resizeIndex);
     //大屏区域
     if (this.store.options.strictScope) {
@@ -5834,61 +5837,61 @@ export class Canvas {
           height: height * this.store.data.scale,
         };
 
-        if (this.activeRect.x < vRect.x) {
+        if (this.activeRect.x! < vRect.x!) {
           this.activeRect.width =
-            this.activeRect.width - (vRect.x - this.activeRect.x);
+            this.activeRect.width! - (vRect.x! - this.activeRect.x!);
           this.activeRect.x = vRect.x;
         }
-        if (this.activeRect.y < vRect.y) {
+        if (this.activeRect.y! < vRect.y!) {
           this.activeRect.height =
-            this.activeRect.height - (vRect.y - this.activeRect.y);
+            this.activeRect.height! - (vRect.y! - this.activeRect.y!);
           this.activeRect.y = vRect.y;
         }
-        if (this.activeRect.x + this.activeRect.width > vRect.x + vRect.width) {
+        if (this.activeRect.x! + this.activeRect.width! > vRect.x! + vRect.width!) {
           this.activeRect.width =
-            this.activeRect.width -
-            (this.activeRect.x +
-              this.activeRect.width -
-              (vRect.x + vRect.width));
-          this.activeRect.x = vRect.x + vRect.width - this.activeRect.width;
+            this.activeRect.width! -
+            (this.activeRect.x! +
+              this.activeRect.width! -
+              (vRect.x! + vRect.width!));
+          this.activeRect.x = vRect.x! + vRect.width! - this.activeRect.width;
           this.activeRect.ex = this.activeRect.x + this.activeRect.width;
         }
         if (
-          this.activeRect.y + this.activeRect.height >
-          vRect.y + vRect.height
+          this.activeRect.y! + this.activeRect.height! >
+          vRect.y! + vRect.height!
         ) {
           this.activeRect.height =
-            this.activeRect.height -
-            (this.activeRect.y +
-              this.activeRect.height -
-              (vRect.y + vRect.height));
-          this.activeRect.y = vRect.y + vRect.height - this.activeRect.height;
+            this.activeRect.height! -
+            (this.activeRect.y! +
+              this.activeRect.height! -
+              (vRect.y! + vRect.height!));
+          this.activeRect.y = vRect.y! + vRect.height! - this.activeRect.height;
           this.activeRect.ey = this.activeRect.y + this.activeRect.height;
         }
       }
     }
     calcCenter(this.activeRect);
 
-    const scaleX = this.activeRect.width / w;
-    const scaleY = this.activeRect.height / h;
-    this.store.active.forEach((pen, i) => {
+    const scaleX = this.activeRect.width! / w;
+    const scaleY = this.activeRect.height! / h;
+    this.store.active!.forEach((pen, i) => {
       pen.calculative!.worldRect!.x =
-        this.activeInitPos[i].x * this.activeRect.width + this.activeRect.x;
+        this.activeInitPos[i]!.x * this.activeRect!.width! + this.activeRect!.x!;
       pen.calculative!.worldRect!.y =
-        this.activeInitPos[i].y * this.activeRect.height + this.activeRect.y;
-      pen.calculative!.worldRect!.width *= scaleX;
+        this.activeInitPos[i]!.y * this.activeRect!.height! + this.activeRect!.y!;
+      pen.calculative!.worldRect!.width! *= scaleX;
       pen.calculative!.iconWidth && (pen.calculative!.iconWidth *= scaleX);
-      pen.calculative!.worldRect!.height *= scaleY;
+      pen.calculative!.worldRect!.height! *= scaleY;
       pen.calculative!.iconHeight && (pen.calculative!.iconHeight *= scaleY);
-      calcRightBottom(pen.calculative!.worldRect);
-      calcCenter(pen.calculative!.worldRect);
+      calcRightBottom(pen.calculative!.worldRect!);
+      calcCenter(pen.calculative!.worldRect!);
       this.updatePenRect(pen, { worldRectIsReady: true });
       this.execPenResize(pen, true);
       this.updateLines(pen);
     });
     this.getSizeCPs();
-    this.initImageCanvas(this.store.active);
-    this.initTemplateCanvas(this.store.active);
+    this.initImageCanvas(this.store.active!);
+    this.initTemplateCanvas(this.store.active!);
     this.render();
     this.store.emitter.emit('resizePens', this.store.active);
 
@@ -5925,9 +5928,9 @@ export class Canvas {
     if (
       !this.store.options.moveConnectedLine &&
       !this.canMoveLine &&
-      this.store.active.length === 1 &&
-      (this.store.active[0].anchors[0]?.connectTo ||
-        this.store.active[0].anchors[this.store.active[0].anchors.length - 1]
+      this.store.active!.length === 1 &&
+      (this.store.active![0]!.anchors![0]?.connectTo ||
+        this.store.active![0]!.anchors![this.store.active![0]!.anchors!.length - 1]
           ?.connectTo)
     ) {
       return;
@@ -5935,7 +5938,7 @@ export class Canvas {
 
     if (!this.movingPens) {
       this.initMovingPens();
-      this.store.active.forEach((pen) => {
+      this.store.active!.forEach((pen) => {
         setHover(pen, false);
       });
       this.store.hover = undefined;
@@ -5962,48 +5965,48 @@ export class Canvas {
           height: height * this.store.data.scale,
         };
 
-        if (rect!.x < vRect.x) {
+        if (rect!.x! < vRect.x!) {
           rect!.x = vRect.x;
           vFlag = true;
         }
-        if (rect!.y < vRect.y) {
+        if (rect!.y! < vRect.y!) {
           rect!.y = vRect.y;
           vFlag = true;
         }
-        if (rect!.x + rect!.width > vRect.x + vRect.width) {
-          rect!.x = vRect.x + vRect.width - rect!.width;
+        if (rect!.x! + rect!.width! > vRect.x! + vRect.width!) {
+          rect!.x = vRect.x! + vRect.width! - rect!.width!;
           vFlag = true;
         }
-        if (rect!.y + rect!.height > vRect.y + vRect.height) {
-          rect!.y = vRect.y + vRect.height - rect!.height;
+        if (rect!.y! + rect!.height! > vRect.y! + vRect.height!) {
+          rect!.y = vRect.y! + vRect.height! - rect!.height!;
           vFlag = true;
         }
       }
     }
 
     const offset: Point = {
-      x: rect!.x - this.activeRect.x,
-      y: rect!.y - this.activeRect.y,
+      x: rect!.x! - this.activeRect.x!,
+      y: rect!.y! - this.activeRect.y!,
     };
     if (!this.store.options.disableDock && !vFlag) {
       this.clearDock();
       const moveDock = this.customMoveDock || calcMoveDock;
-      this.dock = moveDock(this.store, rect, this.movingPens, offset);
+      this.dock = moveDock(this.store, rect, this.movingPens!, offset);
       const { xDock, yDock } = this.dock;
-      let dockPen: Pen;
+      let dockPen: Pen | undefined;
       if (xDock) {
-        offset.x += xDock.step;
-        dockPen = this.store.pens[xDock.penId];
-        dockPen.calculative!.isDock = true;
+        offset.x! += xDock.step!;
+        dockPen = this.store.pens[xDock.penId!];
+        dockPen!.calculative!.isDock = true;
       }
       if (yDock) {
-        offset.y += yDock.step;
-        dockPen = this.store.pens[yDock.penId];
-        dockPen.calculative!.isDock = true;
+        offset.y! += yDock.step!;
+        dockPen = this.store.pens[yDock.penId!];
+        dockPen!.calculative!.isDock = true;
       }
     }
 
-    this.translatePens(this.movingPens, offset.x, offset.y, true);
+    this.translatePens(this.movingPens!, offset.x!, offset.y!, true);
   }
 
   /**
@@ -6047,13 +6050,13 @@ export class Canvas {
    */
   initMovingPens() {
     if (!this.store.options.moveConnectedLine && !this.canMoveLine) {
-      for (let i = 0; i < this.store.active.length; i++) {
-        const pen = this.store.active[i];
+      for (let i = 0; i < this.store.active!.length; i++) {
+        const pen = this.store.active![i]!;
         if (
-          pen.anchors[0]?.connectTo ||
-          pen.anchors[pen.anchors!.length - 1]?.connectTo
+          pen.anchors![0]?.connectTo ||
+          pen.anchors![pen.anchors!.length - 1]?.connectTo
         ) {
-          this.store.active.splice(i, 1);
+          this.store.active!.splice(i, 1);
           pen.calculative!.active = undefined;
           --i;
         }
@@ -6061,13 +6064,13 @@ export class Canvas {
     }
 
     this.movingPens = deepClone(this.store.active, true);
-    this.movingPens = this.getAllFollowersByPens(this.movingPens);
+    this.movingPens = this.getAllFollowersByPens(this.movingPens!);
     const containChildPens = this.getAllByPens(this.movingPens);
     const copyContainChildPens = deepClone(containChildPens, true);
     // 考虑父子关系，修改 id
     containChildPens.forEach((pen) => {
       this.changeIdsByMoving(pen, copyContainChildPens);
-      this.store.pens[pen.id] = pen; // updatePenRect 时需要计算
+      this.store.pens[pen.id!] = pen; // updatePenRect 时需要计算
       pen.calculative!.canvas = this;
       const value: Pen = {
         globalAlpha: 0.5,
@@ -6076,9 +6079,9 @@ export class Canvas {
       pen.lineWidth === 0 && (value.lineWidth = 1);
       // TODO: 例如 pen.name = 'triangle' 的情况，但有图片，是否还需要变成矩形呢？
       if (
-        pen.name.endsWith('Dom') ||
-        isDomShapes.includes(pen.name) ||
-        this.store.options.domShapes.includes(pen.name) ||
+        pen.name!.endsWith('Dom') ||
+        isDomShapes.includes(pen.name!) ||
+        this.store.options.domShapes.includes(pen.name!) ||
         pen.image || pen.isDom
       ) {
         // 修改名称会执行 onDestroy ，清空它

@@ -9067,42 +9067,42 @@ export class Canvas {
       rect.leftValue = rect!.x;
       rect.rightValue = 1 - (rect!.x!+rect!.width!);
     }else{
-      if(rect!.x < 0.5){
+      if(rect!.x! < 0.5){
         rect.left = true;
         rect.leftValue = rect!.x;
-        if(rect!.x > 0.2 && (rect!.x+rect!.width) > 0.5){
+        if(rect!.x! > 0.2 && (rect!.x!+rect!.width!) > 0.5){
           rect.right = true;
-          rect.rightValue = 1 - (rect!.x+rect!.width);
+          rect.rightValue = 1 - (rect!.x!+rect!.width!);
         }
       }else{
         rect.right = true;
-        rect.rightValue = 1 - (rect!.x+rect!.width);
+        rect.rightValue = 1 - (rect!.x!+rect!.width!);
       }
     }
-    if(rect.leftValue < 0.05){
+    if(rect.leftValue! < 0.05){
       rect.leftValue = 0;
     }
-    if(rect.rightValue < 0.05){
+    if(rect.rightValue! < 0.05){
       rect.rightValue = 0;
     }
-    if(rect!.height > 0.5){
+    if(rect!.height! > 0.5){
       rect.top = true;
       rect.bottom = true;
       rect.topValue = rect!.y;
-      rect.bottomValue = 1 - (rect!.y+rect!.height);
+      rect.bottomValue = 1 - (rect!.y!+rect!.height!);
     }else{
-      if(rect!.y < 0.5){
+      if(rect!.y! < 0.5){
         rect.top = true;
         rect.topValue = rect!.y;
       }else{
         rect.bottom = true;
-        rect.bottomValue = 1 - (rect!.y+rect!.height);
+        rect.bottomValue = 1 - (rect!.y!+rect!.height!);
       }
     }
-    if(rect.topValue < 0.05){
+    if(rect.topValue! < 0.05){
       rect.topValue = 0;
     }
-    if(rect.bottomValue < 0.05){
+    if(rect.bottomValue! < 0.05){
       rect.bottomValue = 0;
     }
 
@@ -9121,17 +9121,17 @@ export class Canvas {
     const scale = this.store.data.scale;
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
-    let x = (e.x - this.store.data.origin.x) / scale / width;
-    let y = (e.y - this.store.data.origin.y) / scale / height;
+    let x = (e.x - this.store.data.origin.x) / scale / width!;
+    let y = (e.y - this.store.data.origin.y) / scale / height!;
     if (this.canvasImage.currentFit) {
-      const fit = this.canvasImage.activeFit;
+      const fit = this.canvasImage.activeFit!;
       if (this.canvasImage.currentFit === 'top') {
         if (y < -0.1) {
           y = -0.1;
         }
-        let gap = y - fit.y;
-        fit.height -= gap;
-        if (fit.height < 0.01) {
+        let gap = y - fit.y!;
+        fit.height! -= gap;
+        if (fit.height! < 0.01) {
           fit.height = 0.01 ;
           return;
         }
@@ -9141,7 +9141,7 @@ export class Canvas {
         if (y > 1.1) {
           y = 1.1;
         }
-        fit.height = y - fit.y;
+        fit.height = y - fit.y!;
         if (fit.height <= 0.01) {
           fit.height = 0.01;
         }
@@ -9150,9 +9150,9 @@ export class Canvas {
         if (x < - 0.1) {
           x = - 0.1;
         }
-        let gap = x - fit.x;
-        fit.width -= gap;
-        if (fit.width < 0.01) {
+        let gap = x - fit.x!;
+        fit.width! -= gap;
+        if (fit.width! < 0.01) {
           fit.width = 0.01;
           return;
         }
@@ -9162,16 +9162,16 @@ export class Canvas {
         if (x > 1.1) {
           x = 1.1;
         }
-        fit.width = x - fit.x;
+        fit.width = x - fit.x!;
         if (fit.width <= 0.01) {
           fit.width = 0.01;
         }
       }
       let rect = {
-        x:fit.x * width * scale + this.store.data.origin.x,
-        y:fit.y * height * scale + this.store.data.origin.y,
-        width:fit.width* width * scale,
-        height:fit.height * height * scale,
+        x:fit.x! * width! * scale + this.store.data.origin.x,
+        y:fit.y! * height! * scale + this.store.data.origin.y,
+        width:fit.width!* width! * scale,
+        height:fit.height! * height! * scale,
       };
       calcRightBottom(rect);
       const pens = this.store.data.pens.filter((pen)=>{
@@ -9183,7 +9183,7 @@ export class Canvas {
         }
         if (
           rectInRect(
-            pen.calculative!.worldRect,
+            pen.calculative!.worldRect!,
             rect,
             true
           )
@@ -9203,89 +9203,89 @@ export class Canvas {
       fit.bottom = undefined;
       fit.bottomValue = undefined;
 
-      if(fit.width > 0.5){
+      if(fit.width! > 0.5){
         fit.left = true;
         fit.right = true;
         fit.leftValue =  fit.x;
-        fit.rightValue = 1 - (fit.x+fit.width);
+        fit.rightValue = 1 - (fit.x!+fit.width!);
       }else{
-        if(fit.x < 0.5){
+        if(fit.x! < 0.5){
           fit.left = true;
           fit.leftValue = fit.x;
-          if(fit.x > 0.2 && (fit.x+fit.width) > 0.5){
+          if(fit.x! > 0.2 && (fit.x!+fit.width!) > 0.5){
             fit.right = true;
-            fit.rightValue = 1 - (fit.x+fit.width);
+            fit.rightValue = 1 - (fit.x!+fit.width!);
           }
         }else{
           fit.right = true;
-          fit.rightValue =  1 - (fit.x+fit.width);
+          fit.rightValue =  1 - (fit.x!+fit.width!);
         }
       }
-      if( Math.abs(fit.leftValue) < 0.05){
+      if( Math.abs(fit.leftValue!) < 0.05){
         fit.leftValue = 0;
       }
-      if(Math.abs(fit.rightValue) < 0.05){
+      if(Math.abs(fit.rightValue!) < 0.05){
         fit.rightValue = 0;
       }
-      if(fit.height > 0.5){
+      if(fit.height! > 0.5){
         fit.top = true;
         fit.bottom = true;
         fit.topValue =  fit.y;
-        fit.bottomValue = 1 - (fit.y+fit.height);
+        fit.bottomValue = 1 - (fit.y!+fit.height!);
       }else{
-        if(fit.y < 0.5){
+        if(fit.y! < 0.5){
           fit.top = true;
-          fit.topValue =  fit.y-0;
+          fit.topValue =  fit.y!-0;
         }else{
           fit.bottom = true;
-          fit.bottomValue = 1 - (fit.y+fit.height);
+          fit.bottomValue = 1 - (fit.y!+fit.height!);
         }
       }
 
-      if(Math.abs(fit.topValue) < 0.05){
+      if(Math.abs(fit.topValue!) < 0.05){
         fit.topValue = 0;
       }
-      if(Math.abs(fit.bottomValue) < 0.05){
+      if(Math.abs(fit.bottomValue!) < 0.05){
         fit.bottomValue = 0;
       }
-      fit.children = pens.map(pen=>pen.id);
+      fit.children = pens.map(pen=>pen.id!);
       this.store.emitter.emit('fit', fit);
-      this.mouseDown.x = e.x;
-      this.mouseDown.y = e.y;
+      this.mouseDown!.x = e.x;
+      this.mouseDown!.y = e.y;
       this.canvasImage.init();
       this.canvasImage.render();
     }
   }
 
-  updateFitRect(fit:Fit = this.canvasImage.activeFit){
+  updateFitRect(fit:Fit = this.canvasImage.activeFit!){
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
     if(fit.left){
       if(fit.leftValue){
-        fit.x =  Math.abs(fit.leftValue)<1?fit.leftValue:fit.leftValue/width;
+        fit.x =  Math.abs(fit.leftValue)<1?fit.leftValue:fit.leftValue/width!;
       }else{
         fit.x = 0;
       }
     }
     if(fit.right){
       if(fit.rightValue){
-        fit.width = 1 - (Math.abs(fit.rightValue)<1?fit.rightValue:fit.rightValue/width) - fit.x;
+        fit.width = 1 - (Math.abs(fit.rightValue)<1?fit.rightValue:fit.rightValue/width!) - fit.x!;
       }else{
-        fit.width = 1 - fit.x;
+        fit.width = 1 - fit.x!;
       }
     }
     if(fit.top){
       if(fit.topValue){
-        fit.y =  Math.abs(fit.topValue)<1?fit.topValue:fit.topValue/height;
+        fit.y =  Math.abs(fit.topValue)<1?fit.topValue:fit.topValue/height!;
       }else{
         fit.y = 0;
       }
     }
     if(fit.bottom){
       if(fit.bottomValue){
-        fit.height = 1 - (Math.abs(fit.bottomValue)<1?fit.bottomValue:fit.bottomValue/height) - fit.y;
+        fit.height = 1 - (Math.abs(fit.bottomValue)<1?fit.bottomValue:fit.bottomValue/height!) - fit.y!;
       }else{
-        fit.height = 1 - fit.y;
+        fit.height = 1 - fit.y!;
       }
     }
     this.canvasImage.init();
@@ -9296,10 +9296,10 @@ export class Canvas {
     if(!fit){
       return;
     }
-    const index = this.store.data.fits.findIndex(item=>item.id===fit.id);
+    const index = this.store.data.fits!.findIndex(item=>item.id===fit.id);
 
-    this.store.data.fits.splice(index, 1);
-    this.canvasImage.activeFit = undefined;
+    this.store.data.fits!.splice(index, 1);
+    this.canvasImage.activeFit = undefined as any;
     this.canvasImage.init();
     this.canvasImage.render();
     this.store.emitter.emit('fit',undefined);
@@ -9308,8 +9308,8 @@ export class Canvas {
   calcuActiveFit(){
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
-    let downX = (this.mouseDown.x - this.store.data.origin.x) / this.store.data.scale / width;
-    let downY = (this.mouseDown.y - this.store.data.origin.y) / this.store.data.scale / height;
+    let downX = (this.mouseDown!.x - this.store.data.origin.x) / this.store.data.scale / width!;
+    let downY = (this.mouseDown!.y - this.store.data.origin.y) / this.store.data.scale / height!;
 
     let idx = -1;
     let lastActiveIdx = -1;

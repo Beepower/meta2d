@@ -2393,17 +2393,17 @@ export class Canvas {
 
         // 移动节点锚点
         if (this.movingAnchor) {
-          const x = e.x - this.movingAnchor.x;
-          const y = e.y - this.movingAnchor.y;
+          const x = e.x - this.movingAnchor.x!;
+          const y = e.y - this.movingAnchor.y!;
           this.translateAnchor(x, y);
           this.render();
           return;
-        } else if (!this.store.active[0]?.locked) {
+        } else if (!this.store.active![0]?.locked) {
           const pt = { x: e.x, y: e.y };
           // Move line anchor
           if (this.hoverType === HoverType.LineAnchor) {
             if (
-              (this.dockInAnchor(e) || this.store.active[0]?.lineName === 'line') &&
+              (this.dockInAnchor(e) || this.store.active![0]?.lineName === 'line') &&
               !this.store.options.disableDock &&
               !this.store.options.disableLineDock
             ) {
@@ -2412,10 +2412,10 @@ export class Canvas {
               this.dock = calcAnchorDock(
                 this.store,
                 pt,
-                this.store.activeAnchor
+                this.store.activeAnchor!
               );
-              this.dock?.xDock && (pt.x += this.dock.xDock.step);
-              this.dock?.yDock && (pt.y += this.dock.yDock.step);
+              this.dock?.xDock && (pt.x += this.dock!.xDock.step!);
+              this.dock?.yDock && (pt.y += this.dock!.yDock.step!);
             }
             this.moveLineAnchor(pt, e);
             return;
@@ -2451,18 +2451,18 @@ export class Canvas {
           this.hoverType === HoverType.Node ||
           this.hoverType === HoverType.Line
         ) {
-          const x = e.x - this.mouseDown.x;
-          const y = e.y - this.mouseDown.y;
+          const x = e.x - this.mouseDown!.x;
+          const y = e.y - this.mouseDown!.y;
           const shake = 20;
           if (
             e.ctrlKey &&
             !e.shiftKey &&
             (Math.abs(x) >= shake || Math.abs(y) >= shake)
           ) {
-            this.willInactivePen = undefined;
+            this.willInactivePen = undefined as any;
           }
-          if (this.store.active.length === 1) {
-            const activePen = this.store.active[0];
+          if (this.store.active!.length === 1) {
+            const activePen = this.store.active![0]!;
             if (activePen.locked === undefined || activePen.locked < LockState.DisableMove) {
               activePen?.onMouseMove?.(activePen, this.mousePos);
             }
@@ -2480,11 +2480,11 @@ export class Canvas {
         const {x,y} = e;
         const pt: Point = {x,y};
         pt.id = s8();
-        pt.penId = this.pencilLine.id;
-        this.pencilLine.calculative!.worldAnchors.push(pt);
+        pt.penId = this.pencilLine!.id;
+        this.pencilLine!.calculative!.worldAnchors!.push(pt);
         this.store.path2dMap.set(
-          this.pencilLine,
-          globalStore.path2dDraws[this.pencilLine.name](this.pencilLine)
+          this.pencilLine!,
+          globalStore.path2dDraws[this.pencilLine!.name!]!(this.pencilLine!)
         );
         this.patchFlags = true;
       }
@@ -2503,18 +2503,18 @@ export class Canvas {
       ) {
         this.clearDock();
         this.dock = calcAnchorDock(this.store, pt);
-        this.dock?.xDock && (pt.x += this.dock.xDock.step);
-        this.dock?.yDock && (pt.y += this.dock.yDock.step);
+        this.dock?.xDock && (pt.x! += this.dock!.xDock.step!);
+        this.dock?.yDock && (pt.y! += this.dock!.yDock.step!);
       }
       if (
         this.mouseDown &&
         this.drawingLineName === 'curve' &&
-        !this.drawingLine.calculative!.worldAnchors[0].connectTo
+        !this.drawingLine.calculative!.worldAnchors![0]!.connectTo
       ) {
         this.drawline(pt);
       } else {
-        let to: Point;
-        if (this.drawingLine.calculative!.worldAnchors.length > 1) {
+        let to: Point | undefined;
+        if (this.drawingLine.calculative!.worldAnchors!.length > 1) {
           to = getToAnchor(this.drawingLine);
         }
 
@@ -2529,17 +2529,17 @@ export class Canvas {
           to.connectTo = undefined;
         } else {
           to = { ...pt };
-          this.drawingLine.calculative!.worldAnchors.push(to);
+          this.drawingLine.calculative!.worldAnchors!.push(to);
         }
         if (
           this.hoverType === HoverType.NodeAnchor ||
           this.hoverType === HoverType.LineAnchor
         ) {
-          if (this.store.hoverAnchor.type !== PointType.Line) {
-            to.x = this.store.hoverAnchor.x;
-            to.y = this.store.hoverAnchor.y;
+          if (this.store.hoverAnchor!.type !== PointType.Line) {
+            to.x = this.store.hoverAnchor!.x;
+            to.y = this.store.hoverAnchor!.y;
           }
-          to.connectTo = this.store.hoverAnchor.penId;
+          to.connectTo = this.store.hoverAnchor!.penId;
           if (this.drawingLineName === 'polyline') {
             to.isTemp = false;
           }
@@ -2548,19 +2548,19 @@ export class Canvas {
         if (this.drawingLineName === 'line') {
           if (e.ctrlKey && !e.shiftKey) {
             to.x =
-              this.drawingLine.calculative!.worldAnchors[
-                this.drawingLine.calculative!.worldAnchors.length - 2
-              ].x;
+              this.drawingLine.calculative!.worldAnchors![
+                this.drawingLine.calculative!.worldAnchors!.length - 2
+              ]!.x;
           } else if (e.shiftKey && !e.ctrlKey) {
             to.y =
-              this.drawingLine.calculative!.worldAnchors[
-                this.drawingLine.calculative!.worldAnchors.length - 2
-              ].y;
+              this.drawingLine.calculative!.worldAnchors![
+                this.drawingLine.calculative!.worldAnchors!.length - 2
+              ]!.y;
           } else if (e.shiftKey && e.ctrlKey) {
             let last =
-              this.drawingLine.calculative!.worldAnchors[
-                this.drawingLine.calculative!.worldAnchors.length - 2
-              ];
+              this.drawingLine.calculative!.worldAnchors![
+                this.drawingLine.calculative!.worldAnchors!.length - 2
+              ]!;
             this.getSpecialAngle(to, last);
           }
         }
@@ -2700,13 +2700,13 @@ export class Canvas {
             hoverAnchors.reverse();
           }
           if (isActiveFrom) {
-            line.calculative!.worldAnchors[0].connectTo = undefined;
-            line.calculative!.worldAnchors.unshift(...hoverAnchors);
+            line.calculative!.worldAnchors![0]!.connectTo = undefined;
+            line.calculative!.worldAnchors!.unshift(...hoverAnchors);
           } else if (isActiveTo) {
-            line.calculative!.worldAnchors[
-              line.calculative!.worldAnchors.length - 1
-            ].connectTo = undefined;
-            line.calculative!.worldAnchors.push(...hoverAnchors);
+            line.calculative!.worldAnchors![
+              line.calculative!.worldAnchors!.length - 1
+            ]!.connectTo = undefined;
+            line.calculative!.worldAnchors!.push(...hoverAnchors);
           }
           this.delete([hover]);
           // TODO: 历史记录
@@ -2718,35 +2718,35 @@ export class Canvas {
             /**
              * 线的锚点需要存所连接锚点的位置
              */
-            if (this.store.hoverAnchor.type === PointType.Line) {
+            if (this.store.hoverAnchor!.type === PointType.Line) {
               getDistance(
                 this.store.activeAnchor,
-                this.store.hoverAnchor,
+                this.store.hoverAnchor!,
                 this.store
               );
             } else {
-              this.store.activeAnchor.x = this.store.hoverAnchor.x;
-              this.store.activeAnchor.y = this.store.hoverAnchor.y;
+              this.store.activeAnchor.x = this.store.hoverAnchor!.x;
+              this.store.activeAnchor.y = this.store.hoverAnchor!.y;
             }
             connectLine(
-              this.store.hover,
-              this.store.hoverAnchor,
+              this.store.hover!,
+              this.store.hoverAnchor!,
               line,
               this.store.activeAnchor
             );
           }
         }
-        if ((this as any)[line.lineName] && line.lineName !== 'polyline') {
-          (this as any)[line.lineName](this.store, line);
+        if ((this as any)[line.lineName!] && line.lineName !== 'polyline') {
+          (this as any)[line.lineName!](this.store, line);
         }
-        this.store.path2dMap.set(line, globalStore.path2dDraws.line(line));
+        this.store.path2dMap.set(line, globalStore.path2dDraws.line!(line));
         this.initLineRect(line);
       } else {
         // 连线起始点自动关联 到 pen
         if (from === this.store.activeAnchor && line.autoFrom) {
-          this.calcAutoAnchor(line, from, this.store.hover);
+          this.calcAutoAnchor(line, from!, this.store.hover!);
         } else if (to === this.store.activeAnchor && line.autoTo) {
-          this.calcAutoAnchor(line, to, this.store.hover);
+          this.calcAutoAnchor(line, to!, this.store.hover!);
         }
       }
     }
@@ -2757,22 +2757,22 @@ export class Canvas {
         if (this.dragRect) {
           // 只存在一个缓存图元
           if (this.addCaches.length === 1) {
-            const target = this.addCaches[0];
-            target.width = this.dragRect.width / this.store.data.scale;
-            target.height = this.dragRect.height / this.store.data.scale;
-            e.x = (this.dragRect.x + this.dragRect.ex) / 2;
-            e.y = (this.dragRect.y + this.dragRect.ey) / 2;
+            const target = this.addCaches[0]!;
+            target.width = this.dragRect.width! / this.store.data.scale;
+            target.height = this.dragRect.height! / this.store.data.scale;
+            e.x = (this.dragRect.x! + this.dragRect.ex!) / 2;
+            e.y = (this.dragRect.y! + this.dragRect.ey!) / 2;
           }
         }
         this.dropPens(this.addCaches, e);
       }
-      this.addCaches = undefined;
+      this.addCaches = undefined as any;
     }
 
     // Rotate
     if (this.hoverType === HoverType.Rotate) {
       this.getSizeCPs();
-      this.store.active.forEach((pen) => {
+      this.store.active!.forEach((pen) => {
         pen.rotate = pen.calculative!.rotate;
       });
     }
@@ -2791,14 +2791,14 @@ export class Canvas {
         const pens = this.store.data.pens.filter((pen) => {
           if (
             pen.visible === false ||
-            pen.locked >= LockState.DisableMove ||
+            pen.locked! >= LockState.DisableMove ||
             pen.parentId || pen.isRuleLine
           ) {
             return false;
           }
           if (
             rectInRect(
-              pen.calculative!.worldRect,
+              pen.calculative!.worldRect!,
               this.dragRect,
               e.ctrlKey || this.store.options.dragAllIn
             )
@@ -2816,7 +2816,7 @@ export class Canvas {
     }
 
     if (e.button !== 2) {
-      if (distance(this.mouseDown, e) < 2) {
+      if (distance(this.mouseDown!, e) < 2) {
         if (this.store.hover && this.store.hover.input) {
           if (this.store.hover.onShowInput) {
             this.store.hover.onShowInput(this.store.hover, e as any);
@@ -2854,12 +2854,12 @@ export class Canvas {
     if (this.willInactivePen) {
       this.willInactivePen.calculative!.active = undefined;
       setChildrenActive(this.willInactivePen, false); // 子节点取消激活
-      const index = this.store.active.findIndex((p) => p === this.willInactivePen);
+      const index = this.store.active!.findIndex((p) => p === this.willInactivePen);
       if(index >= 0) {
-        this.store.active.splice(index,1);
+        this.store.active!.splice(index,1);
       }
       this.calcActiveRect();
-      this.willInactivePen = undefined;
+      this.willInactivePen = undefined as any;
       this.store.emitter.emit('inactive', [this.willInactivePen]);
       this.render();
     }
@@ -2871,21 +2871,21 @@ export class Canvas {
         this.movedActivePens(e.ctrlKey && e.shiftKey);
       }
       this.getAllByPens(this.movingPens).forEach((pen) => {
-        this.store.pens[pen.id] = undefined;
+        this.store.pens[pen.id!] = undefined as any;
       });
-      this.movingPens = undefined;
+      this.movingPens = undefined as any;
     }
 
     if (this.store.active && this.store.active[0]) {
-      this.store.active[0].calculative.h = undefined;
+      this.store.active[0].calculative!.h = undefined;
     }
 
-    this.mouseDown = undefined;
+    this.mouseDown = undefined as any;
     this.lastOffsetX = 0;
     this.lastOffsetY = 0;
     this.clearDock();
-    this.dragRect = undefined;
-    this.initActiveRect = undefined;
+    this.dragRect = undefined as any;
+    this.initActiveRect = undefined as any;
     this.render();
   };
 

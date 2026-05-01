@@ -4167,7 +4167,7 @@ export class Canvas {
             this.store.data.pens.splice(i, 1);
             this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
-              pen.calculative = {worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
+              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
             }
             pen.calculative!.canvas = this;
             this.store.animates.delete(pen);
@@ -4233,7 +4233,7 @@ export class Canvas {
         action.pens!.reverse().forEach((aPen) => {
           const pen = deepClone(aPen, true);
           if (!pen.calculative) {
-            pen.calculative = {worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
+            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1
@@ -4284,7 +4284,7 @@ export class Canvas {
             this.store.data.pens.splice(i, 1);
             this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
-              pen.calculative = {worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
+              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
             }
             pen.calculative!.canvas = this;
             this.store.animates.delete(pen);
@@ -4296,7 +4296,7 @@ export class Canvas {
         pens.reverse().forEach((aPen) => {
           const pen = deepClone(aPen, true);
           if (!pen.calculative) {
-            pen.calculative = {worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
+            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] };
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1

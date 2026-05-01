@@ -613,7 +613,7 @@ export interface Pen extends Rect {
 
     layer?: number;
 
-    canvas?: Canvas;
+    canvas: Canvas;
 
     iframe?: string;
     video?: string;

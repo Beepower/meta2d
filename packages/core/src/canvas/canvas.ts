@@ -735,24 +735,24 @@ export class Canvas {
 
   onkeydown = (e: KeyboardEvent) => {
     if (
-      this.store.data.locked >= LockState.DisableEdit &&
+      (this.store.data.locked ?? LockState.None) >= LockState.DisableEdit &&
       (e.target as HTMLElement).tagName !== 'INPUT' &&
       (e.target as HTMLElement).tagName !== 'TEXTAREA' &&
       !(e.target as HTMLElement).dataset.meta2dIgnore
     ) {
-      this.store.active.forEach((pen) => {
+      this.store.active!.forEach((pen) => {
         pen.onKeyDown?.(pen, e.key);
       });
     }
     if (
-      this.store.data.locked >= LockState.DisableEdit ||
+      (this.store.data.locked ?? LockState.None) >= LockState.DisableEdit ||
       (e.target as HTMLElement).tagName === 'INPUT' ||
       (e.target as HTMLElement).tagName === 'TEXTAREA' ||
       (e.target as HTMLElement).dataset.meta2dIgnore
     ) {
       return;
     }
-    if (this.store.options.unavailableKeys.includes(e.key)) {
+    if (this.store.options.unavailableKeys?.includes(e.key)) {
       return;
     }
     if (!this.keyOptions) {
@@ -798,8 +798,8 @@ export class Canvas {
         break;
       case 'Shift':
         if (
-          this.store.active.length === 1 &&
-          this.store.active[0].type &&
+          this.store.active!.length === 1 &&
+          this.store.active![0].type &&
           this.store.activeAnchor
         ) {
           this.toggleAnchorHand();
@@ -815,9 +815,9 @@ export class Canvas {
           const to = getToAnchor(this.drawingLine)!;
           if (to !== this.drawingLine.calculative!.activeAnchor) {
             deleteTempAnchor(this.drawingLine);
-            this.drawingLine.calculative!.worldAnchors.push(to);
+            this.drawingLine.calculative!.worldAnchors!.push(to);
           } else {
-            this.drawingLine.calculative!.worldAnchors.push({
+            this.drawingLine.calculative!.worldAnchors!.push({
               x: to.x,
               y: to.y,
             });
@@ -870,8 +870,8 @@ export class Canvas {
         if (
           this.store.activeAnchor &&
           this.store.active &&
-          this.store.active.length === 1 &&
-          this.store.active[0].type
+          this.store.active!.length === 1 &&
+          this.store.active![0].type
         ) {
           this.moveLineAnchor(
             { x: this.store.activeAnchor.x + x, y: this.store.activeAnchor.y },
@@ -906,8 +906,8 @@ export class Canvas {
         if (
           this.store.activeAnchor &&
           this.store.active &&
-          this.store.active.length === 1 &&
-          this.store.active[0].type
+          this.store.active!.length === 1 &&
+          this.store.active![0].type
         ) {
           this.moveLineAnchor(
             { x: this.store.activeAnchor.x, y: this.store.activeAnchor.y + y },
@@ -934,8 +934,8 @@ export class Canvas {
         if (
           this.store.activeAnchor &&
           this.store.active &&
-          this.store.active.length === 1 &&
-          this.store.active[0].type
+          this.store.active!.length === 1 &&
+          this.store.active![0].type
         ) {
           this.moveLineAnchor(
             { x: this.store.activeAnchor.x + x, y: this.store.activeAnchor.y },
@@ -978,8 +978,8 @@ export class Canvas {
         if (
           this.store.activeAnchor &&
           this.store.active &&
-          this.store.active.length === 1 &&
-          this.store.active[0].type
+          this.store.active!.length === 1 &&
+          this.store.active![0].type
         ) {
           this.moveLineAnchor(
             { x: this.store.activeAnchor.x, y: this.store.activeAnchor.y + y },
@@ -991,13 +991,13 @@ export class Canvas {
         break;
       case 'd':
       case 'D':
-        if (!this.store.active[0]?.locked) {
+        if (!this.store.active![0]?.locked) {
           this.removeAnchorHand();
         }
         break;
       case 'h':
       case 'H':
-        if (!this.store.active[0]?.locked) {
+        if (!this.store.active![0]?.locked) {
           this.addAnchorHand();
         }
         break;
@@ -1012,7 +1012,7 @@ export class Canvas {
           if (e.shiftKey){
             this.parent.uncombine();
           }else{
-            if(this.store.active.length > 1){
+            if(this.store.active!.length > 1){
               this.parent.combine(this.store.active);
             }
           }
@@ -1031,9 +1031,9 @@ export class Canvas {
         if (
           !this.store.data.locked &&
           this.hoverType === HoverType.LineAnchor &&
-          this.store.hover === this.store.active[0]
+          this.store.hover === this.store.active![0]
         ) {
-          this.splitLine(this.store.active[0], this.store.hoverAnchor);
+          this.splitLine(this.store.active![0], this.store.hoverAnchor);
         }
         // 保存
         (e.ctrlKey || e.metaKey) &&
@@ -1105,7 +1105,7 @@ export class Canvas {
       case 'Enter':
         if (this.drawingLineName) {
           this.finishDrawline(true);
-          if (this.store.active[0].anchors[0].connectTo) {
+          if (this.store.active![0].anchors[0].connectTo) {
             this.drawingLineName = '';
           } else {
             this.drawingLineName = this.store.options.drawingLineName;
@@ -1113,7 +1113,7 @@ export class Canvas {
         }
 
         if (this.store.active) {
-          this.store.active.forEach((pen) => {
+          this.store.active!.forEach((pen) => {
             if (pen.type) {
               pen.close = !pen.close;
               if(pen.close){
@@ -1136,7 +1136,7 @@ export class Canvas {
         this.drawingLineName = undefined;
         this.stopPencil();
         if (this.store.active) {
-          this.store.active.forEach((pen) => {
+          this.store.active!.forEach((pen) => {
             if (pen.type) {
             }else{
               //图元退出编辑模式
@@ -1637,7 +1637,7 @@ export class Canvas {
   }
 
   ontouchstart = (e: TouchEvent) => {
-    this.lastTouchY = e.touches[0].clientY
+    this.lastTouchY = e.touches[0]!.clientY
     if (this.store.data.locked === LockState.Disable) {
       return;
     }
@@ -1657,18 +1657,18 @@ export class Canvas {
     }
     this.touchStartTimer = setTimeout(() => {
       this.touchStart = performance.now();
-      const x = e.touches[0].pageX - this.clientRect.x;
-      const y = e.touches[0].pageY - this.clientRect.y;
+      const x = e.touches[0]!.pageX - this.clientRect!.x;
+      const y = e.touches[0]!.pageY - this.clientRect!.y;
       const pos: Point = { x, y };
       this.calibrateMouse(pos);
       this.getHover(pos);
       this.onMouseDown({
         x,
         y,
-        clientX: e.touches[0].clientX,
-        clientY: e.touches[0].clientY,
-        pageX: e.touches[0].pageX,
-        pageY: e.touches[0].pageY,
+        clientX: e.touches[0]!.clientX,
+        clientY: e.touches[0]!.clientY,
+        pageX: e.touches[0]!.pageX,
+        pageY: e.touches[0]!.pageY,
         ctrlKey: e.ctrlKey || e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,
@@ -1678,20 +1678,20 @@ export class Canvas {
       if (e.touches.length === 2) {
         this.mouseDown = undefined;
         this.initTouchDis = Math.hypot(
-          e.touches[0].pageX - e.touches[1].pageX,
-          e.touches[0].pageY - e.touches[1].pageY
+          e.touches[0]!.pageX - e.touches[1]!.pageX,
+          e.touches[0]!.pageY - e.touches[1]!.pageY
         );
         this.initScale = this.store.data.scale;
         this.startTouches = e.touches;
         this.touchCenter = {
           x:
-            e.touches[0].pageX +
-            (e.touches[1].pageX - e.touches[0].pageX) / 2 -
-            this.clientRect.x,
+            e.touches[0]!.pageX +
+            (e.touches[1]!.pageX - e.touches[0]!.pageX) / 2 -
+            this.clientRect!.x,
           y:
-            e.touches[0].pageY +
-            (e.touches[1].pageY - e.touches[0].pageY) / 2 -
-            this.clientRect.y,
+            e.touches[0]!.pageY +
+            (e.touches[1]!.pageY - e.touches[0]!.pageY) / 2 -
+            this.clientRect!.y,
         };
         this.startDistance = this.getDistance(e.touches[0], e.touches[1]);
         this.startCenter = this.getCenter(e.touches[0], e.touches[1]);
@@ -1705,10 +1705,10 @@ export class Canvas {
           e: {
             x,
             y,
-            clientX: e.touches[0].clientX,
-            clientY: e.touches[0].clientY,
-            pageX: e.touches[0].pageX,
-            pageY: e.touches[0].pageY,
+            clientX: e.touches[0]!.clientX,
+            clientY: e.touches[0]!.clientY,
+            pageX: e.touches[0]!.pageX,
+            pageY: e.touches[0]!.pageY,
           },
           clientRect: this.clientRect,
         });
@@ -1736,8 +1736,8 @@ export class Canvas {
     const touches = event.touches;
     const len = touches.length;
 
-    const x = event.touches[0].pageX - this.clientRect.x;
-    const y = event.touches[0].pageY - this.clientRect.y;
+    const x = event.touches[0].pageX - this.clientRect!.x;
+    const y = event.touches[0].pageY - this.clientRect!.y;
     if (len === 1) {
       if (this.store.options.scroll && this.scroll && !this.store.options.scrollButScale) {
         let diff = this.lastTouchY - event.touches[0].clientY;
@@ -1804,7 +1804,7 @@ export class Canvas {
 
       if (this.touchMoving) {
         if (
-          (this.store.data.locked >= LockState.DisableMove &&
+          ((this.store.data.locked ?? LockState.None) >= LockState.DisableMove &&
             this.store.data.locked !== LockState.DisableScale) ||
             this.store.data.disableScale ||
             this.store.options.disableScale
@@ -1836,8 +1836,8 @@ export class Canvas {
     this.lastOffsetX = 0;
     this.lastOffsetY = 0;
 
-    const x = event.changedTouches[0].pageX - this.clientRect.x;
-    const y = event.changedTouches[0].pageY - this.clientRect.y;
+    const x = event.changedTouches[0].pageX - this.clientRect!.x;
+    const y = event.changedTouches[0].pageY - this.clientRect!.y;
     setTimeout(() => { //ontouchstart防抖之后
       this.onMouseUp({
         x,
@@ -2164,8 +2164,8 @@ export class Canvas {
         case HoverType.Node:
         case HoverType.Line:
           if (this.store.hover) {
-            if(this.store.active?.length && this.store.active.length === 1){
-              if(this.store.hover.id === this.store.active[0]!.id){
+            if(this.store.active?.length && this.store.active!.length === 1){
+              if(this.store.hover.id === this.store.active![0]!.id){
                 //准备移动子图元
                 this.calcActiveRect();
                 break;
@@ -2311,7 +2311,7 @@ export class Canvas {
       if (this.mouseRight === MouseRight.Down) {
         this.mouseRight = MouseRight.Translate;
       }
-      const activePen = this.store.active[0];
+      const activePen = this.store.active![0];
       if (
         activePen &&
         this.store.data.locked &&
@@ -2667,11 +2667,11 @@ export class Canvas {
     if (
       this.hoverType === HoverType.LineAnchor &&
       this.store.hover &&
-      this.store.active[0] &&
-      this.store.active[0].name === 'line' &&
-      this.store.active[0] !== this.store.hover
+      this.store.active![0] &&
+      this.store.active![0].name === 'line' &&
+      this.store.active![0] !== this.store.hover
     ) {
-      const line = this.store.active[0];
+      const line = this.store.active![0];
       const from = getFromAnchor(line)!;
       const to = getToAnchor(line)!;
       if (this.store.hoverAnchor) {
@@ -2687,7 +2687,7 @@ export class Canvas {
           (isActiveFrom || isActiveTo)
         ) {
           // 合并连线
-          const hoverAnchors: Point[] = hover.calculative!.worldAnchors.map(
+          const hoverAnchors: Point[] = hover.calculative!.worldAnchors!.map(
             (anchor) => {
               return {
                 ...anchor,
@@ -2880,8 +2880,8 @@ export class Canvas {
       this.movingPens = undefined as any;
     }
 
-    if (this.store.active && this.store.active[0]) {
-      this.store.active[0].calculative!.h = undefined;
+    if (this.store.active && this.store.active![0]) {
+      this.store.active![0].calculative!.h = undefined;
     }
 
     this.mouseDown = undefined as any;
@@ -3124,7 +3124,7 @@ export class Canvas {
   private copyMovedPens() {
     // 复制行为
     this.copy(
-      this.store.active.map((pen, i: number) => {
+      this.store.active!.map((pen, i: number) => {
         // TODO: 移动只更改 x,y 值，不更新其他属性
         // 若需要更改 anchors ，注意 anchors connectTo 问题
         // const { x, y, width, height, anchors } = this.movingPens[i];
@@ -3224,7 +3224,7 @@ export class Canvas {
   }
 
   active(pens: Pen[], emit = true) {
-    if (this.store.active && this.store.active.length) {
+    if (this.store.active && this.store.active!.length) {
       emit && this.store.emitter.emit('inactive', this.store.active);
       for (const pen of this.store.active) {
         pen.calculative!.active = undefined;
@@ -3237,7 +3237,7 @@ export class Canvas {
         pen.calculative!.active = true;
         setChildrenActive(pen);
     });
-    this.store.active.push(...pens);
+    this.store.active!.push(...pens);
     this.activeRect = undefined as any;
     this.calcActiveRect();
     this.initTemplateCanvas(pens);
@@ -5736,8 +5736,8 @@ export class Canvas {
     if (this.activeRect.rotate % 90 > 80) {
       this.activeRect.rotate += 90 - (this.activeRect.rotate % 90);
     }
-    if (this.store.active.length === 1) {
-      this.lastRotate = this.store.active[0].rotate || 0;
+    if (this.store.active!.length === 1) {
+      this.lastRotate = this.store.active![0].rotate || 0;
     }
     const angle = this.activeRect.rotate - this.lastRotate;
     for (const pen of this.store.active) {
@@ -6224,10 +6224,10 @@ export class Canvas {
     this.patchFlagsLines.add(line);
     this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!](line));
     this.render();
-    this.store.active[0].calculative &&
-      (this.store.active[0].calculative.gradientAnimatePath = undefined);
+    this.store.active![0].calculative &&
+      (this.store.active![0].calculative.gradientAnimatePath = undefined);
     this.store.emitter.emit('moveLineAnchor', {
-      pen: this.store.active[0],
+      pen: this.store.active![0],
       anchor: this.store.activeAnchor,
     });
 
@@ -6280,7 +6280,7 @@ export class Canvas {
         );
       }
     }
-    const line = this.store.active[0];
+    const line = this.store.active![0];
     this.patchFlagsLines.add(line);
     this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!](line));
     this.render();
@@ -7598,7 +7598,7 @@ export class Canvas {
         this.store.hover.onShowInput(this.store.hover, e as any);
       } else {
         if(this.store.hover && this.store.hover.parentId){
-          if(this.store.active?.length===1 && this.store.active[0]!.id === this.store.hover.id){
+          if(this.store.active?.length===1 && this.store.active![0]!.id === this.store.hover.id){
             this.showInput(this.store.hover);
           }else{
             this.store.pens[this.store.hover.parentId]!.children!.forEach((id)=>{
@@ -8393,8 +8393,8 @@ export class Canvas {
       this.updateLines(pen, true);
       if (
         this.store.active &&
-        this.store.active.length &&
-        pen.id === this.store.active[0].id
+        this.store.active!.length &&
+        pen.id === this.store.active![0].id
       ) {
         this.calcActiveRect();
       }
@@ -8838,10 +8838,10 @@ export class Canvas {
     if (
       this.store.activeAnchor &&
       this.store.active &&
-      this.store.active.length === 1 &&
-      this.store.active[0].type
+      this.store.active!.length === 1 &&
+      this.store.active![0].type
     ) {
-      const initPens = [deepClone(this.store.active[0], true)];
+      const initPens = [deepClone(this.store.active![0], true)];
 
       if (!this.store.activeAnchor.prev) {
         if (!this.store.activeAnchor.next) {
@@ -8853,18 +8853,18 @@ export class Canvas {
         }
         this.store.activeAnchor.prev = { ...this.store.activeAnchor.next };
         rotatePoint(this.store.activeAnchor.prev, 180, this.store.activeAnchor);
-        this.initLineRect(this.store.active[0]);
+        this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
       } else if (!this.store.activeAnchor.next) {
         this.store.activeAnchor.next = { ...this.store.activeAnchor.prev };
         rotatePoint(this.store.activeAnchor.next, 180, this.store.activeAnchor);
-        this.initLineRect(this.store.active[0]);
+        this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
       }
 
       this.pushHistory({
         type: EditType.Update,
-        pens: [deepClone(this.store.active[0], true)],
+        pens: [deepClone(this.store.active![0], true)],
         initPens,
       });
     }
@@ -8874,29 +8874,29 @@ export class Canvas {
     if (
       this.store.activeAnchor &&
       this.store.active &&
-      this.store.active.length === 1 &&
-      this.store.active[0].type
+      this.store.active!.length === 1 &&
+      this.store.active![0].type
     ) {
-      const initPens = [deepClone(this.store.active[0], true)];
+      const initPens = [deepClone(this.store.active![0], true)];
 
       if (this.hoverType === HoverType.LineAnchorPrev) {
         this.store.activeAnchor.prev = undefined;
-        this.initLineRect(this.store.active[0]);
+        this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
       } else if (this.hoverType === HoverType.LineAnchorNext) {
         this.store.activeAnchor.next = undefined;
-        this.initLineRect(this.store.active[0]);
+        this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
       } else {
         this.store.activeAnchor.prev = undefined;
         this.store.activeAnchor.next = undefined;
-        this.initLineRect(this.store.active[0]);
+        this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
       }
 
       this.pushHistory({
         type: EditType.Update,
-        pens: [deepClone(this.store.active[0])],
+        pens: [deepClone(this.store.active![0])],
         initPens,
       });
     }

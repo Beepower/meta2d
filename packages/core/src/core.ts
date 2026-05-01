@@ -4002,7 +4002,7 @@ export class Meta2d {
 
     if (
       !this.store.data.locked &&
-      this.store.active.length &&
+      this.store.active!.length &&
       !this.canvas.movingPens
     ) {
       // 移动过程中，不重算 activeRect
@@ -6702,8 +6702,8 @@ export class Meta2d {
     };
     this.addPens([line]);
 
-    connectLine(from, fromAnchor, line, line.calculative!.worldAnchors[0]);
-    connectLine(to, toAnchor, line, line.calculative!.worldAnchors[1]);
+    connectLine(from, fromAnchor, line, line.calculative!.worldAnchors![0]);
+    connectLine(to, toAnchor, line, line.calculative!.worldAnchors![1]);
     line.calculative!.active = false;
     this.canvas.updateLines(line);
     this.canvas.updateLines(from);

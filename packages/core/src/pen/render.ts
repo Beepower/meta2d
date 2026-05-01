@@ -1936,24 +1936,24 @@ export function ctxDrawPath(
       ctx.lineCap = 'butt';
       path_from = new Path2D();
       path_from.moveTo(
-        pen.calculative!.worldAnchors[0].x,
-        pen.calculative!.worldAnchors[0].y
+        pen.calculative!.worldAnchors![0].x,
+        pen.calculative!.worldAnchors![0].y
       );
       path_from.lineTo(
-        pen.calculative!.worldAnchors[0].x,
-        pen.calculative!.worldAnchors[0].y
+        pen.calculative!.worldAnchors![0].x,
+        pen.calculative!.worldAnchors![0].y
       );
     }
     if (pen.toLineCap && pen.toLineCap !== 'butt') {
       ctx.lineCap = 'butt';
       path_to = new Path2D();
       path_to.moveTo(
-        pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1].x,
-        pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1].y
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1].x,
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1].y
       );
       path_to.lineTo(
-        pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1].x,
-        pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1].y
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1].x,
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1].y
       );
     }
   }
@@ -2605,14 +2605,14 @@ function computeLineDashSegments(lineLength: number, dashArray: number[], offset
 function calculateLineFrameStates(line:Pen,offsetInstance:number = 0) {
   let path:SVGGeometryElement
   let from:Point = null
-  line.calculative!.worldAnchors.forEach(pt=>{
+  line.calculative!.worldAnchors!.forEach(pt=>{
     if (from) {
       path = createSvgPath(path,from,from.next,pt.prev,pt)
     }
     from = pt;
   })
   if(line.close){
-    let pt = line.calculative!.worldAnchors[0]
+    let pt = line.calculative!.worldAnchors![0]
     path = createSvgPath(path,from,from.next,pt.prev,pt)
   }
 
@@ -3144,12 +3144,12 @@ export function deleteTempAnchor(pen: Pen) {
     }
     // 拖拽终点
     else if (to === pen.calculative!.activeAnchor) {
-      pen.calculative!.worldAnchors = [pen.calculative!.worldAnchors[0]];
+      pen.calculative!.worldAnchors = [pen.calculative!.worldAnchors![0]];
     }
     // 拖拽起点
-    else if (pen.calculative!.worldAnchors[0] === pen.calculative!.activeAnchor) {
+    else if (pen.calculative!.worldAnchors![0] === pen.calculative!.activeAnchor) {
       pen.calculative!.worldAnchors = [
-        pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1],
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1],
       ];
     }
   }
@@ -3179,7 +3179,7 @@ export function connectLine(
   }
 
   if (anchor.twoWay === TwoWay.In) {
-    if (line.calculative!.worldAnchors.length === 1) {
+    if (line.calculative!.worldAnchors!.length === 1) {
       return;
     }
     const to = getToAnchor(line)!;
@@ -3328,7 +3328,7 @@ export function getFromAnchor(pen: Pen) {
     return;
   }
 
-  return pen.calculative!.worldAnchors[0];
+  return pen.calculative!.worldAnchors![0];
 }
 
 export function getToAnchor(pen: Pen) {
@@ -3336,7 +3336,7 @@ export function getToAnchor(pen: Pen) {
     return;
   }
 
-  return pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1];
+  return pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1];
 }
 
 export function setNodeAnimate(pen: Pen, now: number) {

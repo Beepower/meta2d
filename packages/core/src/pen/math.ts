@@ -150,7 +150,7 @@ function calcDockByPoints(
       (!calcActive && active) || // 如果不计算活动层，则过滤掉活动层
       rectInFourAngRect(paddingRect, worldRect) || // 水平和垂直方向 无重合
       (pen.type &&
-        store.active.some((active) => isConnectLine(store, active, pen)))
+        store.active!.some((active) => isConnectLine(store, active, pen)))
     ) {
       return;
     }

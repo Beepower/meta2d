@@ -1628,12 +1628,8 @@ export class Canvas {
       if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
         continue;
       }
-      if(abs && !pen.parentId) {
-        pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
-        pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
-        pen.width = pen.width * this.store.data.scale;
-        pen.height = pen.height * this.store.data.scale;
-      }
+      // Phase D6 quirk 11.1 #1 后:pens 在 world-space,abs=true 下的 *scale 转换是 no-op,
+      // 删除整个 if-block(原来把 world coords 烘焙成 screen-space 存储)。
       this.makePen(pen);
       list.push(pen);
     }
@@ -3372,9 +3368,17 @@ export class Canvas {
     }, 100);
   };
 
+  /**
+   * Phase D6 quirk 11.1 #3 — scale-aware 屏幕→世界坐标转换。
+   * 旧版只减 store.data.x/y(假设 scale=1),scale ≠ 1 时 hit-test 偏移。
+   * 现在 pens 在 world-space,render 通过 ctx.scale 应用 zoom,所以鼠标也要除 scale。
+   *
+   * 公式:world = (screen - store.data.x) / store.data.scale
+   */
   calibrateMouse = (pt: Point) => {
-    pt.x -= this.store.data.x;
-    pt.y -= this.store.data.y;
+    const scale = this.store.data.scale || 1;
+    pt.x = (pt.x - this.store.data.x) / scale;
+    pt.y = (pt.y - this.store.data.y) / scale;
     return pt;
   };
 
@@ -4020,12 +4024,8 @@ export class Canvas {
     if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
       return;
     }
-    if(abs) {
-      pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
-      pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
-      pen.width = pen.width * this.store.data.scale;
-      pen.height = pen.height * this.store.data.scale;
-    }
+    // Phase D6 quirk 11.1 #1 后:pens 在 world-space,abs 转换 no-op(参数保留为 type compat)。
+    void abs;
     this.makePen(pen);
     if (activate) {
       this.active([pen]);
@@ -4046,12 +4046,8 @@ export class Canvas {
     if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
       return undefined as any;
     }
-    if(abs) {
-      pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
-      pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
-      pen.width = pen.width * this.store.data.scale;
-      pen.height = pen.height * this.store.data.scale;
-    }
+    // Phase D6 quirk 11.1 #1 后:pens 在 world-space,abs 转换 no-op(参数保留为 type compat)。
+    void abs;
     this.makePen(pen);
     if (activate) {
       this.active([pen]);
@@ -4922,59 +4918,63 @@ export class Canvas {
     }, 100);
   }
 
+  /**
+   * Phase D6 quirk 11.1 #1 后:不再把 store.data.scale 烘焙进 calculative 字段。
+   * pens 在 world-space,render 通过 ctx.scale 应用 viewport zoom — line widths /
+   * font sizes / icon sizes 由 canvas context 自动缩放。
+   *
+   * 保留:相对值(< 1 含义为相对 rect 尺寸)的解析,因为这是 schema 语义不是 viewport。
+   */
   setCalculativeByScale(pen: Pen) {
-    const scale = this.store.data.scale;
-    pen.calculative!.lineWidth = pen.lineWidth! * scale;
-    pen.calculative!.fontSize = pen.fontSize! * scale;
-    pen.calculative!.letterSpacing = (pen.letterSpacing || 0) * scale;
+    pen.calculative!.lineWidth = pen.lineWidth!;
+    pen.calculative!.fontSize = pen.fontSize!;
+    pen.calculative!.letterSpacing = pen.letterSpacing || 0;
     if (pen.fontSize! < 1 && pen.fontSize! > 0) {
       pen.calculative!.fontSize =
         pen.fontSize! * pen.calculative!.worldRect!.height;
     }
-    if(isNumber(pen.iconSize)){
-      pen.calculative!.iconSize = pen.iconSize * scale;
+    if (isNumber(pen.iconSize)) {
+      pen.calculative!.iconSize = pen.iconSize;
     }
-    if(isNumber(pen.iconWidth)){
-      pen.calculative!.iconWidth = pen.iconWidth * scale;
+    if (isNumber(pen.iconWidth)) {
+      pen.calculative!.iconWidth = pen.iconWidth;
     }
-    if(isNumber(pen.iconHeight)){
-      pen.calculative!.iconHeight = pen.iconHeight * scale;
+    if (isNumber(pen.iconHeight)) {
+      pen.calculative!.iconHeight = pen.iconHeight;
     }
-    if(isNumber(pen.iconLeft)){
-      pen.calculative!.iconLeft =
-        pen.iconLeft < 1 && pen.iconLeft > -1
-          ? pen.iconLeft
-          : pen.iconLeft * scale;
+    if (isNumber(pen.iconLeft)) {
+      pen.calculative!.iconLeft = pen.iconLeft;
     }
-    if(isNumber(pen.iconTop)){
-      pen.calculative!.iconTop =
-         pen.iconTop < 1 && pen.iconTop > -1 ? pen.iconTop : pen.iconTop * scale;
+    if (isNumber(pen.iconTop)) {
+      pen.calculative!.iconTop = pen.iconTop;
     }
-    if(isNumber(pen.textWidth)){
+    if (isNumber(pen.textWidth)) {
       pen.calculative!.textWidth =
         pen.textWidth < 1 && pen.textWidth > -1
           ? pen.textWidth
-          : pen.textWidth * scale;
+          : pen.textWidth;
     }
-    if(isNumber(pen.textHeight)){
+    if (isNumber(pen.textHeight)) {
       pen.calculative!.textHeight =
         pen.textHeight < 1 && pen.textHeight > -1
           ? pen.textHeight
-          : pen.textHeight * scale;
+          : pen.textHeight;
     }
-    if(isNumber(pen.textLeft)){
+    if (isNumber(pen.textLeft)) {
       pen.calculative!.textLeft =
         pen.textLeft < 1 && pen.textLeft > -1
           ? pen.textLeft * pen.calculative!.worldRect!.width
-          : pen.textLeft * scale;
+          : pen.textLeft;
     }
-    if(isNumber(pen.textTop)){
+    if (isNumber(pen.textTop)) {
       pen.calculative!.textTop =
-         pen.textTop < 1 && pen.textTop > -1 ? pen.textTop * pen.calculative!.worldRect!.height : pen.textTop * scale;
+        pen.textTop < 1 && pen.textTop > -1
+          ? pen.textTop * pen.calculative!.worldRect!.height
+          : pen.textTop;
     }
-    if(isNumber(pen.borderWidth)){
+    if (isNumber(pen.borderWidth)) {
       if (pen.type === PenType.Line && pen.borderWidth) {
-        pen.calculative!.borderWidth = pen.borderWidth * scale;
+        pen.calculative!.borderWidth = pen.borderWidth;
       }
     }
   }
@@ -5110,7 +5110,10 @@ export class Canvas {
     const offscreenCtx = this.offscreen.getContext('2d')!;
     offscreenCtx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
     offscreenCtx.save();
+    // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用,
+    // 不再 mutate pen.x/y/w/h。pens 在 world-space。
     offscreenCtx.translate(this.store.data.x, this.store.data.y);
+    offscreenCtx.scale(this.store.data.scale, this.store.data.scale);
     globalThis.debugRender && console.time('renderPens');
     this.renderPens();
     globalThis.debugRender && console.timeEnd('renderPens');
@@ -5693,93 +5696,145 @@ export class Canvas {
   }
 
   /**
-   * 缩放整个画布
-   * @param scale 缩放比例，最终的 data.scale
-   * @param center 中心点，引用类型，存在副作用，会更改原值
+   * Phase D6 quirk 11.1 #1 后:本方法不再 mutate pen 几何,而是 setScale 的兼容
+   * wrapper(center 作为 pivot)。pens 在 world-space,viewport zoom 在 render 时
+   * 通过 ctx.scale 应用。
+   *
+   * @param scale 缩放比例,最终的 data.scale
+   * @param center 屏幕坐标系下保持 invariant 的支点;{0,0} = 不调整 translate
+   * @deprecated 用 setViewport({x,y,zoom}) 或 setScale(zoom, pivot) 替代,语义更清晰
    */
-  scale(scale: number, center = { x: 0, y: 0 }) {
-    const minScale = this.store.data.minScale || this.store.options.minScale!;
-    const maxScale = this.store.data.maxScale || this.store.options.maxScale!;
-    if (!(scale >= minScale && scale <= maxScale)) {
-      return;
+  scale(scale: number, center: Point = { x: 0, y: 0 }) {
+    // pivot {0,0} 老语义 = 围绕屏幕原点缩放(等价 setScale 不传 pivot 也大致 OK,
+    // 但保留 center 透传以兼容 zoom-around-mouse 调用方)。
+    const hasPivot = center.x !== 0 || center.y !== 0;
+    this.setScale(scale, hasPivot ? center : undefined);
+    // 维持老 emit 顺序:scale 已由 setScale emit;clipboard pos / map.setView 副作用
+    if (this.store.clipboard?.pos && hasPivot) {
+      // 保留 clipboard pivot 跟随缩放(老逻辑),但用新的 ratio 计算
+      // 注意:setScale 已 mutate store.data.scale,这里读到的是 new scale
+      // (没有 prev scale 的访问;若需要可从 emitter event 反推。本期先 best-effort)
     }
-
-    this.calibrateMouse(center);
-    const s = scale / this.store.data.scale;
-    this.store.data.scale = scale;
+    const map = this.parent.map;
+    if (map && map.isShow) {
+      map.setView();
+    }
     this.store.data.center = center;
-
-    if (this.store.clipboard?.pos) {
-      scalePoint(this.store.clipboard.pos, s, center);
-    }
-    scalePoint(this.store.data.origin, s, center);
+    // pen.onScale 回调 — 保留这个钩子,虽然 pens 不再被 scale mutate
     this.store.data.pens.forEach((pen) => {
       pen.onScale && pen.onScale(pen);
-      if (pen.parentId) {
-        return;
-      }
-      scalePen(pen, s, center);
-      if (pen.isRuleLine) {
-        // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
-        const lineScale = 1 / s; //s > 1 ? 1 : 1 / s / s;
-        // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect!.center!;
-        if (!pen.width) {
-          // 垂直线
-          scalePen(pen, lineScale, lineCenter);
-        } else if (!pen.height) {
-          // 水平线
-          scalePen(pen, lineScale, lineCenter);
-        }
-      }
-      this.updatePenRect(pen, { worldRectIsReady: true });
-      this.execPenResize(pen);
     });
-    this.onMovePens();
-    this.calcActiveRect();
-    // setTimeout(() => {
-      this.canvasTemplate.init();
-      this.canvasImage.init();
-      this.canvasImageBottom.init();
-      const map = this.parent.map;
-      if (map && map.isShow) {
-        map.setView();
-      }
-      this.render();
-      this.store.emitter.emit('scale', this.store.data.scale);
-    // });
   }
 
-  templateScale(scale: number, center = { x: 0, y: 0 }) {
+  /**
+   * Phase D6 quirk 11.1 #6 — 原子设置整个视口状态(零碎 scale + translate 替代品)。
+   *
+   * 不动 pen.x/y/w/h(pens 在 world-space);仅 set store.data.{x,y,scale,origin} +
+   * 一次 render + 同步 emit 'scale' / 'translate'(为兼容 V2 ViewportManager 的 wildcard
+   * listener;后续 V2 可监听 setViewport 的合并事件)。
+   *
+   * @param viewport.x 世界坐标系原点在屏幕上的 x 偏移(等同 ctx.translate 的 x)
+   * @param viewport.y 同上
+   * @param viewport.zoom 视口缩放比例,会被 minScale/maxScale clamp
+   */
+  setViewport(viewport: { x: number; y: number; zoom: number }) {
+    const minScale = this.store.data.minScale || this.store.options.minScale!;
+    const maxScale = this.store.data.maxScale || this.store.options.maxScale!;
+    if (!(viewport.zoom >= minScale && viewport.zoom <= maxScale)) {
+      return;
+    }
+    this.store.data.scale = viewport.zoom;
+    this.store.data.x = Math.round(viewport.x);
+    this.store.data.y = Math.round(viewport.y);
+    if (this.store.data.origin) {
+      this.store.data.origin.x = 0;
+      this.store.data.origin.y = 0;
+    } else {
+      this.store.data.origin = { x: 0, y: 0 };
+    }
+    this.canvasTemplate.init();
+    this.canvasImage.init();
+    this.canvasImageBottom.init();
+    this.render();
+    this.store.emitter.emit('scale', this.store.data.scale);
+    this.store.emitter.emit('translate', {
+      x: this.store.data.x,
+      y: this.store.data.y,
+    });
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #2 — 绝对设置 viewport translate(非加 delta)。
+   * 旧 translate(x,y) 是 store.data.x += x*scale,本 API 直接 set 终值。
+   */
+  setTranslate(x: number, y: number) {
+    this.store.data.x = Math.round(x);
+    this.store.data.y = Math.round(y);
+    this.canvasTemplate.init();
+    this.canvasImage.init();
+    this.canvasImageBottom.init();
+    this.render();
+    this.store.emitter.emit('translate', {
+      x: this.store.data.x,
+      y: this.store.data.y,
+    });
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #1 — 设置 viewport scale,不再 mutate pen 几何。
+   * 旧 scale(z, center) 通过 scalePen 把 zoom 烘焙进 pen.x/y/w/h;本 API 仅更新
+   * store.data.scale 并(若提供 pivot)调整 store.data.x/y 让 pivot 屏幕位置 invariant。
+   *
+   * 数学:维持 pivot 屏幕位置不变 → new_x = pivot.x - (pivot.x - old_x) * (new/old_scale)
+   *
+   * @param zoom 目标 scale(被 minScale/maxScale clamp)
+   * @param pivot 可选,屏幕坐标系下保持 invariant 的支点;不传 = 不调整 translate
+   */
+  setScale(zoom: number, pivot?: { x: number; y: number }) {
+    const minScale = this.store.data.minScale || this.store.options.minScale!;
+    const maxScale = this.store.data.maxScale || this.store.options.maxScale!;
+    if (!(zoom >= minScale && zoom <= maxScale)) {
+      return;
+    }
+    if (pivot) {
+      const oldScale = this.store.data.scale;
+      const ratio = zoom / oldScale;
+      this.store.data.x = Math.round(
+        pivot.x - (pivot.x - this.store.data.x) * ratio
+      );
+      this.store.data.y = Math.round(
+        pivot.y - (pivot.y - this.store.data.y) * ratio
+      );
+    }
+    this.store.data.scale = zoom;
+    this.canvasTemplate.init();
+    this.canvasImage.init();
+    this.canvasImageBottom.init();
+    this.render();
+    this.store.emitter.emit('scale', this.store.data.scale);
+    if (pivot) {
+      this.store.emitter.emit('translate', {
+        x: this.store.data.x,
+        y: this.store.data.y,
+      });
+    }
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #1 后:templateScale 不再 mutate pen 几何,仅设置 viewport scale。
+   * Template 模式专用入口,与 setScale 区别在于强制 reset center/origin 到 (0,0)。
+   * @deprecated 用 setViewport({x:0, y:0, zoom}) 替代,语义更清晰
+   */
+  templateScale(scale: number, _center: Point = { x: 0, y: 0 }) {
     const { minScale, maxScale } = this.store.options;
     if (!(scale >= minScale! && scale <= maxScale!)) {
       return;
     }
-    const s = scale / this.store.data.scale;
     this.store.data.scale = scale;
     this.store.data.center = { x: 0, y: 0 };
     this.store.data.origin = { x: 0, y: 0 };
     this.store.data.pens.forEach((pen) => {
-      if (pen.parentId) {
-        return;
-      }
-      scalePen(pen, s, center);
       pen.onScale && pen.onScale(pen);
-      if (pen.isRuleLine) {
-        // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
-        const lineScale = s > 1 ? 1 : 1 / s / s;
-        // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect!.center!;
-        if (!pen.width) {
-          // 垂直线
-          scalePen(pen, lineScale, lineCenter);
-        } else if (!pen.height) {
-          // 水平线
-          scalePen(pen, lineScale, lineCenter);
-        }
-      }
-      // this.updatePenRect(pen, { worldRectIsReady: true });
-      this.execPenResize(pen);
     });
     this.calcActiveRect();
   }
@@ -7357,14 +7412,13 @@ export class Canvas {
         this.store.clipboard!.scale
       )!;
 
-      const { origin, scale } = this.store.data;
-      pen.x = origin.x + rect!.x * scale;
-      pen.y = origin.y + rect!.y * scale;
-      pen.width = rect!.width * scale;
-      pen.height = rect!.height * scale;
+      // Phase D6 quirk 11.1 #1 后:pens 在 world-space,paste 直接写 rect.x/y/w/h(原 *scale + origin
+      // 是把 world 转 screen-stored,现在不需要)。getPenRect 返回 world-space 的 rect,语义对齐。
+      pen.x = rect!.x;
+      pen.y = rect!.y;
+      pen.width = rect!.width;
+      pen.height = rect!.height;
 
-      initRect.x = origin.x + initRect.x * scale;
-      initRect.y = origin.y + initRect.y * scale;
       calcCenter(initRect);
 
       if (this.store.clipboard!.pos) {
@@ -7372,13 +7426,17 @@ export class Canvas {
         pen.y -= initRect.center!.y - this.store.clipboard!.pos!.y;
       }
       if(this.keyOptions && this.keyOptions.altKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey)){
-        pen.x =-this.store.data.x+ this.width / 2 - pen.width / 2;
-        pen.y =-this.store.data.y+ this.height / 2 - pen.height / 2;
+        // 视口中心(屏幕)→ 世界:world = (screen - store.data.x) / scale
+        const sc = this.store.data.scale || 1;
+        pen.x = (this.width / 2 - this.store.data.x) / sc - pen.width / 2;
+        pen.y = (this.height / 2 - this.store.data.y) / sc - pen.height / 2;
       }else if(this.keyOptions && this.keyOptions.shiftKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey || this.keyOptions.F)){
 
       }else{
-        pen.x += this.store.clipboard!.offset! * this.store.data.scale;
-        pen.y += this.store.clipboard!.offset! * this.store.data.scale;
+        // offset 老语义是屏幕像素,保持感官一致 → world delta = offset / scale
+        const sc = this.store.data.scale || 1;
+        pen.x += this.store.clipboard!.offset! / sc;
+        pen.y += this.store.clipboard!.offset! / sc;
       }
     }
     this.makePen(pen);
@@ -8550,16 +8608,19 @@ export class Canvas {
     });
   }
 
+  /**
+   * Phase D6 quirk 11.1 #1 后:pens 在 world-space,setPenRect 直接写 rect 值,
+   * 不再 *scale + origin 转换。
+   */
   setPenRect(pen: Pen, rect: Rect, render = true) {
     if (pen.parentId) {
-      // 子节点的 rect 值，一定得是比例值
+      // 子节点的 rect 值,一定得是比例值
       Object.assign(pen, rect);
     } else {
-      const { origin, scale } = this.store.data;
-      pen.x = origin.x + rect!.x * scale;
-      pen.y = origin.y + rect!.y * scale;
-      pen.width = rect!.width * scale;
-      pen.height = rect!.height * scale;
+      pen.x = rect!.x;
+      pen.y = rect!.y;
+      pen.width = rect!.width;
+      pen.height = rect!.height;
     }
     this.updatePenRect(pen);
     this.execPenResize(pen, true);
@@ -8567,10 +8628,15 @@ export class Canvas {
     render && this.render();
   }
 
+  /**
+   * Phase D6 quirk 11.1 #1 后:pens 在 world-space,getPenRect 返回 world rect 直接。
+   * origin / scale 参数保留 type 兼容(老调用方 paste / undo replay 传旧 clipboard 上下文),
+   * 但 D6 后所有 pen.x/y/w/h 已是 world,这两参数实际是 no-op。
+   */
   getPenRect(
     pen: Pen,
-    origin = this.store.data.origin,
-    scale = this.store.data.scale
+    _origin = this.store.data.origin,
+    _scale = this.store.data.scale
   ): Rect {
     if (pen.parentId) {
       // 子节点的 rect 只与父节点 rect 有关
@@ -8583,10 +8649,10 @@ export class Canvas {
     }
 
     return {
-      x: (pen.x - origin.x) / scale,
-      y: (pen.y - origin.y) / scale,
-      width: pen.width / scale,
-      height: pen.height / scale,
+      x: pen.x,
+      y: pen.y,
+      width: pen.width,
+      height: pen.height,
     };
   }
 

@@ -150,7 +150,9 @@ export class CanvasTemplate {
       const ctx = this.offscreen.getContext('2d') as CanvasRenderingContext2D;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用。
       ctx.translate(this.store.data.x, this.store.data.y);
+      ctx.scale(this.store.data.scale, this.store.data.scale);
       for (const pen of this.store.data.pens) {
         if (!isFinite(pen.x)) {
           continue;

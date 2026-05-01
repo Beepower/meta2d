@@ -212,7 +212,9 @@ export class CanvasImage {
       const ctx = this.offscreen.getContext('2d')!;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用。
       ctx.translate(this.store.data.x, this.store.data.y);
+      ctx.scale(this.store.data.scale, this.store.data.scale);
       for (const pen of this.store.data.pens) {
         //pen.calculative!.imageDrawed  只用于判断是否需要重绘整块画布，不用于判断改图片节点是否绘制过
         if (
@@ -246,7 +248,9 @@ export class CanvasImage {
       const ctx = this.animateOffsScreen.getContext('2d')!;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用。
       ctx.translate(this.store.data.x, this.store.data.y);
+      ctx.scale(this.store.data.scale, this.store.data.scale);
       for (const pen of this.store.animates) {
         if (!pen.calculative!.hasImage) {
           continue;

@@ -145,7 +145,9 @@ export class MagnifierCanvas {
       if(pen.externElement||pen.name==='gif'){
         if(pen.calculative!.img){
           domCtx.save();
+          // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用。
           domCtx.translate(this.store.data.x, this.store.data.y);
+          domCtx.scale(this.store.data.scale, this.store.data.scale);
           const { x = 0, y = 0, width = 0, height = 0 } = pen.calculative!.worldRect!;
           domCtx.drawImage(pen.calculative!.img as HTMLImageElement, x, y, width, height);
           domCtx.restore();

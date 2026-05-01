@@ -2464,12 +2464,38 @@ export class Meta2d {
     this.canvas.deleteSync(pens, canDelLocked, history);
   }
 
+  /** @deprecated 用 setViewport({x,y,zoom}) 或 setScale(zoom, pivot) 替代 (Phase D6 quirk 11.1 #1) */
   scale(scale: number, center = { x: 0, y: 0 }) {
     this.canvas.scale(scale, center);
   }
 
+  /** @deprecated 用 setTranslate(x, y) 替代 (Phase D6 quirk 11.1 #2) */
   translate(x: number, y: number) {
     this.canvas.translate(x, y);
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #6 — 原子设置整个视口状态。
+   * @see Canvas#setViewport
+   */
+  setViewport(viewport: { x: number; y: number; zoom: number }) {
+    this.canvas.setViewport(viewport);
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #2 — 绝对设置 viewport translate(非加 delta)。
+   * @see Canvas#setTranslate
+   */
+  setTranslate(x: number, y: number) {
+    this.canvas.setTranslate(x, y);
+  }
+
+  /**
+   * Phase D6 quirk 11.1 #1 — 设置 viewport scale 不动 pen 几何;支持 pivot invariant。
+   * @see Canvas#setScale
+   */
+  setScale(zoom: number, pivot?: { x: number; y: number }) {
+    this.canvas.setScale(zoom, pivot);
   }
 
   translatePens(pens: Pen[], x: number, y: number) {
@@ -5021,8 +5047,9 @@ export class Meta2d {
     if (fill && this.store.data.fits?.length) {
       this.canvas.opening = true;
     }
-    // 该方法直接更改画布的 scale 属性，所以比率应该乘以当前 scale
-    this.scale(ratio * this.store.data.scale);
+    // Phase D6 quirk 11.1 #1 后:rect = getRect() 返回 world-space 维度,
+    // ratio 即绝对 target scale,无需 * old_scale。
+    this.scale(ratio);
 
     // 5. 居中
     this.centerView();
@@ -5394,8 +5421,8 @@ export class Meta2d {
       ratio = w > h ? w : h;
     }
 
-    // 该方法直接更改画布的 scale 属性，所以比率应该乘以当前 scale
-    this.canvas.templateScale(ratio * this.store.data.scale);
+    // Phase D6 quirk 11.1 #1 后:rect 是 world,ratio 即绝对 target scale。
+    this.canvas.templateScale(ratio);
     let _rect = this.getRect();
 
     let pens = this.store.data.pens.filter((pen) => !pen.parentId);
@@ -5421,12 +5448,10 @@ export class Meta2d {
     // 2. 获取设置的留白值
     const padding = formatPadding(viewPadding);
 
-    const _width =
-      ((this.store.data.width || this.store.options.width || 0)) *
-      this.store.data.scale;
-    const _height =
-      ((this.store.data.height || this.store.options.height || 0)) *
-      this.store.data.scale;
+    // Phase D6 quirk 11.1 #1 后:data.width/height 是 world(artboard size,从未被
+     // viewport zoom 烘焙),所以不需要 * scale。比率即绝对 target scale。
+    const _width = this.store.data.width || this.store.options.width || 0;
+    const _height = this.store.data.height || this.store.options.height || 0;
     // 4. 计算缩放比例
     const w = (width - padding[1] - padding[3]) / _width;
     const h = (height - padding[0] - padding[2]) / _height;
@@ -5446,8 +5471,7 @@ export class Meta2d {
     if (fill && this.store.data.fits?.length) {
       this.canvas.opening = true;
     }
-    // 该方法直接更改画布的 scale 属性，所以比率应该乘以当前 scale
-    this.scale(ratio * this.store.data.scale);
+    this.scale(ratio);
 
     // 5. 居中
     this.centerSizeView();
@@ -5499,15 +5523,14 @@ export class Meta2d {
     const w = this.store.data.width || this.store.options.width || 0;
     const h = this.store.data.height || this.store.options.height || 0;
     if (w && h) {
-      rect = {
-        width: w * this.store.data.scale,
-        height: h * this.store.data.scale,
-      };
+      // Phase D6 quirk 11.1 #1 后:rect.width 用 world units(artboard size),
+      // 不再 * scale。两个分支的 rect 现在语义统一。
+      rect = { width: w, height: h };
     } else {
       rect = this.getRect();
     }
     const ratio = (width - padding[1] - padding[3]) / rect.width;
-    this.scale(ratio * this.store.data.scale);
+    this.scale(ratio);
 
     this.topView(padding[0]);
     if (pageMode) {
@@ -5527,7 +5550,8 @@ export class Meta2d {
     if (!WorH) {
       ratio = (height - padding[0] - padding[2]) / rect.height;
     }
-    this.scale(ratio * this.store.data.scale);
+    // Phase D6 quirk 11.1 #1 后:rect 是 world,ratio 即绝对 target scale。
+    this.scale(ratio);
     //height充满时是居中
     this.topView(padding[0]);
   }

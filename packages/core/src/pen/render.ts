@@ -1087,7 +1087,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     fill =
       pen.disabledTextColor ||
       pen.disabledColor ||
-      pSBC(0.4, getTextColor(pen, store)) ?? undefined;
+      (pSBC(0.4, getTextColor(pen, store)) ?? undefined);
   } else if (pen.calculative!.hover) {
     fill = pen.hoverTextColor || pen.hoverColor || store.styles.hoverColor;
   } else if (pen.calculative!.active) {

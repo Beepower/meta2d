@@ -5929,7 +5929,7 @@ export class Meta2d {
         break;
     }
     this.setValue(
-      { id: pen.id, ...penRect },
+      { id: pen.id!, ...penRect } as any,
       { render: false, doEvent: false }
     );
   }
@@ -5983,9 +5983,9 @@ export class Meta2d {
     for (const pen of pens) {
       const penRect = this.getPenRect(pen);
       direction === 'width' ? (penRect.x = left) : (penRect.y = left);
-      left += penRect[direction] + space;
+      left += (penRect as any)[direction] + space;
       this.setValue(
-        { id: pen.id, ...penRect },
+        { id: pen.id!, ...penRect } as any,
         { render: false, doEvent: false }
       );
     }
@@ -6012,7 +6012,7 @@ export class Meta2d {
     width?: number,
     space: number = 30
   ) {
-    const rect = this.getPenRect(getRect(pens));
+    const rect = this.getPenRect(getRect(pens) as any);
     !width && (width = rect.width);
 
     // 1. 拿到全部节点中最大的高
@@ -6034,7 +6034,7 @@ export class Meta2d {
       penRect.y = currentY + maxHeight / 2 - penRect.height / 2;
 
       this.setValue(
-        { id: pen.id, ...penRect },
+        { id: pen.id!, ...penRect } as any,
         { render: false, doEvent: false }
       );
 
@@ -6282,7 +6282,7 @@ export class Meta2d {
         layer = CanvasLayer.CanvasMain;
       }
       this.setValue(
-        { id: pen.id, canvasLayer: layer },
+        { id: pen.id!, canvasLayer: layer } as any,
         { render: false, doEvent: false, history: false }
       );
     } else if (pen.externElement || pen.name === 'gif') {
@@ -6302,7 +6302,7 @@ export class Meta2d {
         }
       }
       this.setValue(
-        { id: pen.id, zIndex },
+        { id: pen.id!, zIndex } as any,
         { render: false, doEvent: false, history: false }
       );
       pen.calculative!.singleton?.div &&
@@ -6455,11 +6455,11 @@ export class Meta2d {
           break;
         case 'in':
           // 进入该节点的线，即 线锚点的最后一个 connectTo 对应该节点
-          getToAnchor(line).connectTo === node.id && lines.push(line);
+          getToAnchor(line)?.connectTo === node.id && lines.push(line);
           break;
         case 'out':
           // 从该节点出去的线，即 线锚点的第一个 connectTo 对应该节点
-          getFromAnchor(line).connectTo === node.id && lines.push(line);
+          getFromAnchor(line)?.connectTo === node.id && lines.push(line);
           break;
       }
     });
@@ -6474,7 +6474,7 @@ export class Meta2d {
    */
   nextNode(pen: Pen): Pen[] {
     if (pen.type === PenType.Line) {
-      const toConnectTo = getToAnchor(pen).connectTo;
+      const toConnectTo = getToAnchor(pen)?.connectTo;
       const nextNode = toConnectTo ? this.store.pens[toConnectTo] : undefined;
       return nextNode ? [nextNode] : [];
     } else {
@@ -6501,7 +6501,7 @@ export class Meta2d {
    */
   previousNode(pen: Pen): Pen[] {
     if (pen.type === PenType.Line) {
-      const fromConnectTo = getFromAnchor(pen).connectTo;
+      const fromConnectTo = getFromAnchor(pen)?.connectTo;
       const preNode = fromConnectTo ? this.store.pens[fromConnectTo] : undefined;
       return preNode ? [preNode] : [];
     } else {
@@ -6529,7 +6529,7 @@ export class Meta2d {
   getNext(pen: Pen): any[] {
     if (pen.type === PenType.Line) {
       console.warn('非连线节点');
-      return;
+      return [];
     }
     const next: any[] = [];
     pen.connectedLines?.forEach(({ lineId, anchor }) => {
@@ -6537,16 +6537,16 @@ export class Meta2d {
         (_anchor) => _anchor.id === anchor
       )[0];
       const line = this.findOne(lineId);
-      if (line.anchors[0].connectTo == pen.id) {
+      if (line && line.anchors![0]!.connectTo == pen.id) {
         //from
-        const connectTo = line.anchors[line.anchors.length - 1].connectTo;
+        const connectTo = line.anchors![line.anchors!.length - 1]!.connectTo;
         if (connectTo) {
-          const _next: Pen = this.findOne(connectTo);
+          const _next: Pen = this.findOne(connectTo)!;
           const connectedLine = _next.connectedLines?.filter(
             (item) => item.lineId === line.id
           )[0];
-          const penAnchor = _next.anchors.filter(
-            (_anchor) => _anchor.id === connectedLine.anchor
+          const penAnchor = _next.anchors!.filter(
+            (_anchor) => _anchor.id === connectedLine!.anchor
           )[0];
           next.push({
             from: pen,
@@ -6578,13 +6578,13 @@ export class Meta2d {
       pen.calculative!.worldAnchors = [];
     }
     if (pen.type === PenType.Line) {
-      if (index < 0) {
-        index = pen.anchors!.length + 1 + index;
+      if (index! < 0) {
+        index = pen.anchors!.length + 1 + index!;
       }
-      if (index > pen.anchors!.length) {
+      if (index! > pen.anchors!.length) {
         index = pen.anchors!.length;
       }
-      if (index < 0) {
+      if (index! < 0) {
         index = 0;
       }
       if (
@@ -6614,7 +6614,7 @@ export class Meta2d {
           rotatePoint(
             _worldAnchor,
             pen.rotate!,
-            pen.calculative!.worldRect!.center
+            pen.calculative!.worldRect!.center!
           );
         }
       }
@@ -6634,7 +6634,7 @@ export class Meta2d {
       };
       if (pen.calculative!.worldRect) {
         if (pen.rotate! % 360) {
-          rotatePoint(anchor, -pen.rotate!, pen.calculative!.worldRect!.center);
+          rotatePoint(anchor, -pen.rotate!, pen.calculative!.worldRect!.center!);
         }
         _anchor = {
           id: _worldAnchor.id,
@@ -6651,15 +6651,15 @@ export class Meta2d {
 
     if (pen.type === PenType.Line) {
       //Line
-      pen.calculative!.worldAnchors!.splice(index, 0, _worldAnchor);
-      pen.anchors!.splice(index, 0, _anchor);
+      pen.calculative!.worldAnchors!.splice(index!, 0, _worldAnchor);
+      pen.anchors!.splice(index!, 0, _anchor!);
       this.canvas.updateLines(pen);
       this.canvas.initLineRect(pen);
       this.render();
     } else {
       //Node
       pen.calculative!.worldAnchors!.push(_worldAnchor);
-      pen.anchors!.push(_anchor);
+      pen.anchors!.push(_anchor!);
     }
   }
   /**
@@ -6812,9 +6812,9 @@ export class Meta2d {
         // 已经是其它节点的子节点，x,y,w,h 已经是百分比了
         return;
       }
-      parent.children!.push(pen.id);
+      parent.children!.push(pen.id!);
       pen.parentId = parent.id;
-      const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
+      const childRect = calcRelativeRect(pen.calculative!.worldRect!, rect);
       Object.assign(pen, childRect);
       pen.locked = pen.lockedOnCombine ?? LockState.DisableMove;
       // pen.type = PenType.Node;
@@ -6848,21 +6848,21 @@ export class Meta2d {
       if (!plugin) return;
       // 插件校验
       if (validationPlugin(plugin) && type) {
-        plugin.install(pen, option);
+        plugin.install(pen as Pen, option);
         // 若当前不存在此插件
         if (!this.penPluginMap.has(plugin)) {
-          this.penPluginMap.set(plugin, [{ [type]: pen[type], option }]);
+          this.penPluginMap.set(plugin, [{ [type]: (pen as any)[type] || '', option: option as any }]);
         } else {
-          let op = this.penPluginMap.get(plugin).find((i: any) => {
-            return i[type] === pen[type];
+          let op = this.penPluginMap.get(plugin)!.find((i: any) => {
+            return i[type] === (pen as any)[type];
           });
           // 存在替换
           if (op) {
-            op.option = option;
+            op.option = option as any;
           } else {
-            this.penPluginMap.get(plugin).push({
-              [type]: pen[type],
-              option,
+            this.penPluginMap.get(plugin)!.push({
+              [type]: (pen as any)[type] || '',
+              option: option as any,
             });
           }
         }
@@ -6885,13 +6885,13 @@ export class Meta2d {
     if (!type) return;
     plugins.forEach((pluginConfig) => {
       let plugin = pluginConfig.plugin;
-      plugin.uninstall(pen, pluginConfig.options);
+      plugin.uninstall(pen as Pen, pluginConfig.options);
       let mapList = this.penPluginMap.get(plugin);
-      let op = mapList.findIndex((i: any) => i[type] === pen[type]);
+      let op = mapList!.findIndex((i: any) => i[type] === (pen as any)[type]);
       if (op !== -1) {
-        mapList.splice(op, 1);
+        mapList!.splice(op, 1);
         // TODO 在运行时 插件卸载后是否需要移除？
-        if (mapList.length === 0) {
+        if (mapList!.length === 0) {
           this.penPluginMap.delete(plugin);
         }
       }
@@ -6900,7 +6900,7 @@ export class Meta2d {
 
   setVisible(pen: Pen, visible: boolean, render = true) {
     this.onSizeUpdate();
-    this.setValue({ id: pen.id, visible }, { render: false, doEvent: false });
+    this.setValue({ id: pen.id!, visible } as any, { render: false, doEvent: false });
     if (pen.children) {
       for (const childId of pen.children) {
         const child = this.store.pens[childId];
@@ -6936,7 +6936,7 @@ export class Meta2d {
     le5leTheme.destroyThemeSheet(this.store.id);
     this.store.emitter.all.clear(); // 内存释放
     this.canvas.destroy();
-    this.canvas = undefined;
+    this.canvas = undefined as any;
     (globalStore as any)[this.store.id] = undefined;
     if (!onlyData) {
       for (const k in globalStore) {

@@ -1207,7 +1207,7 @@ export class Meta2d {
         if (!pen.id) {
           pen.id = s8();
         }
-        !pen.calculative && (pen.calculative = { canvas: this.canvas });
+        !pen.calculative && (pen.calculative = { canvas: this.canvas, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [] });
         this.store.pens[pen.id!] = pen;
       }
       for (const pen of data.pens) {

@@ -3496,6 +3496,7 @@ export class Meta2d {
     if (pen.realTimes) {
       let _d: any = {};
       pen.realTimes.forEach((realTime) => {
+        if (!realTime.key) return;
         let value = this.mockValue(realTime);
         if (value !== undefined) {
           _d[realTime.key] = value;
@@ -3679,7 +3680,8 @@ export class Meta2d {
       });
       if (res.ok) {
         const data = await res.text();
-        const net = this.store.data.networks.filter(item=>item.protocol==='http')[req.index];
+        const httpNetworks = this.store.data.networks.filter(item=>item.protocol==='http');
+        const net = req.index !== undefined ? httpNetworks[req.index] : undefined;
         this.socketCallback(data, { type: 'http', method: req.method, url: req.url, name: req.name, net});
       } else {
         _req.times++;
@@ -4240,7 +4242,7 @@ export class Meta2d {
               if (event.where.fn) {
                 can = event.where.fn(pen, { meta2d: this });
               }
-            } else {
+            } else if (key) {
               let pValue = (pen as any)[key];
               if (['x', 'y', 'width', 'height'].includes(key)) {
                 pValue = (this.getPenRect(pen) as any)[key];
@@ -4383,7 +4385,7 @@ export class Meta2d {
           if (trigger.conditionType === 'and') {
             flag = trigger.conditions.every((condition) => {
               return this.judgeCondition(
-                this.store.pens[condition.source],
+                condition.source ? this.store.pens[condition.source] : undefined,
                 condition.key,
                 condition
               );
@@ -4391,7 +4393,7 @@ export class Meta2d {
           } else if (trigger.conditionType === 'or') {
             flag = trigger.conditions.some((condition) => {
               return this.judgeCondition(
-                this.store.pens[condition.source],
+                condition.source ? this.store.pens[condition.source] : undefined,
                 condition.key,
                 condition
               );
@@ -4466,7 +4468,9 @@ export class Meta2d {
     }
 
     // 事件冒泡，子执行完，父执行
-    this.doEvent(this.store.pens[pen.parentId], eventName);
+    if (pen.parentId) {
+      this.doEvent(this.store.pens[pen.parentId], eventName);
+    }
   };
 
   doMessageEvent(eventName: string, data?: any) {
@@ -4500,7 +4504,8 @@ export class Meta2d {
       return;
     }
     const data = datas.reduce<Record<string, any>>((accumulator, { dataId, id, value }) => {
-      accumulator[id || dataId] = value;
+      const k = id || dataId;
+      if (k) accumulator[k] = value;
       return accumulator;
     }, {});
     let indexArr: number[] = [];
@@ -4590,11 +4595,11 @@ export class Meta2d {
       }
     } else {
       //TODO boolean类型 数字类型
-      let value = condition.value;
-      if (valueType === 'prop') {
+      let value: any = condition.value;
+      if (valueType === 'prop' && condition.value) {
         value = data[condition.value];
       }
-      let compareValue = data[key];
+      let compareValue = key ? data[key] : undefined;
       switch (operator) {
         case '>':
           can = compareValue > +value!;
@@ -4632,7 +4637,8 @@ export class Meta2d {
     return can;
   }
 
-  judgeCondition(pen: Pen, key: string, condition: TriggerCondition) {
+  judgeCondition(pen: Pen | undefined, key: string | undefined, condition: TriggerCondition) {
+    if (!pen || !key) return false;
     const { type, target, fnJs, fn, operator, valueType } = condition;
     let can = false;
     if (type === 'fn') {
@@ -4656,9 +4662,9 @@ export class Meta2d {
       }
     } else {
       //TODO boolean类型 数字类型
-      let value = condition.value;
-      if (valueType === 'prop') {
-        value = (this.store.pens[target] as any)[condition.value];
+      let value: any = condition.value;
+      if (valueType === 'prop' && target && condition.value) {
+        value = (this.store.pens[target] as any)?.[condition.value];
       }
       let compareValue = getter(pen, key);
       if (['x', 'y', 'width', 'height'].includes(key)) {
@@ -6462,7 +6468,8 @@ export class Meta2d {
    */
   nextNode(pen: Pen): Pen[] {
     if (pen.type === PenType.Line) {
-      const nextNode = this.store.pens[getToAnchor(pen).connectTo];
+      const toConnectTo = getToAnchor(pen).connectTo;
+      const nextNode = toConnectTo ? this.store.pens[toConnectTo] : undefined;
       return nextNode ? [nextNode] : [];
     } else {
       // 1. 得到所有的出线
@@ -6488,7 +6495,8 @@ export class Meta2d {
    */
   previousNode(pen: Pen): Pen[] {
     if (pen.type === PenType.Line) {
-      const preNode = this.store.pens[getFromAnchor(pen).connectTo];
+      const fromConnectTo = getFromAnchor(pen).connectTo;
+      const preNode = fromConnectTo ? this.store.pens[fromConnectTo] : undefined;
       return preNode ? [preNode] : [];
     } else {
       // 1. 得到所有的入线

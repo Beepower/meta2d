@@ -473,8 +473,8 @@ export interface Pen extends Rect {
     initRelativeRect?: Rect;
     // 执行动画前存储子图元的显示隐藏情况
     childrenVisible?: any;
-    rotate?: number;
-    lineWidth?: number;
+    rotate: number;
+    lineWidth: number;
     borderWidth?: number;
     borderColor?: string;
     globalAlpha?: number;

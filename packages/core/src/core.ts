@@ -2233,10 +2233,10 @@ export class Meta2d {
     let initPens = deepClone(children);
     children.forEach((child) => {
       child.parentId = undefined;
-      child.x = child.calculative!.worldRect.x;
-      child.y = child.calculative!.worldRect.y;
-      child.width = child.calculative!.worldRect.width;
-      child.height = child.calculative!.worldRect.height;
+      child.x = child.calculative!.worldRect!.x;
+      child.y = child.calculative!.worldRect!.y;
+      child.width = child.calculative!.worldRect!.width;
+      child.height = child.calculative!.worldRect!.height;
       child.locked = LockState.None;
       child.calculative!.active = undefined;
       child.calculative!.hover = false;
@@ -2276,10 +2276,10 @@ export class Meta2d {
     const children = getAllChildren(pen,this.store);
     children.forEach((child) => {
       child.parentId = undefined;
-      child.x = child.calculative!.worldRect.x;
-      child.y = child.calculative!.worldRect.y;
-      child.width = child.calculative!.worldRect.width;
-      child.height = child.calculative!.worldRect.height;
+      child.x = child.calculative!.worldRect!.x;
+      child.y = child.calculative!.worldRect!.y;
+      child.width = child.calculative!.worldRect!.width;
+      child.height = child.calculative!.worldRect!.height;
       child.locked = LockState.None;
       child.calculative!.active = undefined;
       child.calculative!.hover = false;
@@ -2362,10 +2362,10 @@ export class Meta2d {
       Object.assign(child, childRect);
     } else {
       if(parent.container) {//容器模式取操作过程中最大范围
-        let x = Math.min(rect.x, parent.calculative!.worldRect.x);
-        let y = Math.min(rect.y, parent.calculative!.worldRect.y);
-        let ex = Math.max(rect.ex, parent.calculative!.worldRect.ex);
-        let ey = Math.max(rect.ey, parent.calculative!.worldRect.ey);
+        let x = Math.min(rect.x, parent.calculative!.worldRect!.x);
+        let y = Math.min(rect.y, parent.calculative!.worldRect!.y);
+        let ex = Math.max(rect.ex, parent.calculative!.worldRect!.ex);
+        let ey = Math.max(rect.ey, parent.calculative!.worldRect!.ey);
         parent.calculative!.worldRect = {
           x: x,
           y: y,

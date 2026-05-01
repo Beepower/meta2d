@@ -296,7 +296,7 @@ export function getLineLength(pen: Pen): number {
 export function createLineSvgPath(line:Pen) {
   let path: SVGGeometryElement | undefined;
   let from: Point | null = null;
-  line.calculative!.worldAnchors.forEach(pt=>{
+  line.calculative!.worldAnchors!.forEach(pt=>{
     if (from) {
       path = createSvgPath(path,from,from.next,pt.prev,pt)
     }

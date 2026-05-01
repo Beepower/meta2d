@@ -3049,10 +3049,10 @@ export class Canvas {
       pen.calculative!.x = pen.x;
       pen.calculative!.y = pen.y;
       if (pen.calculative!.initRect) {
-        pen.calculative!.initRect.x = pen.calculative!.x;
-        pen.calculative!.initRect.y = pen.calculative!.y;
-        pen.calculative!.initRect.ex = pen.calculative!.x + pen.calculative!.width;
-        pen.calculative!.initRect.ey =
+        pen.calculative!.initRect!.x = pen.calculative!.x;
+        pen.calculative!.initRect!.y = pen.calculative!.y;
+        pen.calculative!.initRect!.ex = pen.calculative!.x + pen.calculative!.width;
+        pen.calculative!.initRect!.ey =
           pen.calculative!.y + pen.calculative!.height;
       }
       calcChildrenInitRect(pen);
@@ -6512,11 +6512,11 @@ export class Canvas {
         pen.calculative!.x = pen.x;
         pen.calculative!.y = pen.y;
         if (pen.calculative!.initRect) {
-          pen.calculative!.initRect.x = pen.calculative!.x;
-          pen.calculative!.initRect.y = pen.calculative!.y;
-          pen.calculative!.initRect.ex =
+          pen.calculative!.initRect!.x = pen.calculative!.x;
+          pen.calculative!.initRect!.y = pen.calculative!.y;
+          pen.calculative!.initRect!.ex =
             pen.calculative!.x + pen.calculative!.width;
-          pen.calculative!.initRect.ey =
+          pen.calculative!.initRect!.ey =
             pen.calculative!.y + pen.calculative!.height;
         }
       }
@@ -6567,11 +6567,11 @@ export class Canvas {
         pen.calculative!.x = pen.x;
         pen.calculative!.y = pen.y;
         if (pen.calculative!.initRect) {
-          pen.calculative!.initRect.x = pen.calculative!.x;
-          pen.calculative!.initRect.y = pen.calculative!.y;
-          pen.calculative!.initRect.ex =
+          pen.calculative!.initRect!.x = pen.calculative!.x;
+          pen.calculative!.initRect!.y = pen.calculative!.y;
+          pen.calculative!.initRect!.ex =
             pen.calculative!.x + pen.calculative!.width;
-          pen.calculative!.initRect.ey =
+          pen.calculative!.initRect!.ey =
             pen.calculative!.y + pen.calculative!.height;
         }
       }
@@ -6633,7 +6633,7 @@ export class Canvas {
           }
         }
       } else {
-        const rotate = pen.calculative!.initRect.rotate - pen.calculative!.rotate;
+        const rotate = pen.calculative!.initRect!.rotate - pen.calculative!.rotate;
         for (const k in pen) {
           if (
             k !== 'x' &&
@@ -7874,7 +7874,7 @@ export class Canvas {
       }
     } else {
       if (pen.whiteSpace === undefined || pen.whiteSpace === 'break-all') {
-        let tem = (pen.calculative!.worldTextRect.width || 12) / scale; //pen.width / scale - ( pen.textLeft || 0);
+        let tem = (pen.calculative!.worldTextRect!.width || 12) / scale; //pen.width / scale - ( pen.textLeft || 0);
         if (tem < 0) {
           tem = 0;
         }

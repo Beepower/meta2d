@@ -43,7 +43,7 @@ export function curve(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     }
 
     const to =
-      pen.calculative!.worldAnchors[pen.calculative!.worldAnchors.length - 1];
+      pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1];
     if (to && to !== from && !to.prev) {
       const toFace = facePen(to, store.pens[to.connectTo]);
       calcCurveCP(to, toFace, -50);
@@ -210,7 +210,7 @@ export function mind(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     pen.calculative!.worldAnchors = [];
   }
 
-  if (pen.calculative!.worldAnchors.length < 2) {
+  if (pen.calculative!.worldAnchors!.length < 2) {
     return;
   }
 

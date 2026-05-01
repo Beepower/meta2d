@@ -21,13 +21,13 @@ export function svgPath(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   calcCenter(pen.calculative!.svgRect);
 
   if (
-    pen.calculative!.svgRect.width !== pen.calculative!.worldRect.width ||
-    pen.calculative!.svgRect.height !== pen.calculative!.worldRect.height
+    pen.calculative!.svgRect!.width !== pen.calculative!.worldRect!.width ||
+    pen.calculative!.svgRect!.height !== pen.calculative!.worldRect!.height
   ) {
     scalePath(
       path,
-      pen.calculative!.worldRect.width / pen.calculative!.svgRect.width,
-      pen.calculative!.worldRect.height / pen.calculative!.svgRect.height
+      pen.calculative!.worldRect!.width / pen.calculative!.svgRect!.width,
+      pen.calculative!.worldRect!.height / pen.calculative!.svgRect!.height
     );
   }
 
@@ -35,8 +35,8 @@ export function svgPath(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   calcCenter(rect);
   translatePath(
     path,
-    pen.calculative!.worldRect.x - rect.x,
-    pen.calculative!.worldRect.y - rect.y
+    pen.calculative!.worldRect!.x - rect.x,
+    pen.calculative!.worldRect!.y - rect.y
   );
 
   const pathStr = pathToString(path);

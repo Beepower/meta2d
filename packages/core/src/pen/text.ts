@@ -287,7 +287,7 @@ export function wrapLines(words: string[], pen: Pen) {
         (text.length - chinese.length - spaces.length) * fontSize * 0.6; // 其他字符占用的宽度
       currentWidth = chineseWidth + spaceWidth + otherWidth;
     }
-    const textWidth = pen.calculative!.worldTextRect.width;
+    const textWidth = pen.calculative!.worldTextRect!.width;
     if (currentWidth <= textWidth + 0.1) {
       currentLine += word;
     } else {
@@ -349,7 +349,7 @@ export function calcTextAutoWidth(pen: Pen) {
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
     pen.calculative!;
-  let textWidth = 0; // pen.calculative!.worldTextRect.width;
+  let textWidth = 0; // pen.calculative!.worldTextRect!.width;
   let currentWidth = 0; // textWidth;
   ctx.save();
   for (let i = 0; i < arr.length; i++) {

@@ -1453,8 +1453,8 @@ export function ctxRotate(
     let rootParent = getParent(pen, true);
     if (rootParent) {
       const { x, y } =
-        rootParent.calculative!.worldRect.pivot ||
-        rootParent.calculative!.worldRect.center;
+        rootParent.calculative!.worldRect!.pivot ||
+        rootParent.calculative!.worldRect!.center;
       ctx.translate(x, y);
       let rotate = (rootParent.calculative!.rotate * Math.PI) / 180;
       // 目前只有水平和垂直翻转，都需要 * -1
@@ -2890,19 +2890,19 @@ export function calcChildrenInitRect(pen: Pen) {
     pen.children.forEach((id) => {
       const child = pen.calculative!.canvas!.store.pens[id];
       if (child.calculative!.initRect && child.calculative!.initRelativeRect) {
-        child.calculative!.initRect.x =
+        child.calculative!.initRect!.x =
           parentRect.x +
-          parentRect.width * child.calculative!.initRelativeRect.x;
-        child.calculative!.initRect.y =
+          parentRect.width * child.calculative!.initRelativeRect!.x;
+        child.calculative!.initRect!.y =
           parentRect.y +
-          parentRect.height * child.calculative!.initRelativeRect.y;
-        child.calculative!.initRect.ex =
-          child.calculative!.initRect.x +
-          parentRect.width * child.calculative!.initRelativeRect.width;
-        child.calculative!.initRect.ey =
-          child.calculative!.initRect.y +
+          parentRect.height * child.calculative!.initRelativeRect!.y;
+        child.calculative!.initRect!.ex =
+          child.calculative!.initRect!.x +
+          parentRect.width * child.calculative!.initRelativeRect!.width;
+        child.calculative!.initRect!.ey =
+          child.calculative!.initRect!.y +
           parentRect.height +
-          child.calculative!.initRelativeRect.height;
+          child.calculative!.initRelativeRect!.height;
         calcCenter(child.calculative!.initRect);
       }
       calcChildrenInitRect(child);
@@ -3392,7 +3392,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
         pen.calculative!.childrenVisible[id] = store.pens[id].visible;
       });
     }
-    pen.calculative!.initRect.rotate = pen.calculative!.rotate || 0;
+    pen.calculative!.initRect!.rotate = pen.calculative!.rotate || 0;
 
     initPrevFrame(pen);
   } else {
@@ -3455,17 +3455,17 @@ export function setNodeAnimate(pen: Pen, now: number) {
 
     if (frameChanged || cycleChanged) {
       // 以初始位置为参考点。因为网页在后台时，不执行动画帧，网页恢复显示时，位置不确定
-      pen.calculative!.x = pen.calculative!.initRect.x;
-      pen.calculative!.y = pen.calculative!.initRect.y;
+      pen.calculative!.x = pen.calculative!.initRect!.x;
+      pen.calculative!.y = pen.calculative!.initRect!.y;
       if (pen.children?.length && !pen.parentId) {
         pen.calculative!.canvas!.rotatePen(
           pen,
-          (pen.calculative!.initRect.rotate || 0) -
+          (pen.calculative!.initRect!.rotate || 0) -
             (pen.calculative!.rotate || 0),
           pen.calculative!.initRect
         );
       } else {
-        pen.calculative!.rotate = pen.calculative!.initRect.rotate || 0;
+        pen.calculative!.rotate = pen.calculative!.initRect!.rotate || 0;
       }
       if (frameIndex > 0) {
         pen.prevFrame = {} as Pen;
@@ -3555,12 +3555,12 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       pen.calculative!.patchFlags = true;
     } else if (k === 'x') {
       const lastVal = getFrameValue(pen, k, pen.calculative!.frameIndex)*scale;
-      pen.calculative!.worldRect!.x = pen.calculative!.initRect.x + lastVal;
-      pen.calculative!.worldRect!.ex = pen.calculative!.initRect.ex + lastVal;
-      pen.calculative!.worldRect!.center.x = pen.calculative!.initRect.center.x + lastVal;
+      pen.calculative!.worldRect!.x = pen.calculative!.initRect!.x + lastVal;
+      pen.calculative!.worldRect!.ex = pen.calculative!.initRect!.ex + lastVal;
+      pen.calculative!.worldRect!.center.x = pen.calculative!.initRect!.center.x + lastVal;
       if (pen.calculative!.worldRect!.pivot?.x) {
         pen.calculative!.worldRect!.pivot.x =
-          pen.calculative!.initRect.pivot?.x + lastVal;
+          pen.calculative!.initRect!.pivot?.x + lastVal;
       }
       translateRect(
         pen.calculative!.worldRect,
@@ -3570,14 +3570,14 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       pen.calculative!.patchFlags = true;
     } else if (k === 'y') {
       const lastVal = getFrameValue(pen, k, pen.calculative!.frameIndex)*scale;
-      pen.calculative!.worldRect!.y = pen.calculative!.initRect.y + lastVal;
-      pen.calculative!.worldRect!.ey = pen.calculative!.initRect.ey + lastVal;
+      pen.calculative!.worldRect!.y = pen.calculative!.initRect!.y + lastVal;
+      pen.calculative!.worldRect!.ey = pen.calculative!.initRect!.ey + lastVal;
       pen.calculative!.worldRect!.center.y =
-        pen.calculative!.initRect.center.y + lastVal;
+        pen.calculative!.initRect!.center.y + lastVal;
 
       if (pen.calculative!.worldRect!.pivot?.x) {
         pen.calculative!.worldRect!.pivot.y =
-          pen.calculative!.initRect.pivot?.y + lastVal;
+          pen.calculative!.initRect!.pivot?.y + lastVal;
       }
 
       translateRect(
@@ -3589,9 +3589,9 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
     }else if (k === 'width') {
       //仅考虑抽屉效果
       const lastVal = getFrameValue(pen, k, pen.calculative!.frameIndex)*scale;
-      pen.calculative!.worldRect!.width = pen.calculative!.initRect.width + lastVal;
-      pen.calculative!.worldRect!.ex = pen.calculative!.initRect.ex + lastVal;
-      pen.calculative!.worldRect!.center.x = pen.calculative!.initRect.center.x + lastVal;
+      pen.calculative!.worldRect!.width = pen.calculative!.initRect!.width + lastVal;
+      pen.calculative!.worldRect!.ex = pen.calculative!.initRect!.ex + lastVal;
+      pen.calculative!.worldRect!.center.x = pen.calculative!.initRect!.center.x + lastVal;
 
       let value = frame[k] * process * scale;
       pen.calculative!.worldRect!.width += value;
@@ -3600,9 +3600,9 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       pen.calculative!.patchFlags = true;
     }else if (k === 'height') {
       const lastVal = getFrameValue(pen, k, pen.calculative!.frameIndex)*scale;
-      pen.calculative!.worldRect!.height = pen.calculative!.initRect.height + lastVal;
-      pen.calculative!.worldRect!.ey = pen.calculative!.initRect.ey + lastVal;
-      pen.calculative!.worldRect!.center.y = pen.calculative!.initRect.center.y + lastVal;
+      pen.calculative!.worldRect!.height = pen.calculative!.initRect!.height + lastVal;
+      pen.calculative!.worldRect!.ey = pen.calculative!.initRect!.ey + lastVal;
+      pen.calculative!.worldRect!.center.y = pen.calculative!.initRect!.center.y + lastVal;
 
       let value = frame[k] * process * scale;
       pen.calculative!.worldRect!.height += value;
@@ -3615,7 +3615,7 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       }
       const lastVal = getFrameValue(pen, k, pen.calculative!.frameIndex);
       const offsetRotate =
-        ((pen.calculative!.initRect.rotate + lastVal + frame[k] * process) %
+        ((pen.calculative!.initRect!.rotate + lastVal + frame[k] * process) %
           360) -
         (pen.calculative!.rotate || 0);
       if (pen.children?.length) {
@@ -3626,7 +3626,7 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
         );
       } else {
         pen.calculative!.rotate =
-          (pen.calculative!.initRect.rotate + lastVal + frame[k] * process) %
+          (pen.calculative!.initRect!.rotate + lastVal + frame[k] * process) %
           360;
       }
       pen.calculative!.patchFlags = true;

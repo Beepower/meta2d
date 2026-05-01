@@ -3260,14 +3260,13 @@ export class Canvas {
     !drawing && this.store.emitter.emit('inactive', activePens);
   }
 
+  // Phase D3 quirk 11.6 #3: active() 切换前先调 inactive() 统一发 'inactive' event
+  // (原:仅 emit=true && active.length>0 时 emit,emit=false 漏发,造成订阅方 selection 状态滞留)
   active(pens: Pen[], emit = true) {
     if (this.store.active && this.store.active!.length) {
-      emit && this.store.emitter.emit('inactive', this.store.active);
-      for (const pen of this.store.active) {
-        pen.calculative!.active = undefined;
-        pen.calculative!.hover = false;
-        setChildrenActive(pen, false);
-      }
+      // 统一走 inactive() 路径,保证 'inactive' event 一致 emit
+      // emit=false 时不 emit (尊重 caller 意图);emit=true 时 inactive() 正常 emit
+      this.inactive(!emit);
     }
     this.store.active = [];
     pens.forEach((pen) => {

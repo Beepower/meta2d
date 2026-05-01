@@ -430,7 +430,7 @@ function drawLinearGradientLine(
     ctx,
     points,
     colors,
-    pen.calculative!.lineWidth / 2
+    pen.calculative!.lineWidth! / 2
   );
   ctx.beginPath();
   ctx.moveTo(points[0].x, points[0].y);
@@ -441,15 +441,18 @@ function drawLinearGradientLine(
 function ctxDrawLinearGradientPath(ctx: CanvasRenderingContext2D, pen: Pen) {
   const anchors = pen.calculative!.worldAnchors!;
   let smoothLenth =
-    pen.calculative!.lineWidth *
+    pen.calculative!.lineWidth! *
     (pen.calculative!.gradientSmooth || pen.calculative!.lineSmooth || 0);
   for (let i = 0; i < anchors.length - 1; i++) {
+    const anchor = anchors[i]!;
+    const nextAnchor = anchors[i + 1]!;
+    const prevAnchor = i > 0 ? anchors[i - 1]! : undefined;
     if (
       (pen.lineName === 'curve' || pen.lineName === 'mind') &&
-      anchors[i].curvePoints
+      anchor.curvePoints
     ) {
-      if (i > 0) {
-        let lastCurvePoints = anchors[i - 1].curvePoints;
+      if (prevAnchor) {
+        let lastCurvePoints = prevAnchor.curvePoints;
         if (lastCurvePoints) {
           //上一个存在锚点
           smoothTransition(
@@ -457,80 +460,80 @@ function ctxDrawLinearGradientPath(ctx: CanvasRenderingContext2D, pen: Pen) {
             pen,
             smoothLenth,
             lastCurvePoints[lastCurvePoints.length - 1],
-            anchors[i],
-            anchors[i].curvePoints[0]
+            anchors[i]!,
+            anchor.curvePoints![0]
           );
         } else {
           smoothTransition(
             ctx,
             pen,
             smoothLenth,
-            anchors[i - 1],
-            anchors[i],
-            anchors[i].curvePoints[0]
+            anchors[i - 1]!,
+            anchors[i]!,
+            anchor.curvePoints![0]
           );
         }
         //获取当前相对于0的位置
         let next = getSmoothAdjacent(
           smoothLenth,
-          anchors[i],
-          anchors[i].curvePoints[0]
+          anchors[i]!,
+          anchor.curvePoints![0]
         );
-        drawLinearGradientLine(ctx, pen, [next, anchors[i].curvePoints[1]]);
+        drawLinearGradientLine(ctx, pen, [next, anchor.curvePoints![1]]);
       } else {
         drawLinearGradientLine(ctx, pen, [
-          anchors[i],
-          anchors[i].curvePoints[0],
+          anchors[i]!,
+          anchor.curvePoints![0],
         ]);
         drawLinearGradientLine(ctx, pen, [
-          anchors[i].curvePoints[0],
-          anchors[i].curvePoints[1],
+          anchor.curvePoints![0],
+          anchor.curvePoints![1],
         ]);
       }
-      let len = anchors[i].curvePoints.length - 1;
+      let len = anchor.curvePoints!.length - 1;
       for (let j = 1; j < len; j++) {
         drawLinearGradientLine(ctx, pen, [
-          anchors[i].curvePoints[j],
-          anchors[i].curvePoints[j + 1],
+          anchor.curvePoints![j],
+          anchor.curvePoints![j + 1],
         ]);
       }
       let last = getSmoothAdjacent(
         smoothLenth,
-        anchors[i + 1],
-        anchors[i].curvePoints[len]
+        anchors[i + 1]!,
+        anchor.curvePoints![len]
       );
-      drawLinearGradientLine(ctx, pen, [anchors[i].curvePoints[len], last]);
+      drawLinearGradientLine(ctx, pen, [anchor.curvePoints![len], last]);
     } else {
-      let _next = anchors[i];
-      let _last = anchors[i + 1];
+      let _next = anchors[i]!;
+      let _last = anchors[i + 1]!;
       if (i > 0 && i < anchors.length - 1) {
         //有突兀的地方
-        let lastCurvePoints = anchors[i - 1].curvePoints;
+        let lastCurvePoints = anchors[i - 1]!.curvePoints;
         if (lastCurvePoints) {
           smoothTransition(
             ctx,
             pen,
             smoothLenth,
             lastCurvePoints[lastCurvePoints.length - 1],
-            anchors[i],
-            anchors[i + 1]
+            anchors[i]!,
+            anchors[i + 1]!
           );
         } else {
           smoothTransition(
             ctx,
             pen,
             smoothLenth,
-            anchors[i - 1],
-            anchors[i],
-            anchors[i + 1]
+            anchors[i - 1]!,
+            anchors[i]!,
+            anchors[i + 1]!
           );
         }
       }
       if (i > 0 && i < anchors.length - 1) {
-        _next = getSmoothAdjacent(smoothLenth, anchors[i], anchors[i + 1]);
+        _next = getSmoothAdjacent(smoothLenth, anchors[i]!, anchors[i + 1]!);
       }
       if (i < anchors.length - 2) {
-        _last = getSmoothAdjacent(smoothLenth, anchors[i + 1], anchors[i]);
+        _last = getSmoothAdjacent(smoothLenth, anchors[i + 1]!, anchors[i]!);
       }
       let flag = false;
       if (i === 0) {
@@ -643,31 +646,31 @@ function smoothAnimateTransition(
 export function getGradientAnimatePath(pen: Pen) {
   const anchors = pen.calculative!.worldAnchors!;
   let smoothLenth =
-    pen.calculative!.lineWidth *
+    pen.calculative!.lineWidth! *
     (pen.calculative!.gradientSmooth || pen.calculative!.lineSmooth || 0);
   //只创建一次
   const _path = new Path2D();
   for (let i = 0; i < anchors.length - 1; i++) {
-    let _next = anchors[i];
-    let _last = anchors[i + 1];
+    let _next = anchors[i]!;
+    let _last = anchors[i + 1]!;
     if (i == 0) {
-      _path.moveTo(anchors[i].x, anchors[i].y);
+      _path.moveTo(anchors[i]!.x, anchors[i]!.y);
     }
     if (i > 0 && i < anchors.length - 1) {
       //有突兀的地方
-      let lastCurvePoints = anchors[i - 1].curvePoints;
+      let lastCurvePoints = anchors[i - 1]!.curvePoints;
       // const path = new Path2D();
       if (lastCurvePoints) {
-        smoothAnimateTransition(_path, smoothLenth, anchors[i], anchors[i + 1]);
+        smoothAnimateTransition(_path, smoothLenth, anchors[i]!, anchors[i + 1]!);
       } else {
-        smoothAnimateTransition(_path, smoothLenth, anchors[i], anchors[i + 1]);
+        smoothAnimateTransition(_path, smoothLenth, anchors[i]!, anchors[i + 1]!);
       }
     }
     if (i > 0 && i < anchors.length - 1) {
-      _next = getSmoothAdjacent(smoothLenth, anchors[i], anchors[i + 1]);
+      _next = getSmoothAdjacent(smoothLenth, anchors[i]!, anchors[i + 1]!);
     }
     if (i < anchors.length - 2) {
-      _last = getSmoothAdjacent(smoothLenth, anchors[i + 1], anchors[i]);
+      _last = getSmoothAdjacent(smoothLenth, anchors[i + 1]!, anchors[i]!);
     }
     _path.lineTo(_last.x, _last.y);
   }
@@ -2232,7 +2235,7 @@ function renderLineAnimate(
         ctx.lineDashOffset = pen.length - pen.calculative!.animatePos;
       }
       len =
-        pen.calculative!.animateDotSize || pen.calculative!.lineWidth * 2 || 6;
+        pen.calculative!.animateDotSize || pen.calculative!.lineWidth! * 2 || 6;
       if (len < 6) {
         len = 6;
       }

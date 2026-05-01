@@ -17,7 +17,7 @@ export function drawArrow(
     arrowLength = (pen.animateLineWidth*4 || 24) * scale; // 水滴长度
   }
   let d = (pen.animateInterval || 100) * scale; // 箭头间距
-  let smoothLenth = pen.calculative!.lineWidth *(pen.calculative!.lineSmooth || 0)//*scale;
+  let smoothLenth = pen.calculative!.lineWidth! *(pen.calculative!.lineSmooth || 0)//*scale;
   let lineWidth = (pen.calculative!.animateLineWidth/2 || 3) * scale;
   if (pen.animateReverse) {
     //箭头反向

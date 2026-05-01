@@ -18,9 +18,7 @@ export function pointInRect(pt: Point, rect: Rect) {
   if (!rect) {
     return;
   }
-  if (rect.ex == null) {
-    calcRightBottom(rect);
-  }
+  calcRightBottom(rect);  // 幂等;assertion 函数同时收紧 ex/ey 类型
 
   if (
     !rect.rotate ||
@@ -31,9 +29,7 @@ export function pointInRect(pt: Point, rect: Rect) {
     return pt.x > rect.x && pt.x < rect.ex && pt.y > rect.y && pt.y < rect.ey;
   }
 
-  if (!rect.center) {
-    calcCenter(rect);
-  }
+  calcCenter(rect);  // 幂等
 
   const pts: Point[] = [
     { x: rect.x, y: rect.y },
@@ -42,18 +38,19 @@ export function pointInRect(pt: Point, rect: Rect) {
     { x: rect.x, y: rect.ey },
   ];
   pts.forEach((item: Point) => {
-    rotatePoint(item, rect.rotate, rect.pivot || rect.center);
+    rotatePoint(item, rect.rotate!, rect.pivot || rect.center);
   });
 
   return pointInVertices(pt, pts);
 }
 
 export function pointInSimpleRect(pt: Point, rect: Rect, r = 0) {
+  calcRightBottom(rect);
   const { x, y, ex, ey } = rect;
   return pt.x >= x - r && pt.x <= ex + r && pt.y >= y - r && pt.y <= ey + r;
 }
 
-export function calcCenter(rect: Rect) {
+export function calcCenter(rect: Rect): asserts rect is Rect & { center: Point } {
   if (!rect.center) {
     rect.center = {} as Point;
   }
@@ -61,12 +58,12 @@ export function calcCenter(rect: Rect) {
   rect.center.y = rect.y + rect.height / 2;
 }
 
-export function calcRightBottom(rect: Rect) {
+export function calcRightBottom(rect: Rect): asserts rect is Rect & { ex: number; ey: number } {
   rect.ex = rect.x + rect.width;
   rect.ey = rect.y + rect.height;
 }
 
-export function calcPivot(rect: Rect, pivot:Point) {
+export function calcPivot(rect: Rect, pivot:Point): asserts rect is Rect & { pivot: Point } {
   if (!rect.pivot) {
     rect.pivot = {} as Point;
   }
@@ -105,7 +102,7 @@ export function getRect(pens: Pen[]): Rect {
     if (pen.isRuleLine) {
       return;
     }
-    const rect = pen.calculative.worldRect;
+    const rect = pen.calculative!.worldRect;
     if (rect) {
       const pts = rectToPoints(rect);
       // rectToPoints 已经计算过 rotate 无需重复计算
@@ -118,8 +115,9 @@ export function getRect(pens: Pen[]): Rect {
   return rect;
 }
 
-export function rectToPoints(rect: Rect) {
-  const pts = [
+export function rectToPoints(rect: Rect): Point[] {
+  calcRightBottom(rect);
+  const pts: Point[] = [
     { x: rect.x, y: rect.y },
     { x: rect.ex, y: rect.y },
     { x: rect.ex, y: rect.ey },
@@ -127,11 +125,9 @@ export function rectToPoints(rect: Rect) {
   ];
 
   if (rect.rotate) {
-    if (!rect.center) {
-      calcCenter(rect);
-    }
+    calcCenter(rect);
     pts.forEach((pt) => {
-      rotatePoint(pt, rect.rotate, rect.pivot || rect.center);
+      rotatePoint(pt, rect.rotate!, rect.pivot || rect.center);
     });
   }
   return pts;
@@ -160,6 +156,8 @@ export function rectInRect(source: Rect, target: Rect, allIn?: boolean) {
     // 根据 rotate 扩大 rect
     source = getRectOfPoints(rectToPoints(source)); // 更改 source 引用地址值，不影响原值
   }
+  calcRightBottom(source);
+  calcRightBottom(target);
   if (allIn) {
     return (
       source.x > target.x &&
@@ -180,6 +178,8 @@ export function rectInRect(source: Rect, target: Rect, allIn?: boolean) {
  * 一个 rect 在另一个 rect 的 四个角，即水平区域不重合，垂直区域不重合
  */
 export function rectInFourAngRect(source: Rect, target: Rect) {
+  calcRightBottom(source);
+  calcRightBottom(target);
   return (
     (target.x > source.ex || target.ex < source.x) &&
     (target.y > source.ey || target.ey < source.y)
@@ -204,6 +204,7 @@ export function expandRect(rect: Rect, size: Padding): Rect {
 }
 
 export function translateRect(rect: Rect | Pen, x: number, y: number) {
+  calcRightBottom(rect);  // 确保 ex/ey 存在
   rect.x += x;
   rect.y += y;
   rect.ex += x;
@@ -311,60 +312,65 @@ export function resizeRect(
   if (calcRotate) {
     // 计算出外边的四个点
     const pts = rectToPoints(rect);
+    const p0 = pts[0]!, p1 = pts[1]!, p2 = pts[2]!;
     // 斜率不改变，提前计算
-    const k1 = (pts[0].y - pts[1].y) / (pts[0].x - pts[1].x);
-    const k2 = (pts[1].y - pts[2].y) / (pts[1].x - pts[2].x);
+    const k1 = (p0.y - p1.y) / (p0.x - p1.x);
+    const k2 = (p1.y - p2.y) / (p1.x - p2.x);
     if (resizeIndex < 4) {
       // 斜对角的四个点
       // resize 的点
-      pts[resizeIndex].x += offsetX;
+      const pi = pts[resizeIndex]!;
+      pi.x += offsetX;
       if((rect as Pen ).ratio){
         if(resizeIndex === 0 || resizeIndex === 2){
           let calcOffsetY = offsetX * Math.tan((90-(360-calcRotate) - (Math.atan(rect.width/rect.height))/Math.PI*180)/ 180 * Math.PI);
-          pts[resizeIndex].y += calcOffsetY;
+          pi.y += calcOffsetY;
         }else {
           let calcOffsetY = offsetX * Math.tan((90-(360-calcRotate) + (Math.atan(rect.width/rect.height))/Math.PI*180)/ 180 * Math.PI);
-          pts[resizeIndex].y += calcOffsetY;
+          pi.y += calcOffsetY;
         }
       }else{
-        pts[resizeIndex].y += offsetY;
+        pi.y += offsetY;
       }
       // 不变的点
-      const noChangePoint = pts[(resizeIndex + 2) % 4];
+      const noChangePoint = pts[(resizeIndex + 2) % 4]!;
       // 由于斜率是不变的，我们只需要根据斜率 和 已知的两点求出相交的 另外两点
       pts[(resizeIndex + 1) % 4] = getIntersectPointByK(
-        { k: resizeIndex % 2 ? k2 : k1, point: pts[resizeIndex] },
+        { k: resizeIndex % 2 ? k2 : k1, point: pi },
         { k: resizeIndex % 2 ? k1 : k2, point: noChangePoint }
       );
       pts[(resizeIndex + 4 - 1) % 4] = getIntersectPointByK(
-        { k: resizeIndex % 2 ? k1 : k2, point: pts[resizeIndex] },
+        { k: resizeIndex % 2 ? k1 : k2, point: pi },
         { k: resizeIndex % 2 ? k2 : k1, point: noChangePoint }
       );
     } else {
       // 边缘四个点有两个点固定
       const k = [4, 6].includes(resizeIndex) ? k2 : k1;
+      const a = pts[resizeIndex % 4]!;
+      const b = pts[(resizeIndex + 1) % 4]!;
       if (!isEqual(k, 0)) {
-        pts[resizeIndex % 4].y += offsetY;
-        pts[resizeIndex % 4].x += offsetY / k;
-        pts[(resizeIndex + 1) % 4].y += offsetY;
-        pts[(resizeIndex + 1) % 4].x += offsetY / k;
+        a.y += offsetY;
+        a.x += offsetY / k;
+        b.y += offsetY;
+        b.x += offsetY / k;
       } else {
-        pts[resizeIndex % 4].x += offsetX;
-        pts[(resizeIndex + 1) % 4].x += offsetX;
+        a.x += offsetX;
+        b.x += offsetX;
       }
     }
     if (
-      (pts[0].x - pts[1].x) ** 2 + (pts[0].y - pts[1].y) ** 2 < 25 ||
-      (pts[1].x - pts[2].x) ** 2 + (pts[1].y - pts[2].y) ** 2 < 25
+      (pts[0]!.x - pts[1]!.x) ** 2 + (pts[0]!.y - pts[1]!.y) ** 2 < 25 ||
+      (pts[1]!.x - pts[2]!.x) ** 2 + (pts[1]!.y - pts[2]!.y) ** 2 < 25
     ) {
       // 距离小于 5 不能继续 resize 了
       return;
     }
-    const retRect = pointsToRect(pts, rect.rotate);
+    const retRect = pointsToRect(pts, rect.rotate!);
     calcCenter(retRect);
     Object.assign(rect, retRect);
     return;
   }
+  calcRightBottom(rect);  // 确保 ex/ey 存在,switch 中要修改
   switch (resizeIndex) {
     case 0:
       if (rect.width - offsetX < 5 || rect.height - offsetY < 5) {

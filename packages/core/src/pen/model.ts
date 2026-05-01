@@ -446,10 +446,10 @@ export interface Pen extends Rect {
   //业务
   roles?: string[];
   calculative?: {
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
     borderRadius?: number;
 
     max?: number;
@@ -477,7 +477,7 @@ export interface Pen extends Rect {
     lineWidth: number;
     borderWidth?: number;
     borderColor?: string;
-    globalAlpha?: number;
+    globalAlpha: number;
     lineDash?: number[];
     lineDashOffset?: number;
     length?: number; // 线长度
@@ -529,8 +529,8 @@ export interface Pen extends Rect {
     textType?: Gradient;
     textGradientColors?: string;
     fontFamily?: string;
-    fontSize?: number;
-    lineHeight?: number;
+    fontSize: number;
+    lineHeight: number;
     fontStyle?: string;
     fontWeight?: string;
     letterSpacing?: number;

@@ -1463,7 +1463,7 @@ export class Canvas {
       if (!pen.id) {
         pen.id = s8();
       }
-      !pen.calculative && (pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 });
+      !pen.calculative && (pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 });
       this.store.pens[pen.id!] = pen;
     }
     // // 计算区域
@@ -1621,7 +1621,7 @@ export class Canvas {
     //   if (!pen.id) {
     //     pen.id = s8();
     //   }
-    //   !pen.calculative && (pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 });
+    //   !pen.calculative && (pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 });
     //   this.store.pens[pen.id!] = pen;
     // }
     for (const pen of pens) {
@@ -1917,6 +1917,8 @@ export class Canvas {
         active: true,
         worldRect: { x: 0, y: 0, width: 0, height: 0 },
         worldAnchors: [pt],
+        x: 0, y: 0, width: 0, height: 0,
+        fontSize: 12, lineHeight: 1, globalAlpha: 1,
         lineWidth: lineWidth * scale, animatePos: 0, rotate: 0,
       },
       fromArrow: data.fromArrow || options.fromArrow,
@@ -1948,6 +1950,8 @@ export class Canvas {
         worldRect: { x: 0, y: 0, width: 0, height: 0 },
         worldAnchors: [pt],
         rotate: 0,
+        x: 0, y: 0, width: 0, height: 0,
+        fontSize: 12, lineHeight: 1, globalAlpha: 1,
         ...options.linePresetStyle, animatePos: 0,
         lineWidth: (options.linePresetStyle && options.linePresetStyle.lineWidth ) ? options.linePresetStyle?.lineWidth*scale : lineWidth * scale
       },
@@ -4185,7 +4189,7 @@ export class Canvas {
             this.store.data.pens.splice(i, 1);
             this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
-              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 };
+              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 };
             }
             pen.calculative!.canvas = this;
             this.store.animates.delete(pen);
@@ -4251,7 +4255,7 @@ export class Canvas {
         action.pens!.reverse().forEach((aPen) => {
           const pen = deepClone(aPen, true);
           if (!pen.calculative) {
-            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 };
+            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 };
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1
@@ -4302,7 +4306,7 @@ export class Canvas {
             this.store.data.pens.splice(i, 1);
             this.store.pens[pen.id!] = undefined as any;
             if (!pen.calculative) {
-              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 };
+              pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 };
             }
             pen.calculative!.canvas = this;
             this.store.animates.delete(pen);
@@ -4314,7 +4318,7 @@ export class Canvas {
         pens.reverse().forEach((aPen) => {
           const pen = deepClone(aPen, true);
           if (!pen.calculative) {
-            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 };
+            pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 };
           }
           this.store.data.pens.splice(
             pen.calculative?.layer !== -1
@@ -4415,7 +4419,7 @@ export class Canvas {
     if (pen.template) {
       pen.canvasLayer = CanvasLayer.CanvasTemplate;
     }
-    pen.calculative = { canvas: this, singleton: pen.calculative?.singleton, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1 };
+    pen.calculative = { canvas: this, singleton: pen.calculative?.singleton, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 };
     if (pen.video || pen.audio) {
       pen.calculative!.onended = (pen: Pen) => {
         this.nextAnimate(pen);

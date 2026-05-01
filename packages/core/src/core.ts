@@ -91,12 +91,12 @@ import { le5leTheme } from './theme'
 const echartReg = /^echarts/;
 export class Meta2d {
   store: Meta2dStore;
-  canvas: Canvas;
-  websocket: WebSocket;
-  mqttClient: MqttClient;
-  websockets: WebSocket[];
-  mqttClients: MqttClient[];
-  eventSources: EventSource[];
+  canvas!: Canvas;
+  websocket?: WebSocket;
+  mqttClient?: MqttClient;
+  websockets: WebSocket[] = [];
+  mqttClients: MqttClient[] = [];
+  eventSources: EventSource[] = [];
   penPluginMap: Map<
     PenPlugin,
     {
@@ -106,7 +106,7 @@ export class Meta2d {
       option: Object;
     }[]
   > = new Map();
-  socketFn: (
+  socketFn?: (
     e: string,
     // topic: string,
     context?: {
@@ -119,8 +119,8 @@ export class Meta2d {
     }
   ) => boolean | string;
   events: Record<number, (pen: Pen, e: Event, params?: any) => void> = {};
-  map: ViewMap;
-  mapTimer: any;
+  map?: ViewMap;
+  mapTimer?: any;
   constructor(parent: string | HTMLElement, opts: Options = {}) {
     this.store = useStore(s8());
     this.setOptions(opts);
@@ -851,14 +851,15 @@ export class Meta2d {
   doSendDataEvent(value: any, topics?: string) {
     let data = JSON.stringify(value);
     if (this.mqttClient && this.mqttClient.connected) {
+      const mqttClient = this.mqttClient;
       if (topics) {
         topics.split(',').forEach((topic) => {
-          this.mqttClient.publish(topic, data);
+          mqttClient.publish(topic, data);
         });
       } else {
         this.store.data.mqttTopics &&
           this.store.data.mqttTopics.split(',').forEach((topic) => {
-            this.mqttClient.publish(topic, data);
+            mqttClient.publish(topic, data);
           });
       }
     }
@@ -2630,8 +2631,9 @@ export class Meta2d {
       const { username, password } = mqttOptions;
       // username 和 password 必须同时存在或者同时不存在才去建立mqtt连接
       if ((username && password) || (!username && !password)) {
-        this.mqttClient = mqtt.connect(this.store.data.mqtt, mqttOptions);
-        this.mqttClient.on('message', (topic: string, message: Buffer) => {
+        const client: MqttClient = mqtt.connect(this.store.data.mqtt, mqttOptions);
+        this.mqttClient = client;
+        client.on('message', (topic: string, message: Buffer) => {
           this.socketCallback(message.toString(), {
             topic,
             type: 'mqtt',
@@ -2639,11 +2641,11 @@ export class Meta2d {
           });
         });
 
-        this.mqttClient.on('error', (error) => {
+        client.on('error', (error) => {
           this.store.emitter.emit('error', { type: 'mqtt', error });
         });
 
-        this.mqttClient.on('close', () => {
+        client.on('close', () => {
           if (this.store.options.reconnetTimes) {
             this.mqttTimes++;
             if (this.mqttTimes >= this.store.options.reconnetTimes) {
@@ -2654,7 +2656,7 @@ export class Meta2d {
         });
 
         if (this.store.data.mqttTopics) {
-          this.mqttClient.subscribe(this.store.data.mqttTopics.split(','));
+          client.subscribe(this.store.data.mqttTopics.split(','));
         }
       } else {
         console.warn('缺少用户名或密码');
@@ -2850,7 +2852,7 @@ export class Meta2d {
       if(this.websockets && this.websockets[net.index!]){
         this.websockets[net.index!].onclose = undefined;
         this.websockets[net.index!].close();
-        this.websockets[net.index!] = undefined;
+        delete this.websockets[net.index!];
       }
       this.connectNetWebSocket(net);
     }else if(net.protocol === 'http'){
@@ -2870,7 +2872,7 @@ export class Meta2d {
     }else if(net.protocol === 'SSE'){
       if(this.eventSources){
         this.eventSources[net.index!]?.close();
-        this.eventSources[net.index!] = undefined;
+        delete this.eventSources[net.index!];
       }
       this.connectSSE(net);
     }
@@ -3174,7 +3176,7 @@ export class Meta2d {
     if (this.websockets[net.index!]) {
       this.websockets[net.index!].onclose = undefined;
       this.websockets[net.index!]?.close();
-      this.websockets[net.index!] = undefined;
+      delete this.websockets[net.index!];
     }
     if(net.enable === false ){
       return;
@@ -3207,7 +3209,7 @@ export class Meta2d {
           net.times = 0;
           this.websockets[net.index!].onclose = undefined;
           this.websockets[net.index!]?.close();
-          this.websockets[net.index!] = undefined;
+          delete this.websockets[net.index!];
           return;
         }
       }
@@ -3699,8 +3701,8 @@ export class Meta2d {
           websocket = undefined;
         }
       });
-    this.mqttClients = undefined;
-    this.websockets = undefined;
+    this.mqttClients = [];
+    this.websockets = [];
     // clearInterval(this.updateTimer);
     // this.updateTimer = undefined;
     this.updateTimerList &&
@@ -6083,14 +6085,12 @@ export class Meta2d {
   }
 
   showMap() {
-    if (!this.map) {
-      this.map = new ViewMap(this.canvas);
-    }
-    this.map.show();
+    const map = this.map ?? (this.map = new ViewMap(this.canvas));
+    map.show();
   }
 
   hideMap() {
-    this.map.hide();
+    this.map?.hide();
   }
 
   onSizeUpdate() {

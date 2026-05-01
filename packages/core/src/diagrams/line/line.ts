@@ -348,8 +348,8 @@ export function isLineIntersectRectangle(pt1: Point, pt2: Point, rect: Rect) {
 
   let rectangleLeftTopX = rect.x;
   let rectangleLeftTopY = rect.y;
-  let rectangleRightBottomX = rect.ex;
-  let rectangleRightBottomY = rect.ey;
+  let rectangleRightBottomX = rect.ex ?? rect.x + rect.width;
+  let rectangleRightBottomY = rect.ey ?? rect.y + rect.height;
 
   const lineHeight = linePointY1 - linePointY2;
   const lineWidth = linePointX2 - linePointX1; // 计算叉乘

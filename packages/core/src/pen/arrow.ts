@@ -3,13 +3,16 @@ import { Meta2dStore } from '../store';
 import { Pen } from './model';
 import { getFromAnchor, getToAnchor } from './render';
 
+// 箭头绘制点：调用方必须设置 step (大小) 和 rotate (角度)
+export type ArrowPoint = Point & { step: number; rotate: number };
+
 const arrows: Record<
   string,
   (
     ctx: CanvasRenderingContext2D,
     pen: Pen,
     store: Meta2dStore,
-    point: Point
+    point: ArrowPoint
   ) => void
 > = {};
 
@@ -18,32 +21,29 @@ export function renderFromArrow(
   pen: Pen,
   store: Meta2dStore
 ) {
-  if (!arrows[pen.fromArrow]) {
+  const arrowFn = arrows[pen.fromArrow!];
+  if (!arrowFn) {
     return;
   }
   const from = getFromAnchor(pen)!;
-  const { x, y } = from;
-  const pt: Point = { x, y };
-  pt.step = (pen.fromArrowSize || 10) * store.data.scale;
+  const step = (pen.fromArrowSize || 10) * store.data.scale;
+  let rotate = 0;
   if (from.next) {
-    pt.rotate = calcRotate(from.next, from) + 90;
+    rotate = calcRotate(from.next, from) + 90;
   } else {
-    const p = pen.calculative!.worldAnchors[1];
+    const p = pen.calculative!.worldAnchors![1];
     if (!p) {
       return;
     }
-    if (p.prev) {
-      pt.rotate = calcRotate(p.prev, from) + 90;
-    } else {
-      pt.rotate = calcRotate(p, from) + 90;
-    }
+    rotate = calcRotate(p.prev || p, from) + 90;
   }
+  const pt: ArrowPoint = { x: from.x, y: from.y, step, rotate };
   ctx.save();
   ctx.beginPath();
   ctx.setLineDash([]);
   const fromArrowColor = pen.fromArrowColor || pen.calculative!.color;
   fromArrowColor && (ctx.strokeStyle = fromArrowColor);
-  arrows[pen.fromArrow](ctx, pen, store, pt);
+  arrowFn(ctx, pen, store, pt);
   ctx.restore();
 }
 
@@ -52,30 +52,27 @@ export function renderToArrow(
   pen: Pen,
   store: Meta2dStore
 ) {
-  if (!arrows[pen.toArrow] || pen.calculative!.worldAnchors.length < 2) {
+  const arrowFn = arrows[pen.toArrow!];
+  if (!arrowFn || pen.calculative!.worldAnchors!.length < 2) {
     return;
   }
   ctx.save();
-  const to = getToAnchor(pen);
-  const { x, y } = to;
-  const pt: Point = { x, y };
-  pt.step = (pen.toArrowSize || 10) * store.data.scale;
+  const to = getToAnchor(pen)!;
+  const step = (pen.toArrowSize || 10) * store.data.scale;
+  let rotate = 0;
   if (to.prev) {
-    pt.rotate = calcRotate(to.prev, to) + 90;
+    rotate = calcRotate(to.prev, to) + 90;
   } else {
     const p =
-      pen.calculative!.worldAnchors[pen.calculative!.worldAnchors.length - 2];
-    if (p.next) {
-      pt.rotate = calcRotate(p.next, to) + 90;
-    } else {
-      pt.rotate = calcRotate(p, to) + 90;
-    }
+      pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 2]!;
+    rotate = calcRotate(p.next || p, to) + 90;
   }
+  const pt: ArrowPoint = { x: to.x, y: to.y, step, rotate };
   ctx.beginPath();
   ctx.setLineDash([]);
   const toArrowColor = pen.toArrowColor || pen.calculative!.color;
   toArrowColor && (ctx.strokeStyle = toArrowColor);
-  arrows[pen.toArrow](ctx, pen, store, pt);
+  arrowFn(ctx, pen, store, pt);
   ctx.restore();
 }
 
@@ -83,7 +80,7 @@ arrows.triangleSolid = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -104,7 +101,7 @@ arrows.reTriangleSolid = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -125,7 +122,7 @@ arrows.triangle = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   if (ctx.lineWidth < 2) {
@@ -149,7 +146,7 @@ arrows.circleSolid = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -167,7 +164,7 @@ arrows.circle = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -185,7 +182,7 @@ arrows.diamondSolid = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -208,7 +205,7 @@ arrows.diamond = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -231,7 +228,7 @@ arrows.line = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -249,7 +246,7 @@ arrows.lineUp = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);
@@ -266,7 +263,7 @@ arrows.lineDown = (
   ctx: CanvasRenderingContext2D,
   pen: Pen,
   store: Meta2dStore,
-  point: Point
+  point: ArrowPoint
 ) => {
   ctx.save();
   ctx.translate(point.x, point.y);

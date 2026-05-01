@@ -1275,14 +1275,14 @@ export class Canvas {
     const penId = this.movingAnchor.penId;
     if (penId) {
       const pen = this.store.pens[penId];
-      const rect = pen.calculative!.worldRect;
-      if (this.movingAnchor.x < rect!.x) {
-        this.movingAnchor.x = rect!.x;
+      const rect = pen.calculative!.worldRect!;
+      if (this.movingAnchor.x < rect.x) {
+        this.movingAnchor.x = rect.x;
       } else if (this.movingAnchor.x > rect.ex) {
         this.movingAnchor.x = rect.ex;
       }
-      if (this.movingAnchor.y < rect!.y) {
-        this.movingAnchor.y = rect!.y;
+      if (this.movingAnchor.y < rect.y) {
+        this.movingAnchor.y = rect.y;
       } else if (this.movingAnchor.y > rect.ey) {
         this.movingAnchor.y = rect.ey;
       }

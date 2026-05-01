@@ -218,13 +218,13 @@ export interface Meta2dStore {
   data: Meta2dData;
   pens: { [key: string]: Pen };
 
-  histories?: EditAction[];
+  histories: EditAction[];
   historyIndex?: number;
   path2dMap: WeakMap<Pen, Path2D>;
   animateMap: WeakMap<Pen, Pen>;
   bindDatas: { [key: string]: { id: string; formItem: FormItem }[] };
-  bind?: { [key: string]: { id: string; key: string }[] };
-  active?: Pen[];
+  bind: { [key: string]: { id: string; key: string }[] };
+  active: Pen[];
   hover?: Pen;
   lastHover?: Pen;
   hoverContainer?:Pen;
@@ -244,18 +244,18 @@ export interface Meta2dStore {
   bkImg?: HTMLImageElement;
   // 测试使用
   fillWorldTextRect?: boolean; // 填充文本区域
-  cacheDatas?: {
+  cacheDatas: {
     data: Meta2dData;
   }[];
   patchFlagsLast?: boolean; // 清除上次图片画布层
-  messageEvents?: { [key: string]: { pen: Pen; event: Event }[] };
-  templatePens?: { [key: string]: Pen };
+  messageEvents: { [key: string]: { pen: Pen; event: Event }[] };
+  templatePens: { [key: string]: Pen };
   sameTemplate?: boolean; //标记是否是同一模版
   lastScale?: number; //记录上次模版的scale
-  pensNetwork?: {
+  pensNetwork: {
     [key: string]: { url?: string; method?: string; headers?: any; body?: any };
   };
-  globalTriggers?:{[key:string]:Trigger[]};
+  globalTriggers:{[key:string]:Trigger[]};
   styles?: any;
 }
 

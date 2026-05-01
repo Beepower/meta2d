@@ -2879,7 +2879,7 @@ export class Meta2d {
     }
   }
 
-  iotMqttClient:MqttClient;
+  iotMqttClient?: MqttClient;
   iotTimer: any;
 
   async connectIot(){
@@ -2914,8 +2914,9 @@ export class Meta2d {
       password,
       clientId: 'client-'+Math.random().toString(16).slice(2,8),
     }
-      this.iotMqttClient = mqtt.connect(url,options);
-      this.iotMqttClient.on('message', (topic: string, message: Buffer) => {
+      const iotClient: MqttClient = mqtt.connect(url,options);
+      this.iotMqttClient = iotClient;
+      iotClient.on('message', (topic: string, message: Buffer) => {
         this.socketCallback(message.toString(), {
           topic:`le5le-iot/properties/${token}`,
           type: 'iot',
@@ -2923,13 +2924,13 @@ export class Meta2d {
           method: 'mqtt'
         });
       })
-      this.iotMqttClient.on('error', (error) => {
+      iotClient.on('error', (error) => {
         this.store.emitter.emit('error', { type: 'mqtt', error });
       });
       if(iot.room){
-        this.iotMqttClient.subscribe(`le5le-iot/${iot.room}/properties/get`);
+        iotClient.subscribe(`le5le-iot/${iot.room}/properties/get`);
       }else{
-        this.iotMqttClient.subscribe(`le5le-iot/properties/${token}`);
+        iotClient.subscribe(`le5le-iot/properties/${token}`);
       }
       this.iotTimer = setInterval(()=>{
         if(iot.room){

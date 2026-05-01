@@ -346,7 +346,7 @@ export function calcTextAutoWidth(pen: Pen) {
   const canvas: Canvas = pen.calculative!.canvas;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
-    pen.calculative;
+    pen.calculative!;
   let textWidth = 0; // pen.calculative!.worldTextRect.width;
   let currentWidth = 0; // textWidth;
   ctx.save();

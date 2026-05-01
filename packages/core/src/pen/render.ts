@@ -115,7 +115,10 @@ export function getAllFollowers(pen: Pen, store: Meta2dStore): Pen[] {
 
 function drawBkLinearGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   const { worldRect, gradientFromColor, gradientToColor, gradientAngle } =
-    pen.calculative;
+    pen.calculative!;
+  if (!worldRect || !gradientFromColor || !gradientToColor) {
+    return;
+  }
   return linearGradient(
     ctx,
     worldRect,
@@ -133,13 +136,13 @@ function drawBkLinearGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
  */
 function drawBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   const { worldRect, gradientFromColor, gradientToColor, gradientRadius } =
-    pen.calculative;
-  if (!gradientFromColor || !gradientToColor) {
+    pen.calculative!;
+  if (!gradientFromColor || !gradientToColor || !worldRect) {
     return;
   }
 
   const { width, height, center } = worldRect;
-  const { x: centerX, y: centerY } = center;
+  const { x: centerX, y: centerY } = center!;
   let r = width;
   if (r < height) {
     r = height;
@@ -182,7 +185,7 @@ function getLinearGradientPoints(
 
 function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   const { worldRect, gradientColors, gradientRadius } = pen.calculative!;
-  if (!gradientColors) {
+  if (!gradientColors || !worldRect) {
     return;
   }
   let color = pen.calculative!.gradientColors;
@@ -190,7 +193,7 @@ function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
     color = pen.calculative!.onGradientColors;
   }
   const { width, height, center } = worldRect;
-  const { x: centerX, y: centerY } = center;
+  const { x: centerX, y: centerY } = center!;
   let r = width;
   if (r < height) {
     r = height;
@@ -232,12 +235,12 @@ function getBkGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 
 function getTextRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   const { worldRect, textGradientColors } = pen.calculative!;
-  if (!textGradientColors) {
+  if (!textGradientColors || !worldRect) {
     return;
   }
 
   const { width, height, center } = worldRect;
-  const { x: centerX, y: centerY } = center;
+  const { x: centerX, y: centerY } = center!;
   let r = width;
   if (r < height) {
     r = height;
@@ -812,6 +815,8 @@ function linearGradient(
     return;
   }
 
+  calcRightBottom(worldRect);
+  calcCenter(worldRect);
   const { x, y, center, ex, ey } = worldRect;
   const from: Point = {
     x,
@@ -857,13 +862,15 @@ function getImagePosition(pen: Pen) {
     worldRect
   } = pen.calculative!;
   if(!rect) {
+    const wr = worldRect!;
     return {
-      x: worldRect.x,
-      y: worldRect.y,
-      width: worldRect.width || imgNaturalWidth || pen.calculative!.img.naturalWidth,
-      height: worldRect.height || imgNaturalHeight || pen.calculative!.img.naturalHeight,
+      x: wr.x,
+      y: wr.y,
+      width: wr.width || imgNaturalWidth || pen.calculative!.img!.naturalWidth,
+      height: wr.height || imgNaturalHeight || pen.calculative!.img!.naturalHeight,
     }
   };
+  calcRightBottom(rect);
   let { x, y, width: w, height: h } = rect;
   if (iconWidth) {
     w = iconWidth;
@@ -1219,7 +1226,7 @@ function drawFillText(ctx: CanvasRenderingContext2D, pen: Pen, text: string) {
   }
 
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight, canvas } =
-    pen.calculative;
+    pen.calculative!;
 
   const store = canvas.store;
   ctx.save();
@@ -2921,7 +2928,7 @@ export function calcIconRect(pens: { [key: string]: Pen }, pen: Pen) {
     return;
   }
   const { paddingTop, paddingBottom, paddingLeft, paddingRight } =
-    pen.calculative;
+    pen.calculative!;
   let x = paddingLeft;
   let y = paddingTop;
   let width = pen.calculative!.worldRect!.width - paddingLeft - paddingRight;

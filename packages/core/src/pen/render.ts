@@ -1055,9 +1055,9 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     ctx.textBaseline = 'top';
     ctx.fillStyle = pen.placeholderColor || '#c0c0c0';
     const textLineWidth = ctx.measureText(pen.placeholder || '请输入').width;
-    const rect = pen.calculative!.worldTextRect;
+    const rect = pen.calculative!.worldTextRect!;
     let x = 0;
-    let y = (rect.height - pen.calculative!.fontSize) / 2;
+    let y = (rect.height - pen.calculative!.fontSize!) / 2;
     if (pen.textAlign === 'center') {
       x = (rect.width - textLineWidth) / 2;
     } else if (pen.textAlign === 'right') {
@@ -1066,7 +1066,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     if (pen.textBaseline === 'top') {
       y = 0;
     } else if (pen.textBaseline === 'bottom') {
-      y = rect.height - pen.calculative!.fontSize;
+      y = rect.height - pen.calculative!.fontSize!;
     }
     ctx.fillText(pen.placeholder || '请输入', rect.x + x, rect.y + y);
     ctx.restore();
@@ -1371,9 +1371,9 @@ export function drawIcon(
   ctx.fillStyle = pen.calculative!.iconColor || getTextColor(pen, store);
 
   if (pen.calculative!.iconRotate) {
-    ctx.translate(iconRect.center.x, iconRect.center.y);
+    ctx.translate(iconRect.center!.x, iconRect.center!.y);
     ctx.rotate((pen.calculative!.iconRotate * Math.PI) / 180);
-    ctx.translate(-iconRect.center.x, -iconRect.center.y);
+    ctx.translate(-iconRect.center!.x, -iconRect.center!.y);
   }
 
   ctx.beginPath();

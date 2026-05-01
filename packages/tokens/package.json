@@ -3,19 +3,15 @@
   "version": "1.0.0",
   "description": "Design tokens for meta2d — three-tier system with type-safe paths",
   "license": "MIT",
-  "main": "./dist/index.cjs.js",
-  "module": "./dist/index.esm.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js"
-    },
-    "./themes/light": "./dist/themes/light.js",
-    "./themes/dark": "./dist/themes/dark.js",
-    "./themes/high-contrast": "./dist/themes/high-contrast.js",
-    "./themes/neutral": "./dist/themes/neutral.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
   },
   "sideEffects": false,
   "files": ["dist", "README.md", "CHANGELOG.md"],

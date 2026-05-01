@@ -11,7 +11,6 @@ import {
   pushPenAnchor,
   removePenAnchor,
   renderPen,
-  scalePen,
   Pen,
   translateLine,
   deleteTempAnchor,
@@ -5597,6 +5596,14 @@ export class Canvas {
 
 
   transTimeout: any;
+  /**
+   * @deprecated 用 setTranslate(absX, absY) 或 setViewport({x,y,zoom}) 替代 (Phase D6 quirk 11.1 #2)
+   *
+   * 老 add-delta 语义:`store.data.x += dx * scale`。保留是因为 padding clamp 逻辑
+   * 与内部 wheel pan / drag pan / fitView 的 caller 数学相互依赖,Phase D6.4 minimal
+   * 暂不删 wrapper(完整删除 + 内部 callers 全迁 + padding clamp 搬到 setTranslate
+   * 留 D6.4-followup,需要 V2 端验证 fitView / wheel pan 行为不退化)。
+   */
   translate(x: number = 0, y: number = 0) {
     this.store.data.x += x * this.store.data.scale;
     this.store.data.y += y * this.store.data.scale;
@@ -5791,8 +5798,8 @@ export class Canvas {
 
   /**
    * Phase D6 quirk 11.1 #1 — 设置 viewport scale,不再 mutate pen 几何。
-   * 旧 scale(z, center) 通过 scalePen 把 zoom 烘焙进 pen.x/y/w/h;本 API 仅更新
-   * store.data.scale 并(若提供 pivot)调整 store.data.x/y 让 pivot 屏幕位置 invariant。
+   * 仅更新 store.data.scale 并(若提供 pivot)调整 store.data.x/y 让 pivot 屏幕位置 invariant。
+   * (Phase D6.4 后:scalePen 函数已删除,pre-D6.1 的"per-pen 缩放烘焙"路径完全消失。)
    *
    * 数学:维持 pivot 屏幕位置不变 → new_x = pivot.x - (pivot.x - old_x) * (new/old_scale)
    *

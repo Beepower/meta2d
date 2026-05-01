@@ -2984,24 +2984,13 @@ export function calcIconRect(pens: { [key: string]: Pen }, pen: Pen) {
   calcCenter(pen.calculative!.worldIconRect);
 }
 
-export function scalePen(pen: Pen, scale: number, center: Point) {
-  scaleRect(pen.calculative!.worldRect, scale, center, pen.pivot);
-
-  if (pen.calculative!.initRect) {
-    scaleRect(pen.calculative!.initRect, scale, center, pen.pivot);
-  }
-  if (pen.calculative!.prevFrameRect){
-    scaleRect(pen.calculative!.prevFrameRect, scale, center, pen.pivot);
-  }
-  scaleChildrenInitRect(pen, scale, center);
-  if (pen.calculative!.x) {
-    scalePoint(pen.calculative as any as Point, scale, center);
-  }
-
-  if (pen.type) {
-    calcWorldAnchors(pen);
-  }
-}
+// scalePen removed in Phase D6.4 (2026-05-01). Pre-D6.1 it baked viewport
+// zoom into pen.x/y/w/h on every Canvas.scale() call — the keystone of the
+// "pens are screen-space" data model. D6.1 keystone made pens world-space and
+// applied viewport zoom at render-time via ctx.scale(); scalePen had no
+// caller after that change. Removed entirely; if pen-coord rewinding is ever
+// needed again it should go through the new setScale + scaleRect helpers,
+// not a per-pen mutation function.
 
 export function scaleChildrenInitRect(pen: Pen, scale: number, center: Point) {
   if (!pen) {

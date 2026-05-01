@@ -72,7 +72,7 @@ export function isAncestor(pen: Pen, ancestor: Pen) {
 
 export function getParent(pen: Pen, root?: boolean): Pen {
   if (!pen || !pen.parentId || !pen.calculative) {
-    return undefined;
+    return undefined as any;
   }
 
   const store = pen.calculative!.canvas!.store;
@@ -124,7 +124,7 @@ function drawBkLinearGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
     worldRect,
     gradientFromColor,
     gradientToColor,
-    gradientAngle
+    gradientAngle ?? 0
   );
 }
 
@@ -199,7 +199,7 @@ function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
     r = height;
   }
   r *= 0.5;
-  const { colors } = formatGradient(color);
+  const { colors } = formatGradient(color!);
   const grd = ctx.createRadialGradient(
     centerX,
     centerY,
@@ -948,8 +948,9 @@ export function drawImage(
 ) {
   const { x, y, width, height } = getImagePosition(pen);
   const { worldIconRect, iconRotate, img } = pen.calculative!;
-  ctx.filter = pen.filter
-  if (iconRotate) {
+  if (!img) return;
+  ctx.filter = pen.filter ?? '';
+  if (iconRotate && worldIconRect?.center) {
     const { x: centerX, y: centerY } = worldIconRect.center;
     ctx.translate(centerX, centerY);
     ctx.rotate((iconRotate * Math.PI) / 180);
@@ -959,6 +960,8 @@ export function drawImage(
     ctx.save();
     let wr = pen.calculative!.imageRadius || 0,
       hr = wr;
+    const wRect = pen.calculative!.worldRect!;
+    calcRightBottom(wRect);
     const {
       x: _x,
       y: _y,
@@ -966,7 +969,7 @@ export function drawImage(
       height: h,
       ex,
       ey,
-    } = pen.calculative!.worldRect!;
+    } = wRect;
     if (wr < 1) {
       wr = w * wr;
       hr = h * hr;

@@ -4799,7 +4799,7 @@ export class Meta2d {
    */
   downloadPng(name?: string, padding?: Padding, maxWidth?: number) {
     for (const pen of this.store.data.pens) {
-      if (pen.calculative!.img || ['iframe'].includes(pen.name)) {
+      if (pen.calculative!.img || ['iframe'].includes(pen.name!)) {
         //重新生成绘制图片
         pen.onRenderPenRaw?.(pen);
       }
@@ -5023,8 +5023,8 @@ export class Meta2d {
     let rect: Rect = {
       x: this.store.data.origin.x,
       y: this.store.data.origin.y,
-      width: this.store.data.width * this.store.data.scale,
-      height: this.store.data.height * this.store.data.scale,
+      width: (this.store.data.width || 0) * this.store.data.scale,
+      height: (this.store.data.height || 0) * this.store.data.scale,
     };
 
     if (isNaN(rect.width) || isNaN(rect.height)) {
@@ -5037,7 +5037,7 @@ export class Meta2d {
     if (Math.abs(wGap) > 10) {
       this.store.data.fits?.forEach((fit) => {
         let pens: Pen[] = [];
-        fit.children.forEach((id: string) => {
+        fit.children!.forEach((id: string) => {
           if(this.store.pens[id]){
             this.store.pens[id].locked = LockState.None;
             pens.push(this.store.pens[id]);
@@ -5075,7 +5075,7 @@ export class Meta2d {
                 }
               });
             }
-            if (Math.abs(fit.leftValue) < 1) {
+            if (Math.abs(fit.leftValue!) < 1) {
               pen.calculative!.worldRect!.x =
                 rect.x -
                 wGap / 2 +
@@ -5095,8 +5095,8 @@ export class Meta2d {
             pen.calculative!.x = pen.calculative!.worldRect!.x;
             pen.width = pen.calculative!.worldRect!.width;
             pen.x = pen.calculative!.worldRect!.x;
-            pen.textWidth *= ratio
-            pen.calculative!.textWidth *= ratio;
+            pen.textWidth = pen.textWidth! * ratio
+            pen.calculative!.textWidth = pen.calculative!.textWidth! * ratio;
             this.canvas.updatePenRect(pen, { worldRectIsReady: false });
             if (pen.externElement) {
               pen.onResize?.(pen);
@@ -5141,7 +5141,7 @@ export class Meta2d {
           let bfW = worldRect.width;
           pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
           pen.calculative!.worldRect!.width = worldRect.width + wGap;
-          pen.calculative!.worldRect!.ex = worldRect.ex + wGap;
+          pen.calculative!.worldRect!.ex = worldRect.ex! + wGap;
           pen.operationalRect!.x =
             (pen.operationalRect!.x * bfW) / pen.calculative!.worldRect!.width;
           pen.operationalRect!.width =
@@ -5164,7 +5164,7 @@ export class Meta2d {
           //作为背景的video
           pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
           pen.calculative!.worldRect!.width = worldRect.width + wGap;
-          pen.calculative!.worldRect!.ex = worldRect.ex + wGap;
+          pen.calculative!.worldRect!.ex = worldRect.ex! + wGap;
           pen.onResize?.(pen);
         }
       });
@@ -5173,7 +5173,7 @@ export class Meta2d {
     if (Math.abs(hGap) > 10) {
       this.store.data.fits?.forEach((fit) => {
         let pens: Pen[] = [];
-        fit.children.forEach((id: string) => {
+        fit.children!.forEach((id: string) => {
           if(this.store.pens[id]){
             this.store.pens[id].locked = LockState.None;
             pens.push(this.store.pens[id]);
@@ -5258,7 +5258,7 @@ export class Meta2d {
           let bfH = worldRect.height;
           pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
           pen.calculative!.worldRect!.height = worldRect.height + hGap;
-          pen.calculative!.worldRect!.ey = worldRect.ey + hGap;
+          pen.calculative!.worldRect!.ey = worldRect.ey! + hGap;
           pen.operationalRect!.y =
             (pen.operationalRect!.y * bfH) / pen.calculative!.worldRect!.width;
           pen.operationalRect!.height =
@@ -5280,7 +5280,7 @@ export class Meta2d {
           //作为背景的video
           pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
           pen.calculative!.worldRect!.height = worldRect.height + hGap;
-          pen.calculative!.worldRect!.ey = worldRect.ey + hGap;
+          pen.calculative!.worldRect!.ey = worldRect.ey! + hGap;
           pen.onResize?.(pen);
         }
       });
@@ -5310,9 +5310,9 @@ export class Meta2d {
 
   setFits() {
     if (!this.store.data.fits) {
-      const children = this.store.data.pens
+      const children: string[] = this.store.data.pens
         .filter((pen) => !pen.parentId)
-        .map((pen) => pen.id);
+        .map((pen) => pen.id!);
       this.store.data.fits = [
         {
           bottom: true,
@@ -5522,7 +5522,7 @@ export class Meta2d {
         height: h,
       };
     } else {
-      pensRect = this.getPenRect(rect);
+      pensRect = this.getPenRect(rect as any);
     }
     calcCenter(pensRect);
     const { center } = pensRect;
@@ -5542,7 +5542,7 @@ export class Meta2d {
     if (!this.hasView()) return;
     const rect = this.getRect();
     const viewCenter = this.getViewCenter();
-    const pensRect: Rect = this.getPenRect(rect);
+    const pensRect: Rect = this.getPenRect(rect as any);
     calcCenter(pensRect);
     const { center } = pensRect;
     const { scale, origin, x: dataX, y: dataY } = this.store.data;
@@ -5588,15 +5588,15 @@ export class Meta2d {
     for (let i = 1; i < pens.length; i++) {
       const pen = pens[i];
       if (attribute === 'width') {
-        this.setValue({ id: pen.id, width }, { render: false, doEvent: false });
+        this.setValue({ id: pen!.id!, width } as any, { render: false, doEvent: false });
       } else if (attribute === 'height') {
         this.setValue(
-          { id: pen.id, height },
+          { id: pen!.id!, height } as any,
           { render: false, doEvent: false }
         );
       } else {
         this.setValue(
-          { id: pen.id, width, height },
+          { id: pen!.id!, width, height } as any,
           { render: false, doEvent: false }
         );
       }
@@ -5618,20 +5618,20 @@ export class Meta2d {
     const initPens = deepClone(pens); // 原 pens ，深拷贝一下
 
     // 1. 得到最后一个画笔的 宽高
-    const lastPen = pens[pens.length - 1];
+    const lastPen = pens[pens.length - 1]!;
     const { width, height } = this.getPenRect(lastPen);
     for (let i = 0; i < pens.length - 1; i++) {
-      const pen = pens[i];
+      const pen = pens[i]!;
       if (attribute === 'width') {
-        this.setValue({ id: pen.id, width }, { render: false, doEvent: false });
+        this.setValue({ id: pen.id!, width } as any, { render: false, doEvent: false });
       } else if (attribute === 'height') {
         this.setValue(
-          { id: pen.id, height },
+          { id: pen.id!, height } as any,
           { render: false, doEvent: false }
         );
       } else {
         this.setValue(
-          { id: pen.id, width, height },
+          { id: pen.id!, width, height } as any,
           { render: false, doEvent: false }
         );
       }
@@ -5660,7 +5660,7 @@ export class Meta2d {
     for (let i = 1; i < pens.length; i++) {
       const pen = pens[i];
       this.setValue(
-        { id: pen.id, ...defaultFormat,...attrs },
+        { id: pen!.id!, ...defaultFormat,...attrs } as any,
         { render: false, doEvent: false }
       );
     }
@@ -5688,7 +5688,7 @@ export class Meta2d {
     for (let i = 0; i < pens.length - 1; i++) {
       const pen = pens[i];
       this.setValue(
-        { id: pen.id, ...defaultFormat,...attrs },
+        { id: pen!.id!, ...defaultFormat,...attrs } as any,
         { render: false, doEvent: false }
       );
     }
@@ -5730,11 +5730,11 @@ export class Meta2d {
   formatPainter() {
     const pens = this.store.active!;
     const initPens = deepClone(pens);
-    const attrs = JSON.parse(localStorage.getItem('meta2d-formatPainter'));
+    const attrs = JSON.parse(localStorage.getItem('meta2d-formatPainter') || '{}');
     for (let i = 0; i < pens.length; i++) {
       const pen = pens[i];
       this.setValue(
-        { id: pen.id, ...defaultFormat,...attrs },
+        { id: pen!.id!, ...defaultFormat,...attrs } as any,
         { render: false, doEvent: false }
       );
     }
@@ -5758,11 +5758,11 @@ export class Meta2d {
           pen.lineWidth = 1;
           pen.calculative!.lineWidth = 1;
         } else if (attr === 'fontSize') {
-          pen.fontSize! = fontSize;
-          pen.calculative!.fontSize = fontSize;
+          pen.fontSize = fontSize;
+          pen.calculative!.fontSize = fontSize!;
         } else if (attr === 'lineHeight') {
           pen.lineHeight = lineHeight;
-          pen.calculative!.lineHeight = lineHeight;
+          pen.calculative!.lineHeight = lineHeight!;
         } else {
           delete (pen as any)[attr];
           delete (pen.calculative as any)[attr];
@@ -5778,7 +5778,7 @@ export class Meta2d {
   }
 
   alignNodes(align: string, pens: Pen[] = this.store.data.pens, rect?: Rect) {
-    !rect && (rect = this.getPenRect(this.getRect(pens)));
+    !rect && (rect = this.getPenRect(this.getRect(pens) as any));
     const initPens = deepClone(pens); // 原 pens ，深拷贝一下
     for (const item of pens) {
       this.alignPen(align, item, rect);

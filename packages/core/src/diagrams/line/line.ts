@@ -287,7 +287,7 @@ export function getLineLength(pen: Pen): number {
   }
   if (pen.calculative!.animatePos) {
     pen.calculative!.animatePos =
-      (len / pen.length) * pen.calculative!.animatePos;
+      (len / pen.length!) * pen.calculative!.animatePos;
   }
   pen.length = len;
   return len;

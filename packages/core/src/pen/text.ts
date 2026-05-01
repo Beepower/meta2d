@@ -257,8 +257,10 @@ export function getWords(txt: string = '') {
 export function wrapLines(words: string[], pen: Pen) {
   const canvas = pen.calculative!.canvas!;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
-  const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
-    pen.calculative!;
+  const calc = pen.calculative!;
+  const { fontStyle, fontWeight, fontFamily } = calc;
+  const fontSize = calc.fontSize!;
+  const lineHeight = calc.lineHeight!;
   ctx.save();
   const lines: string[] = [];
   let currentLine = words[0] || '';
@@ -319,7 +321,7 @@ export function calcTextAdaptionWidth(
 }
 
 function getFontWith(text: string, pen: Pen) {
-  const fontSize = pen.calculative!.fontSize;
+  const fontSize = pen.calculative!.fontSize!;
   const chinese = text.match(/[^\x00-\xff]/g) || '';
   const chineseWidth = chinese.length * fontSize; // 中文占用的宽度
   const spaces = text.match(/\s/g) || '';

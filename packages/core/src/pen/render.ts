@@ -3735,7 +3735,7 @@ export function setLineAnimate(pen: Pen, now: number) {
 
     const progress = cubicBezierY(t, +timeParams[1], +timeParams[3])
     // 更新动画位置
-    pen.calculative!.animatePos = progress * pen.length;
+    pen.calculative!.animatePos = progress * pen.length!;
   }else{
     pen.calculative!.animatePos +=
       pen.animateSpan * (pen.calculative!.canvas!.store.data.scale || 1);

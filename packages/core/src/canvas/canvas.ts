@@ -1332,7 +1332,7 @@ export class Canvas {
         file,
         this.store.options.uploadUrl,
         this.store.options.uploadParams || {},
-        this.store.options.uploadHeaders
+        this.store.options.uploadHeaders || {}
       );
     } else {
       url = await fileToBase64(file);
@@ -1749,7 +1749,7 @@ export class Canvas {
     const y = event.touches[0]!.pageY - this.clientRect!.y;
     if (len === 1) {
       if (this.store.options.scroll && this.scroll && !this.store.options.scrollButScale) {
-        let diff = this.lastTouchY - event.touches[0]!.clientY;
+        let diff = (this.lastTouchY ?? 0) - event.touches[0]!.clientY;
         this.scroll.wheel(diff);
         this.lastTouchY = event.touches[0]!.clientY;
         return;
@@ -7868,8 +7868,8 @@ export class Canvas {
       }
       let height =
         pen.fontSize! * scale < 12 ? tem * scale * font_scale : tem * scale * font_scale;
-      if (height < pen.fontSize! * pen.lineHeight * scale) {
-        height = pen.fontSize! * pen.lineHeight * scale;
+      if (height < pen.fontSize! * pen.lineHeight! * scale) {
+        height = pen.fontSize! * pen.lineHeight! * scale;
         style += `top:-${height / 2}px;`;
       }
       style += `height:${height}px;`;
@@ -7878,7 +7878,7 @@ export class Canvas {
       style += `letter-spacing:${pen.calculative!.letterSpacing}px;`
     }
 
-    let _textWidth = null;
+    let _textWidth: number | null | undefined = null;
     if (pen.textWidth) {
       // _textWidth =
       //   pen.textWidth < 1 && pen.textWidth > -1
@@ -7886,13 +7886,13 @@ export class Canvas {
       //     : pen.textWidth;
       _textWidth = pen.calculative!.textWidth;
       if (pen.whiteSpace !== 'pre-line') {
-        if (_textWidth < pen.fontSize!) {
+        if (_textWidth! < pen.fontSize!) {
           style += `width:${pen.fontSize! * 1.2 * font_scale}px;`;
         } else {
           style += `width:${
             scale > 1
-              ? _textWidth * font_scale
-              : _textWidth * font_scale
+              ? _textWidth! * font_scale
+              : _textWidth! * font_scale
           }px;`;
         }
       }
@@ -7925,13 +7925,13 @@ export class Canvas {
       }
     }
     if (pen.whiteSpace !== 'nowrap') {
-      let textWidth = pen.fontSize! * 1.2 * pen.text.length;
+      let textWidth = pen.fontSize! * 1.2 * pen.text!.length;
       let contentWidth =
         (_textWidth || pen.calculative!.worldRect!.width / scale) *
         Math.floor(
           pen.calculative!.worldRect!.height /
             scale /
-            (pen.lineHeight * pen.fontSize!)
+            (pen.lineHeight! * pen.fontSize!)
         );
       if (textWidth > contentWidth) {
         style += 'justify-content: start;';
@@ -8013,7 +8013,7 @@ export class Canvas {
     this.inputParent.appendChild(this.inputDiv);
     // this.inputParent.appendChild(this.inputRight);
     this.dropdown.onmouseleave = () => {
-      this.store.hover = null;
+      this.store.hover = undefined;
     };
     this.inputParent.appendChild(this.dropdown);
     this.externalElements.appendChild(this.inputParent);
@@ -8178,7 +8178,7 @@ export class Canvas {
   private setDropdownList = (search?: boolean) => {
     this.clearDropdownList();
     const pen = this.store.pens[this.inputDiv.dataset.penId!];
-    if (!this.store.data.locked&&!['tablePlus'].includes(pen.name)) {
+    if (!this.store.data.locked&&!['tablePlus'].includes(pen.name!)) {
       return;
     }
     this.dropdown.style.display = 'block';
@@ -8207,7 +8207,7 @@ export class Canvas {
       .replace(/\<br\>/g, '');
     let i = 0;
     for (const item of pen.dropdownList) {
-      const t = typeof item === 'string' ? item : item.text;
+      const t: string = typeof item === 'string' ? item : item.text!;
       if (search && text) {
         if (t.includes(text)) {
           // 过滤
@@ -8265,7 +8265,7 @@ export class Canvas {
       return;
     }
 
-    const index = +li.dataset.i;
+    const index = +li.dataset.i!;
     const dropdown = pen.dropdownList[index];
     if (!dropdown) {
       return;
@@ -8280,7 +8280,7 @@ export class Canvas {
     } else {
       pen.text = dropdown + '';
     }
-    this.inputDiv.innerText = pen.text;
+    this.inputDiv.innerText = pen.text!;
     // this.dropdown.style.display = 'none';
     // this.inputRight.style.transform = 'rotate(135deg)';
     this.hideInput();
@@ -8325,19 +8325,19 @@ export class Canvas {
     delete this.store.pens[oldId];
     // 父子
     if (pen.parentId) {
-      const parent = this.store.pens[pen.parentId];
+      const parent = this.store.pens[pen.parentId]!;
       const index = parent.children?.findIndex((id) => id === oldId);
-      index !== -1 && parent.children?.splice(index, 1, newId);
+      index !== undefined && index !== -1 && parent.children?.splice(index, 1, newId);
     }
     pen.children?.forEach((childId) => {
       const child = this.store.pens[childId];
-      child.parentId = newId;
+      if (child) child.parentId = newId;
     });
     //form表单关系
     if(pen.formId){
-      pen.followers.forEach((id)=>{
+      pen.followers!.forEach((id)=>{
         const followerPen = this.store.pens[id];
-        followerPen.formId = newId;
+        if (followerPen) followerPen.formId = newId;
       });
     }
     // 连接关系
@@ -8362,7 +8362,7 @@ export class Canvas {
     Object.assign(pen, data);
     // data 可能没有 name 属性
     const isChangedName = oldName !== pen.name; // name changed
-    data.newId && this.changePenId(pen.id, data.newId);
+    data.newId && this.changePenId(pen.id!, data.newId);
     let willUpdatePath = false;
     let willCalcTextRect = false;
     let willPatchFlagsPenRect = false; // 是否需要重新计算世界坐标
@@ -9071,13 +9071,13 @@ export class Canvas {
       if (
         rectInRect(
           pen.calculative!.worldRect!,
-          this.dragRect,
+          this.dragRect!,
           true
         )
       ) {
         // 先判断在区域内，若不在区域内，则锚点肯定不在框选区域内，避免每条连线过度计算
         if (pen.type === PenType.Line && !this.store.options.dragAllIn) {
-          return lineInRect(pen, this.dragRect);
+          return lineInRect(pen, this.dragRect!);
         }
         return true;
       }
@@ -9359,8 +9359,8 @@ export class Canvas {
     let idx = -1;
     let lastActiveIdx = -1;
     this.store.data.fits?.forEach((fit,index)=>{
-      fit.ex = null;
-      fit.ey = null;
+      fit.ex = undefined;
+      fit.ey = undefined;
       if(pointInRect({x: downX, y: downY}, fit)){
         idx = index;
       };
@@ -9369,16 +9369,16 @@ export class Canvas {
       }
     });
     if(idx !== -1 && idx !== lastActiveIdx){
-      this.canvasImage.activeFit = this.store.data.fits[idx];
-      this.store.data.fits[idx].active = true;
+      this.canvasImage.activeFit = this.store.data.fits![idx];
+      this.store.data.fits![idx]!.active = true;
       if(lastActiveIdx !== -1){
-        this.store.data.fits[lastActiveIdx].active = false;
+        this.store.data.fits![lastActiveIdx]!.active = false;
       }
-      this.store.emitter.emit('fit', this.store.data.fits[idx]);
+      this.store.emitter.emit('fit', this.store.data.fits![idx]);
     }else if(idx === -1&&lastActiveIdx !== -1){
-      this.store.data.fits[lastActiveIdx].active = false;
+      this.store.data.fits![lastActiveIdx]!.active = false;
       this.store.emitter.emit('fit', undefined);
-      this.canvasImage.activeFit = null;
+      this.canvasImage.activeFit = undefined as any;
     }
     this.inactive();
     this.canvasImage.init();

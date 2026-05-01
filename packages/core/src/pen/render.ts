@@ -3956,7 +3956,7 @@ function initLineRect(pen: Pen) {
   if (!pen.parentId) {
     Object.assign(pen, rect);
   }
-  const { fontSize, lineHeight } = pen.calculative!.canvas!.store.options;
+  const { fontSize = 12, lineHeight = 1 } = pen.calculative!.canvas!.store.options;
   if (!pen.fontSize!) {
     pen.fontSize! = fontSize >= 0 ? fontSize : 12;
     pen.calculative!.fontSize =

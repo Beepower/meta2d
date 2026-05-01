@@ -929,7 +929,7 @@ export class Meta2d {
             `le5le-iot/${iot.room}/properties/set`,
             JSON.stringify(payload)
           );
-      } else {
+      } else if (iot) {
         this.iotMqttClient &&
           this.iotMqttClient.publish(
             `le5le-iot/property/set/${iot.token}`,
@@ -3001,11 +3001,12 @@ export class Meta2d {
   closeIot(){
     if(this.iotMqttClient){
       const { iot } = this.store.data;
+      if (!iot) return;
       if(iot.interval){
         clearInterval(iot.interval);
         iot.interval = undefined;
       }
-      if(iot?.token){
+      if(iot.token){
         this.unsubscribeIot(iot.token, iot.room);
       }
       this.iotMqttClient.end();

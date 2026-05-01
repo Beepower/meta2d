@@ -33,10 +33,10 @@ export function calcAnchorDock(
         return;
       }
       let distance =
-        (pen.calculative!.worldRect!.center.x - e.x) *
-          (pen.calculative!.worldRect!.center.x - e.x) +
-        (pen.calculative!.worldRect!.center.y - e.y) *
-          (pen.calculative!.worldRect!.center.y - e.y);
+        (pen.calculative!.worldRect!.center!.x - e.x) *
+          (pen.calculative!.worldRect!.center!.x - e.x) +
+        (pen.calculative!.worldRect!.center!.y - e.y) *
+          (pen.calculative!.worldRect!.center!.y - e.y);
       const disX = Math.abs(pt.x - e.x);
       if (disX > 0 && disX < size && distance < x) {
         xDock = {
@@ -101,16 +101,17 @@ export function calcMoveDock(
  */
 export function getPointsByPen(pen: Pen): Point[] {
   if (!pen.type) {
-    const outerPoints = rectToPoints(pen.calculative!.worldRect);
-    calcCenter(pen.calculative!.worldRect);
+    const outerPoints = rectToPoints(pen.calculative!.worldRect!);
+    calcCenter(pen.calculative!.worldRect!);
     return [
-      ...pen.calculative!.worldAnchors,
+      ...pen.calculative!.worldAnchors!,
       ...outerPoints,
-      pen.calculative!.worldRect!.center,
+      pen.calculative!.worldRect!.center!,
     ];
   } else if (pen.type === PenType.Line) {
-    return pen.calculative!.worldAnchors;
+    return pen.calculative!.worldAnchors!;
   }
+  return [];
 }
 
 export function calcResizeDock(
@@ -118,7 +119,7 @@ export function calcResizeDock(
   rect: Rect,
   pens: Pen[],
   resizeIndex: number
-): { xDock: Point; yDock: Point } {
+): { xDock: Point | undefined; yDock: Point | undefined } {
   const activePoints = rectToPoints(rect);
   return calcDockByPoints(store, activePoints, rect);
 }
@@ -134,7 +135,7 @@ function calcDockByPoints(
   activePoints: Point[],
   rect: Rect,
   calcActive = false
-): { xDock: Point; yDock: Point } {
+): { xDock: Point | undefined; yDock: Point | undefined } {
   let xDock: Point | undefined;
   let yDock: Point | undefined;
   let minCloseX = Infinity;

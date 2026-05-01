@@ -2155,8 +2155,10 @@ export function ctxDrawLinePath(
             ) {
               //箭头动画
               const _path = drawArrow(pen);
-              ctx.stroke(_path);
-              ctx.fill(_path);
+              if (_path instanceof Path2D) {
+                ctx.stroke(_path);
+                ctx.fill(_path);
+              }
             } else {
               if (
                 pen.calculative!.gradientSmooth ||

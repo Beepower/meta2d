@@ -123,7 +123,7 @@ export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
       y = rect.y;
       break;
     case 'bottom':
-      y = rect.ey - h;
+      y = rect.ey! - h;
       break;
   }
 
@@ -160,7 +160,7 @@ export function calcTextLines(pen: Pen, text = pen.calculative!.text) {
   }
   let lines: string[] = [];
   const oneRowHeight = calc.fontSize * calc.lineHeight;
-  const textHeight = calc.worldTextRect.height;
+  const textHeight = calc.worldTextRect!.height;
   const calcRows = Math.floor(textHeight / oneRowHeight);
   // 最小值为 1
   const maxRows = calcRows > 1 ? calcRows : 1;
@@ -310,11 +310,11 @@ export function calcTextAdaptionWidth(
     let width;
     if(pen.calculative!.textType){
       // 文字渐变 measureText 计算有误
-      width = getFontWith(text,pen) + text.length * pen.calculative!.letterSpacing;
+      width = getFontWith(text,pen) + text.length * pen.calculative!.letterSpacing!;
     }else{
-      width = ctx.measureText(text).width + text.length * pen.calculative!.letterSpacing;  
+      width = ctx.measureText(text).width + text.length * pen.calculative!.letterSpacing!;
     }
-    pen.calculative!.textLineWidths.push(width);
+    pen.calculative!.textLineWidths!.push(width);
     maxWidth < width && (maxWidth = width);
   });
   return maxWidth;
@@ -344,7 +344,7 @@ function setEllipsisOnLastLine(lines: string[]) {
 }
 
 export function calcTextAutoWidth(pen: Pen) {
-  let arr = pen.text.split('\n');
+  let arr = pen.text!.split('\n');
   const canvas: Canvas = pen.calculative!.canvas;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
@@ -361,7 +361,7 @@ export function calcTextAutoWidth(pen: Pen) {
         fontSize,
         lineHeight,
       });
-      currentWidth = ctx.measureText(arr[i]).width + arr[i].length * pen.calculative!.letterSpacing; //* scale;
+      currentWidth = ctx.measureText(arr[i]!).width + arr[i]!.length * pen.calculative!.letterSpacing!; //* scale;
     } else {
       // 近似计算
       const chinese = arr[i].match(/[^\x00-\xff]/g) || '';
@@ -370,7 +370,7 @@ export function calcTextAutoWidth(pen: Pen) {
       const spaceWidth = spaces.length * fontSize * 0.3; // 空格占用的宽度
       const otherWidth =
         (arr[i].length - chinese.length - spaces.length) * fontSize * 0.6; // 其他字符占用的宽度
-      currentWidth = chineseWidth + spaceWidth + otherWidth + arr[i].length * pen.calculative!.letterSpacing;
+      currentWidth = chineseWidth + spaceWidth + otherWidth + arr[i]!.length * pen.calculative!.letterSpacing!;
     }
     if (currentWidth > textWidth) {
       textWidth = currentWidth; //* scale;

@@ -126,7 +126,7 @@ export class Meta2d {
     this.setOptions(opts);
     this.setDatabyOptions(opts);
     this.init(parent);
-    this.register(commonPens());
+    this.register(commonPens() as any);
     this.registerCanvasDraw({ cube });
     this.registerAnchors(commonAnchors());
     globalThis.meta2d = this;
@@ -281,7 +281,7 @@ export class Meta2d {
     this.store.data.theme = theme;
     this.setBackgroundColor(this.store.theme[theme].background);
     this.canvas.parentElement.style.background =
-      this.store.theme[theme].parentBackground;
+      this.store.theme[theme].parentBackground || '';
     this.setOptions({
       ruleColor: this.store.theme[theme].ruleColor,
       ruleOptions: this.store.theme[theme].ruleOptions,
@@ -346,7 +346,7 @@ export class Meta2d {
     this.canvas.listen();
     // 创建主题样式表
     // if(this.store.data.theme){
-      le5leTheme.createThemeSheet(this.store.data.theme, this.store.id!);
+      le5leTheme.createThemeSheet(this.store.data.theme!, this.store.id!);
     // }
   }
   initEventFns() {
@@ -370,7 +370,7 @@ export class Meta2d {
       // TODO: 若频繁地触发，重复 render 可能带来性能问题，待考虑
       const value = e.value;
       if (value && typeof value === 'object') {
-        const pens = e.params ? this.find(e.params) : this.find(pen.id);
+        const pens = e.params ? this.find(e.params) : this.find(pen.id!);
         const _value:any = {};
         for(let key in value){
           if(value[key]?.id){
@@ -420,9 +420,9 @@ export class Meta2d {
       console.warn('[meta2d] SetProps value is not an object');
     };
     this.events[EventAction.StartAnimate] = (pen: Pen, e: Event) => {
-      let _pen = pen;
+      let _pen: Pen = pen;
       if (e.value) {
-        _pen = this.findOne(e.value as string);
+        _pen = this.findOne(e.value as string)!;
       }
       if (
         this.store.animates.has(_pen) &&
@@ -452,7 +452,7 @@ export class Meta2d {
       if (!e.value || typeof e.value === 'string') {
         if (e.value) {
           let _pen = this.findOne(e.value as string);
-          if (!this.store.animates.has(_pen)) {
+          if (!_pen || !this.store.animates.has(_pen)) {
             return;
           }
         } else {
@@ -550,7 +550,7 @@ export class Meta2d {
             value: value[key],
           };
           if (!obj.value) {
-            let oneForm = _pen.form.find(
+            let oneForm = _pen.form!.find(
               (_item) =>
                 (_item.dataIds as BindId) &&
                 (_item.dataIds as BindId).dataId === obj.dataId
@@ -665,14 +665,14 @@ export class Meta2d {
         console.warn('不是嵌入页面');
         return;
       }
-      let params = queryURLParams(_pen.iframe.split('?')[1]);
+      let params = queryURLParams(_pen.iframe!.split('?')[1] || '');
       let value: any = this.getSendData(e.data, pen);
       if(e.list){
-        value = this.getEventData(e.list, pen);
+        value = this.getEventData(e.list as any, pen);
       }
       (
         _pen.calculative!.singleton.div.children[0] as HTMLIFrameElement
-      ).contentWindow.postMessage(
+      ).contentWindow!.postMessage(
         JSON.stringify({
           name: e.value,
           id: params.id,
@@ -689,7 +689,7 @@ export class Meta2d {
       }
       let value: any = this.getSendData(e.data, pen);
       if(e.list){
-        value = this.getEventData(e.list, pen);
+        value = this.getEventData(e.list as any, pen);
       }
       window.parent.postMessage(
         JSON.stringify({ name: e.value, data: value }),

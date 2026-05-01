@@ -323,7 +323,7 @@ export class Canvas {
       let hover = this.store.data.pens.find(
         (item) => item.calculative!.hover === true
       );
-      setHover(hover, false);
+      setHover(hover!, false);
     };
     this.popconfirm = new Popconfirm(parentElement, store);
 
@@ -599,7 +599,7 @@ export class Canvas {
     let data = JSON.parse(e.data);
     if (typeof data === 'object') {
       if(data.name === 'onload'){
-        this.dialog.iframe.contentWindow.postMessage(
+        this.dialog.iframe.contentWindow!.postMessage(
           JSON.stringify({
             name:'dialog',
             data:this.dialog.data
@@ -824,7 +824,7 @@ export class Canvas {
               y: to.y,
             });
           }
-          const index = this.drawLineFns.indexOf(this.drawingLineName);
+          const index = this.drawLineFns.indexOf(this.drawingLineName!);
           this.drawingLineName =
             this.drawLineFns[(index + 1) % this.drawLineFns.length];
           this.drawingLine.lineName = this.drawingLineName;
@@ -1037,7 +1037,7 @@ export class Canvas {
           this.hoverType === HoverType.LineAnchor &&
           this.store.hover === this.store.active![0]
         ) {
-          this.splitLine(this.store.active![0], this.store.hoverAnchor);
+          this.splitLine(this.store.active![0]!, this.store.hoverAnchor!);
         }
         // 保存
         (e.ctrlKey || e.metaKey) &&
@@ -1150,7 +1150,7 @@ export class Canvas {
         }
         if (this.movingPens) {
           this.getAllByPens(this.movingPens).forEach((pen) => {
-            this.store.pens[pen.id!] = undefined;
+            this.store.pens[pen.id!] = undefined as any;
           });
           this.movingPens = undefined;
           this.mouseDown = undefined;
@@ -1331,7 +1331,7 @@ export class Canvas {
       url = await uploadFile(
         file,
         this.store.options.uploadUrl,
-        this.store.options.uploadParams,
+        this.store.options.uploadParams || {},
         this.store.options.uploadHeaders
       );
     } else {
@@ -1346,7 +1346,7 @@ export class Canvas {
           height: img.height,
           name: isGif ? 'gif' : 'image',
           image: url,
-        });
+        } as any);
       };
       img.onerror = (e) => {
         reject(e);
@@ -1604,7 +1604,7 @@ export class Canvas {
       for (const childId of pen.children) {
         const childPen = pens.find((pen) => pen.id === childId);
         childPen &&
-          newChildren.push(this.randomCombineId(childPen, pens, pen.id).id);
+          newChildren.push(this.randomCombineId(childPen, pens, pen.id).id!);
         // TODO: 既已成为 组合节点，连接关系是否仍需要考虑呢？
       }
     }
@@ -1745,13 +1745,13 @@ export class Canvas {
     const touches = event.touches;
     const len = touches.length;
 
-    const x = event.touches[0].pageX - this.clientRect!.x;
-    const y = event.touches[0].pageY - this.clientRect!.y;
+    const x = event.touches[0]!.pageX - this.clientRect!.x;
+    const y = event.touches[0]!.pageY - this.clientRect!.y;
     if (len === 1) {
       if (this.store.options.scroll && this.scroll && !this.store.options.scrollButScale) {
-        let diff = this.lastTouchY - event.touches[0].clientY;
+        let diff = this.lastTouchY - event.touches[0]!.clientY;
         this.scroll.wheel(diff);
-        this.lastTouchY = event.touches[0].clientY;
+        this.lastTouchY = event.touches[0]!.clientY;
         return;
       }
       this.onMouseMove({
@@ -1940,7 +1940,7 @@ export class Canvas {
     return {
       id: pt.penId,
       name: 'line',
-      lineName: this.drawingLineName,
+      lineName: this.drawingLineName!,
       x: pt.x,
       y: pt.y,
       type: PenType.Line,
@@ -1959,7 +1959,7 @@ export class Canvas {
       toArrow: data.toArrow || options.toArrow,
       lineWidth,
       ...options.linePresetStyle
-    };
+    } as Pen;
   }
 
   onMouseDown = (e: {
@@ -2006,14 +2006,14 @@ export class Canvas {
     }
     // Set anchor of pen.
     if (this.hotkeyType === HotkeyType.AddAnchor) {
-      this.setAnchor(this.store.pointAt);
+      this.setAnchor(this.store.pointAt!);
       return;
     }
 
     //shift 快捷添加锚点并连线
     if (!this.store.options.autoAnchor && !this.drawingLine) {
       if (e.shiftKey && e.ctrlKey && e.altKey) {
-        this.setAnchor(this.store.pointAt);
+        this.setAnchor(this.store.pointAt!);
         this.drawingLineName = this.store.options.drawingLineName;
         const anchor = this.store.activeAnchor;
         if (!anchor) {
@@ -2394,8 +2394,8 @@ export class Canvas {
             this.drawingLine = this.createDrawingLine(pt);
             this.drawingLine.calculative!.activeAnchor = pt;
             connectLine(
-              this.store.hover,
-              this.store.hoverAnchor,
+              this.store.hover!,
+              this.store.hoverAnchor!,
               this.drawingLine,
               pt
             );
@@ -2670,8 +2670,8 @@ export class Canvas {
           to.y = this.store.hoverAnchor.y;
         }
         connectLine(
-          this.store.hover,
-          this.store.hoverAnchor,
+          this.store.hover!,
+          this.store.hoverAnchor!,
           this.drawingLine,
           to
         );
@@ -3220,7 +3220,7 @@ export class Canvas {
         }
       }
     }
-    return pen.children?.some((childId: string) => {
+    return !!pen.children?.some((childId: string) => {
       const child = this.store.pens[childId];
       return child && this.hasImage(child, isBottom);
     });
@@ -3565,7 +3565,7 @@ export class Canvas {
     }
     this.lastHoverType = hoverType;
 
-    this.store.hover?.onMouseMove?.(this.store.hover, this.mousePos);
+    (this.store.hover as Pen | undefined)?.onMouseMove?.(this.store.hover!, this.mousePos);
   };
 
   private inPens = (pt: Point, pens: Pen[]): HoverType => {
@@ -3676,10 +3676,10 @@ export class Canvas {
           isIn = !!pointInSimpleRect(
             pt,
             pen.calculative!.worldRect!,
-            pen.lineWidth
+            pen.lineWidth!
           );
         } else {
-          isIn = pointInRect(pt, pen.calculative!.worldRect!);
+          isIn = !!pointInRect(pt, pen.calculative!.worldRect!);
         }
         if (isIn) {
           if(pen.type === PenType.Node && pen.name==='line'){
@@ -4242,7 +4242,7 @@ export class Canvas {
               inheritanceProps.forEach((key) => {
                 if ((pen as any)[key] !== (unPen as any)[key]) {
                   this.parent.setValue(
-                    { id: pen.id, [key]: (pen as any)[key] },
+                    { id: pen.id!, [key]: (pen as any)[key] } as any,
                     { render: true, doEvent: false }
                   );
                 }
@@ -4499,7 +4499,7 @@ export class Canvas {
     }
     if (!pen.lineHeight) {
       pen.lineHeight = lineHeight;
-      pen.calculative!.lineHeight = pen.lineHeight;
+      pen.calculative!.lineHeight = pen.lineHeight!;
     }
     calcCenter(rect);
     pen.calculative!.worldRect = rect;
@@ -4918,7 +4918,7 @@ export class Canvas {
 
   setCalculativeByScale(pen: Pen) {
     const scale = this.store.data.scale;
-    pen.calculative!.lineWidth = pen.lineWidth * scale;
+    pen.calculative!.lineWidth = pen.lineWidth! * scale;
     pen.calculative!.fontSize = pen.fontSize! * scale;
     pen.calculative!.letterSpacing = (pen.letterSpacing || 0) * scale;
     if (pen.fontSize! < 1 && pen.fontSize! > 0) {

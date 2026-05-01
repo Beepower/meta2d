@@ -1090,11 +1090,11 @@ export class Meta2d {
    *
    * @param emit 是否发送消息
    */
-  async addPen(pen: Pen, history?: boolean, emit = true, abs = false) {
-    return await this.canvas.addPen(pen, history, emit, abs);
+  async addPen(pen: Pen, history?: boolean, emit = true, abs = false, activate = true) {
+    return await this.canvas.addPen(pen, history, emit, abs, activate);
   }
-  addPenSync(pen: Pen, history?: boolean, emit = true, abs = false) {
-    return this.canvas.addPenSync(pen, history, emit, abs);
+  addPenSync(pen: Pen, history?: boolean, emit = true, abs = false, activate = true) {
+    return this.canvas.addPenSync(pen, history, emit, abs, activate);
   }
   async addPens(pens: Pen[], history?: boolean, abs = false) {
     return await this.canvas.addPens(pens, history, abs);
@@ -2442,11 +2442,23 @@ export class Meta2d {
   }
   /**
    * 删除画笔
-   * @param pens 需要删除的画笔们
+   * @param pens 需要删除的画笔们。
+   *   ⚠ 不传 / 传 undefined 时 fallback 到 store.active(选中的画笔)。
+   *   推荐显式传画笔列表;若想"删选中"用 deleteSelected() 更清晰。
+   *   (Phase D1 quirk 11.1 #5: 默认 fallback 易触发"无意外删全选中" surprise。)
    * @param canDelLocked 是否删除已经锁住的画笔
    */
   delete(pens?: Pen[], canDelLocked = false, history = true) {
+    if (pens === undefined && typeof console !== 'undefined') {
+      console.warn(
+        '[meta2d] delete() 不传 pens 时默认删 store.active。建议显式传 pens 数组,或调用 deleteSelected()。'
+      );
+    }
     this.canvas.delete(pens, canDelLocked, history);
+  }
+  /** 删除当前选中的画笔(语义更清晰,等价 delete(this.store.active))。*/
+  deleteSelected(canDelLocked = false, history = true) {
+    this.canvas.delete(this.store.active, canDelLocked, history);
   }
   deleteSync(pens?: Pen[], canDelLocked = false, history = true) {
     this.canvas.deleteSync(pens, canDelLocked, history);

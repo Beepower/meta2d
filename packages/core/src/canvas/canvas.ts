@@ -4011,7 +4011,9 @@ export class Canvas {
     this.canvasImageBottom.clear();
   }
 
-  async addPen(pen: Pen, history?: boolean, emit?: boolean, abs?:boolean): Promise<Pen | undefined> {
+  // Phase D3 quirk 11.2 #1: 新增 activate 参数 opt-out 自动 active([pen]) 副作用。
+  // 默认 true (back-compat,原行为);批量 / 程序化创建时建议传 false。
+  async addPen(pen: Pen, history?: boolean, emit?: boolean, abs?:boolean, activate: boolean = true): Promise<Pen | undefined> {
     if (this.beforeAddPens && (await this.beforeAddPens([pen])) != true) {
       return;
     }
@@ -4026,7 +4028,9 @@ export class Canvas {
       pen.height = pen.height * this.store.data.scale;
     }
     this.makePen(pen);
-    this.active([pen]);
+    if (activate) {
+      this.active([pen]);
+    }
     this.render();
     emit && this.store.emitter.emit('add', [pen]);
 
@@ -4037,7 +4041,8 @@ export class Canvas {
     return pen;
   }
 
-  addPenSync(pen: Pen, history?: boolean, emit?: boolean, abs?:boolean): Pen {
+  // Phase D3 quirk 11.2 #1: 同 addPen,activate 参数 opt-out 自动 active 副作用。
+  addPenSync(pen: Pen, history?: boolean, emit?: boolean, abs?:boolean, activate: boolean = true): Pen {
 
     if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
       return undefined as any;
@@ -4049,7 +4054,9 @@ export class Canvas {
       pen.height = pen.height * this.store.data.scale;
     }
     this.makePen(pen);
-    this.active([pen]);
+    if (activate) {
+      this.active([pen]);
+    }
     this.render();
     emit && this.store.emitter.emit('add', [pen]);
 
@@ -5460,14 +5467,28 @@ export class Canvas {
   };
 
  renderPensAnchors = () => {
-    // 总是显示锚点 不受locked影响
-    for (const pen of this.store.data.pens) {
-      if (!isFinite(pen.x)) {
-        continue;
-      }
-      if (pen.anchorVisible === true) {
+    // 总是显示锚点 不受locked影响。
+    // Phase D4 quirk 11.3 #1: 跳过 globalAlpha=0 / inView=false 的 pen
+    //   (原行为:无视 globalAlpha 和 inView,可能在已淡出 / 视口外的 pen 上画锚点)
+    // Phase D4 quirk 11.3 #2: drag 期 anchor 应跟随 movingPens(临时副本),不是源 pens
+    //   策略:有 movingPens 时,在 movingPens 上画(它们已含拖拽偏移),源 pens 跳过
+    const inDrag = Array.isArray(this.movingPens) && this.movingPens.length > 0;
+    if (inDrag) {
+      for (const pen of this.movingPens!) {
+        if (!isFinite(pen.x!)) continue;
+        if (pen.anchorVisible !== true) continue;
+        if (pen.calculative?.globalAlpha === 0) continue;
+        if (pen.calculative?.inView === false) continue;
         this.renderAnchors(pen);
       }
+      return;
+    }
+    for (const pen of this.store.data.pens) {
+      if (!isFinite(pen.x!)) continue;
+      if (pen.anchorVisible !== true) continue;
+      if (pen.calculative?.globalAlpha === 0) continue;
+      if (pen.calculative?.inView === false) continue;
+      this.renderAnchors(pen);
     }
   };
 

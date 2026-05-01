@@ -7,18 +7,18 @@ import { getBezierPoint, getQuadraticPoint } from './curve';
 export function drawArrow(
   pen: Pen,
   ctx?: CanvasRenderingContext2D | Path2D
-): Path2D {
+): Path2D | undefined {
   const path = !ctx ? new Path2D() : ctx;
   let worldAnchors = pen.calculative!.worldAnchors!;
   let scale = pen.calculative!.canvas!.store.data.scale;
   let size = (pen.calculative!.animateLineWidth || 6) * scale; // 箭头大小
-  let arrowLength = (pen.animateLineWidth*2 || 12) * scale; // 箭头长度
+  let arrowLength = ((pen.animateLineWidth ?? 6)*2 || 12) * scale; // 箭头长度
   if(pen.lineAnimateType === LineAnimateType.WaterDrop){
-    arrowLength = (pen.animateLineWidth*4 || 24) * scale; // 水滴长度
+    arrowLength = ((pen.animateLineWidth ?? 6)*4 || 24) * scale; // 水滴长度
   }
   let d = (pen.animateInterval || 100) * scale; // 箭头间距
   let smoothLenth = pen.calculative!.lineWidth! *(pen.calculative!.lineSmooth || 0)//*scale;
-  let lineWidth = (pen.calculative!.animateLineWidth/2 || 3) * scale;
+  let lineWidth = ((pen.calculative!.animateLineWidth ?? 6)/2 || 3) * scale;
   if (pen.animateReverse) {
     //箭头反向
     arrowLength = -arrowLength;
@@ -31,7 +31,7 @@ export function drawArrow(
       worldAnchors = deepClone(worldAnchors);
       worldAnchors.push(worldAnchors[0]);
     }
-    if(['polyline','line'].includes(pen.lineName)){
+    if(['polyline','line'].includes(pen.lineName!)){
       for (let i = 0; i < worldAnchors.length; i++) {
         let pt = worldAnchors[i];
         //获取箭头角度
@@ -95,13 +95,13 @@ export function drawArrow(
       if(pen.animateReverse){
         pos = 1-pos;
       }
-      let step = 1 / (worldAnchors[0].lineLength / d);
+      let step = 1 / (worldAnchors[0]!.lineLength! / d);
       let lastPos = pos * step;
       let i: number | undefined;
       worldAnchors.forEach((pt: Point) => {
         let to = pt;
         if (from) {
-          step = 1 / (from.lineLength / d);
+          step = 1 / (from.lineLength! / d);
           // pos = pos % step;
           if (from.next) {
             if (to.prev) {
@@ -284,7 +284,7 @@ function arrow(path:CanvasRenderingContext2D |Path2D, newP:Point, size:number, a
 }
 
 //水滴
-function waterDrop(path:CanvasRenderingContext2D |Path2D, newP:Point, reverse:boolean, angle:number, lineWidth:number, arrowLength:number){
+function waterDrop(path:CanvasRenderingContext2D |Path2D, newP:Point, reverse:boolean | undefined, angle:number, lineWidth:number, arrowLength:number){
   let dis = lineWidth/2;
   if(reverse){
     dis = -lineWidth/2;

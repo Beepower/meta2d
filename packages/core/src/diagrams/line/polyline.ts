@@ -49,8 +49,8 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
 
   const pts: Point[] = [];
 
-  const fromPen = store.pens[from.connectTo];
-  const toPen = store.pens[to.connectTo];
+  const fromPen = store.pens[from.connectTo!];
+  const toPen = store.pens[to.connectTo!];
 
   const fromFace = facePen(from, fromPen);
   const toFace = facePen(to, toPen);
@@ -518,7 +518,7 @@ export function translatePolylineAnchor(
         pen.calculative!.h = false;
       }
     }
-    if (pen.calculative!.h == undefined && to.connectTo) {
+    if (pen.calculative!.h == undefined && to!.connectTo) {
       if (anchorInHorizontal(pen, anchor, false)) {
         pen.calculative!.h = true;
       } else if (anchorInVertical(pen, anchor, false)) {
@@ -547,7 +547,7 @@ export function translatePolylineAnchor(
       return;
     }
 
-    if (to.connectTo && anchorInHorizontal(pen, anchor, false)) {
+    if (to!.connectTo && anchorInHorizontal(pen, anchor, false)) {
       if (prev && prev.y !== anchor.y) {
         prev.x = anchor.x;
       }
@@ -616,7 +616,7 @@ export function translatePolylineAnchor(
       return;
     }
 
-    if (to.connectTo && anchorInVertical(pen, anchor, false)) {
+    if (to!.connectTo && anchorInVertical(pen, anchor, false)) {
       if (prev && prev.x !== anchor.x) {
         prev.y = anchor.y;
       }

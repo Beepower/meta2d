@@ -7,7 +7,7 @@ import { getBezierPoint, getQuadraticPoint } from './curve';
 export function line(
   pen: Pen,
   ctx?: CanvasRenderingContext2D | Path2D
-): Path2D {
+): Path2D | undefined {
   const path = !ctx ? new Path2D() : ctx;
   if (pen.lineName === 'line' || pen.lineName === 'polyline') {
     if (pen.calculative!.lineSmooth) {
@@ -29,7 +29,7 @@ export function line(
     });
     if (pen.close) {
       if(pen.lineName === 'curve') {
-        draw(path, from, worldAnchors[0]);
+        draw(path, from!, worldAnchors[0]!);
       } else {
         path.closePath();
       }
@@ -106,12 +106,12 @@ export function getLinePoints(pen: Pen) {
     from = pt;
   });
   if (pen.close && pen.calculative!.worldAnchors!.length > 1) {
-    pts.push(...getPoints(from, pen.calculative!.worldAnchors[0], pen));
+    pts.push(...getPoints(from!, pen.calculative!.worldAnchors![0]!, pen));
   }
   return pts;
 }
 
-export function getLineR(pen: Pen) {
+export function getLineR(pen?: Pen) {
   return pen?.lineWidth ? pen.lineWidth / 2 + 4 : 4;
 }
 
@@ -122,7 +122,7 @@ export function getPoints(from: Point, to: Point, pen?: Pen) {
   }
 
   let step = 0.02;
-  if (from.lineLength && !pen.parentId) {
+  if (from.lineLength && !pen?.parentId) {
     const r = getLineR(pen);
     step = r / from.lineLength;
   }
@@ -157,8 +157,8 @@ export function pointInLine(pt: Point, pen: Pen) {
 
   let i = 0;
   let from: Point | undefined; // 上一个点
-  let point: Point;
-  for (const anchor of pen.calculative!.worldAnchors) {
+  let point: Point | undefined;
+  for (const anchor of pen.calculative!.worldAnchors!) {
     if (from) {
       point = pointInLineSegment(pt, from, anchor, r);
       if (point) {
@@ -174,7 +174,7 @@ export function pointInLine(pt: Point, pen: Pen) {
   if (
     pen.close &&
     pen.calculative!.worldAnchors!.length > 1 &&
-    (point = pointInLineSegment(pt, from, pen.calculative!.worldAnchors[0], r))
+    (point = pointInLineSegment(pt, from!, pen.calculative!.worldAnchors![0]!, r))
   ) {
     return {
       i,
@@ -259,7 +259,7 @@ function lineLen(from: Point, cp1: Point | undefined, cp2: Point | undefined, to
   } else {
     path.setAttribute(
       'd',
-      `M${from.x} ${from.y} Q${cp2.x} ${cp2.y} ${to.x} ${to.y}`
+      `M${from.x} ${from.y} Q${cp2!.x} ${cp2!.y} ${to.x} ${to.y}`
     );
   }
   return path.getTotalLength() || 0;
@@ -283,7 +283,7 @@ export function getLineLength(pen: Pen): number {
     // pen.close ，下一个点即第一个点
     const to = getFromAnchor(pen)!;
     from!.lineLength = lineLen(from!, from!.next, to.prev, to);
-    len += from.lineLength;
+    len += from!.lineLength;
   }
   if (pen.calculative!.animatePos) {
     pen.calculative!.animatePos =
@@ -303,8 +303,8 @@ export function createLineSvgPath(line:Pen) {
     from = pt;
   })
   if(line.close){
-    let pt = line.calculative!.worldAnchors[0]
-    path = createSvgPath(path,from,from.next,pt.prev,pt)
+    let pt = line.calculative!.worldAnchors![0]!
+    path = createSvgPath(path,from!,from!.next,pt.prev,pt)
   }
   return path
 }
@@ -421,7 +421,7 @@ export function isBezierIntersectRectangle(from: Point, to: Point, rect: Rect) {
     }
   } else if (from.next || to.prev) {
     for (let i = step; i < 1; i += step) {
-      const point = getQuadraticPoint(i, from, from.next || to.prev, to);
+      const point = getQuadraticPoint(i, from, (from.next || to.prev)!, to);
       if (pointInSimpleRect(point, rect)) {
         return true;
       }

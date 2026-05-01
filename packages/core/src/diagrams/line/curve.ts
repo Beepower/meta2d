@@ -37,7 +37,7 @@ export function curve(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   } else {
     const from = pen.calculative!.worldAnchors[0];
     if (!from.next) {
-      const fromFace = facePen(from, store.pens[from.connectTo]);
+      const fromFace = facePen(from, store.pens[from.connectTo!]);
       calcCurveCP(from, fromFace, 50);
       from.prev = undefined;
     }
@@ -45,7 +45,7 @@ export function curve(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     const to =
       pen.calculative!.worldAnchors[pen.calculative!.worldAnchors!.length - 1];
     if (to && to !== from && !to.prev) {
-      const toFace = facePen(to, store.pens[to.connectTo]);
+      const toFace = facePen(to, store.pens[to.connectTo!]);
       calcCurveCP(to, toFace, -50);
       to.next = undefined;
     }
@@ -160,7 +160,7 @@ export function getSplitAnchor(pen: Pen, pt: Point, index: number) {
   if(!to && pen.close){
     to = pen.calculative!.worldAnchors[0];
   }
-  const t = pt.step;
+  const t = pt.step!;
   let anchor: Point;
   if (from.next && to.prev) {
     const p0 = from;
@@ -183,7 +183,7 @@ export function getSplitAnchor(pen: Pen, pt: Point, index: number) {
     to.prev.y = p6.y;
   } else if (from.next || to.prev) {
     const p0 = from;
-    const p1 = from.next || to.prev;
+    const p1 = (from.next || to.prev)!;
     const p2 = to;
     const p3: Point = lerp(p0, p1, t);
     const p4: Point = lerp(p1, p2, t);
@@ -222,7 +222,7 @@ export function mind(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
 
   const dis = 20;
 
-  const fromPen = store.pens[from.connectTo];
+  const fromPen = store.pens[from.connectTo!];
   let fromFace = facePen(from, fromPen);
   if (fromFace === Direction.None) {
     if (to.x > from.x) {

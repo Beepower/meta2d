@@ -1,10 +1,10 @@
 import { Pen, setElemPosition } from '../pen';
 
 export const gifsList: {
-  [key: string]: HTMLImageElement;
+  [key: string]: HTMLImageElement | undefined;
 } = {};
 
-export function gif(pen: Pen): Path2D {
+export function gif(pen: Pen): Path2D | undefined {
   if (!pen.onDestroy) {
     pen.onDestroy = destory;
     pen.onMove = move;
@@ -43,7 +43,7 @@ export function gif(pen: Pen): Path2D {
       pen.calculative!.imgNaturalWidth = img.naturalWidth || pen.iconWidth;
       pen.calculative!.imgNaturalHeight = img.naturalHeight || pen.iconHeight;
       // pen.calculative!.canvas.externalElements?.appendChild(img);
-      pen.calculative!.canvas.externalElements?.parentElement.appendChild(img);
+      pen.calculative!.canvas!.externalElements?.parentElement?.appendChild(img);
       setImagePosition(pen, img);
     };
   }
@@ -88,8 +88,8 @@ function value(pen: Pen) {
     return;
   }
   setImagePosition(pen, gifsList[id]);
-  if (gifsList[id].getAttribute('src') !== pen.image) {
-    gifsList[id].src = pen.image;
+  if (gifsList[id]!.getAttribute('src') !== pen.image) {
+    gifsList[id]!.src = pen.image!;
   }
 }
 

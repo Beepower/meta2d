@@ -4,7 +4,7 @@ import { Point } from '../point';
 import { rectInRect } from '../rect';
 import { deepClone } from '../utils';
 
-export function form(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
+export function form(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D | undefined {
   const path = !ctx ? new Path2D() : ctx;
   if (!pen.onDestroy) {
     pen.onDestroy = destory;
@@ -40,10 +40,10 @@ export function form(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   // path.lineTo(textX - 5, y);
   // path.moveTo(textX + textWidth + 5, y);
   // path.lineTo(textX + textWidth + 5, y);
-  path.arcTo(ex, y, ex, ey, r);
-  path.arcTo(ex, ey, x, ey, r);
-  path.arcTo(x, ey, x, y, r);
-  path.arcTo(x, y, ex, y, r);
+  path.arcTo(ex!, y, ex!, ey!, r);
+  path.arcTo(ex!, ey!, x, ey!, r);
+  path.arcTo(x, ey!, x, y, r);
+  path.arcTo(x, y, ex!, y, r);
   if (path instanceof Path2D) {
     return path;
   }
@@ -71,8 +71,9 @@ function input(pen: Pen, text: string) {
 }
 
 function destory(pen: Pen) {
-  pen.followers.forEach((id: string) =>{
+  pen.followers?.forEach((id: string) =>{
     let fpen = pen.calculative!.canvas!.store.pens[id];
+    if (!fpen) return;
     fpen.formKey = undefined;
     fpen.formValue = undefined;
     fpen.formType = undefined;
@@ -142,7 +143,7 @@ function mouseUp(pen: Pen) {
       let movingPen =
         pen.calculative!.canvas!.store.pens[activePen.id + movingSuffix];
       if (!movingPen) {
-        movingPen = pen.calculative!.canvas!.store.pens[activePen.id];
+        movingPen = pen.calculative!.canvas!.store.pens[activePen.id!];
       }
       if (movingPen && movingPen.calculative) {
         let inRect = deepClone(pen.calculative!.worldRect);
@@ -154,8 +155,8 @@ function mouseUp(pen: Pen) {
           if (!pen.followers) {
             pen.followers = [];
           }
-          if (!pen.followers.includes(activePen.id)) {
-            pen.followers.push(activePen.id);
+          if (!pen.followers.includes(activePen.id!)) {
+            pen.followers.push(activePen.id!);
           }
           activePen.formId = pen.id;
           predictFormValue(activePen);
@@ -188,18 +189,19 @@ export function submit(pen: Pen) {}
 
 //重置表单
 export function reset(pen: Pen) {
-  const formPen = pen.calculative!.canvas!.store.pens[pen.formId];
+  const formPen = pen.calculative!.canvas!.store.pens[pen.formId!];
+  if (!formPen) return;
   // formPen.followers.forEach((id:string,index:number)=>{
-  for (let i = formPen.followers.length - 1; i >= 0; i--) {
-    let id = formPen.followers[i];
+  for (let i = formPen.followers!.length - 1; i >= 0; i--) {
+    let id = formPen.followers![i]!;
     const follower = pen.calculative!.canvas!.store.pens[id];
     if (
       follower &&
       follower.formId &&
       follower.formKey &&
-      formPen.formData[follower.formKey]
+      formPen.formData![follower.formKey]
     ) {
-      const value = (follower as any)[follower.formValue];
+      const value = (follower as any)[follower.formValue!];
       let data: any = '';
       if (Array.isArray(value)) {
         data = [];
@@ -207,12 +209,12 @@ export function reset(pen: Pen) {
       // follower[follower.formValue] = data;
       // follower.calculative[follower.formValue] = data;
       pen.calculative!.canvas!.parent.setValue(
-        { id: follower.id, [follower.formValue]: data },
+        { id: follower.id!, [follower.formValue!]: data } as any,
         { render: false, doEvent: false, history: false }
       );
     }
     if (!follower) {
-      formPen.followers.splice(i, 1);
+      formPen.followers!.splice(i, 1);
     }
   }
   formPen.formData = {};
@@ -239,5 +241,5 @@ function predictFormValue(pen: Pen) {
       return;
     }
   }
-  pen.formValue = (formValueMap as Record<string, string>)[pen.name];
+  pen.formValue = (formValueMap as Record<string, string>)[pen.name!];
 }

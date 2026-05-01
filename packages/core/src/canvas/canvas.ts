@@ -732,7 +732,7 @@ export class Canvas {
     //       this.store.data.y;
     //   }
     // }
-    this.scale(this.store.data.scale + scaleOff, { x, y });
+    this.setScale(this.store.data.scale + scaleOff, { x, y });
     this.externalElements.focus(); // 聚焦
   };
 
@@ -1179,14 +1179,14 @@ export class Canvas {
         break;
       case '=':
         if (e.ctrlKey || e.metaKey) {
-          this.scale(this.store.data.scale + 0.1);
+          this.setScale(this.store.data.scale + 0.1);
           e.preventDefault();
           e.stopPropagation();
         }
         break;
       case '-':
         if (e.ctrlKey || e.metaKey) {
-          this.scale(this.store.data.scale - 0.1);
+          this.setScale(this.store.data.scale - 0.1);
           e.preventDefault();
           e.stopPropagation();
         }
@@ -1821,7 +1821,7 @@ export class Canvas {
             touch0.pageX - touch1.pageX,
             touch0.pageY - touch1.pageY
           ) / initTouchDis;
-        this.scale(initScale * scale, deepClone(touchCenter));
+        this.setScale(initScale * scale, deepClone(touchCenter));
       }
 
       if (this.touchMoving) {
@@ -5627,37 +5627,6 @@ export class Canvas {
   }
 
   /**
-   * Phase D6 quirk 11.1 #1 后:本方法不再 mutate pen 几何,而是 setScale 的兼容
-   * wrapper(center 作为 pivot)。pens 在 world-space,viewport zoom 在 render 时
-   * 通过 ctx.scale 应用。
-   *
-   * @param scale 缩放比例,最终的 data.scale
-   * @param center 屏幕坐标系下保持 invariant 的支点;{0,0} = 不调整 translate
-   * @deprecated 用 setViewport({x,y,zoom}) 或 setScale(zoom, pivot) 替代,语义更清晰
-   */
-  scale(scale: number, center: Point = { x: 0, y: 0 }) {
-    // pivot {0,0} 老语义 = 围绕屏幕原点缩放(等价 setScale 不传 pivot 也大致 OK,
-    // 但保留 center 透传以兼容 zoom-around-mouse 调用方)。
-    const hasPivot = center.x !== 0 || center.y !== 0;
-    this.setScale(scale, hasPivot ? center : undefined);
-    // 维持老 emit 顺序:scale 已由 setScale emit;clipboard pos / map.setView 副作用
-    if (this.store.clipboard?.pos && hasPivot) {
-      // 保留 clipboard pivot 跟随缩放(老逻辑),但用新的 ratio 计算
-      // 注意:setScale 已 mutate store.data.scale,这里读到的是 new scale
-      // (没有 prev scale 的访问;若需要可从 emitter event 反推。本期先 best-effort)
-    }
-    const map = this.parent.map;
-    if (map && map.isShow) {
-      map.setView();
-    }
-    this.store.data.center = center;
-    // pen.onScale 回调 — 保留这个钩子,虽然 pens 不再被 scale mutate
-    this.store.data.pens.forEach((pen) => {
-      pen.onScale && pen.onScale(pen);
-    });
-  }
-
-  /**
    * Phase D6 quirk 11.1 #6 — 原子设置整个视口状态(零碎 scale + translate 替代品)。
    *
    * 不动 pen.x/y/w/h(pens 在 world-space);仅 set store.data.{x,y,scale,origin} +
@@ -5812,6 +5781,9 @@ export class Canvas {
       );
     }
     this.store.data.scale = zoom;
+    // Phase D6.4-followup: store.data.center 跟踪最近一次 zoom-around 的 pivot
+    // (老 deprecated scale wrapper 副作用,搬入 SoT)。无 pivot 时 reset 到 origin。
+    this.store.data.center = pivot ?? { x: 0, y: 0 };
     this.canvasTemplate.init();
     this.canvasImage.init();
     this.canvasImageBottom.init();
@@ -5823,6 +5795,15 @@ export class Canvas {
         y: this.store.data.y,
       });
     }
+    // Phase D6.4-followup: 副作用从 deprecated scale wrapper 搬入 — pen.onScale
+    // 钩子(D6.1 后 pens 不再被 scale mutate,但用户回调仍可能依赖)+ map sync。
+    const map = this.parent.map;
+    if (map && map.isShow) {
+      map.setView();
+    }
+    this.store.data.pens.forEach((pen) => {
+      pen.onScale && pen.onScale(pen);
+    });
   }
 
   /**

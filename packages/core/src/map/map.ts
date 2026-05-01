@@ -242,6 +242,6 @@ export class ViewMap {
       y =
         (y / this.boxHeight) * rect.height + rect.y + this.parent.store.data.y;
     }
-    this.parent.scale(this.parent.store.data.scale + scaleOff, { x, y });
+    this.parent.setScale(this.parent.store.data.scale + scaleOff, { x, y });
   };
 }

@@ -2464,11 +2464,6 @@ export class Meta2d {
     this.canvas.deleteSync(pens, canDelLocked, history);
   }
 
-  /** @deprecated 用 setViewport({x,y,zoom}) 或 setScale(zoom, pivot) 替代 (Phase D6 quirk 11.1 #1) */
-  scale(scale: number, center = { x: 0, y: 0 }) {
-    this.canvas.scale(scale, center);
-  }
-
   /**
    * Phase D6 quirk 11.1 #6 — 原子设置整个视口状态。
    * @see Canvas#setViewport
@@ -5044,7 +5039,7 @@ export class Meta2d {
     }
     // Phase D6 quirk 11.1 #1 后:rect = getRect() 返回 world-space 维度,
     // ratio 即绝对 target scale,无需 * old_scale。
-    this.scale(ratio);
+    this.setScale(ratio);
 
     // 5. 居中
     this.centerView();
@@ -5466,7 +5461,7 @@ export class Meta2d {
     if (fill && this.store.data.fits?.length) {
       this.canvas.opening = true;
     }
-    this.scale(ratio);
+    this.setScale(ratio);
 
     // 5. 居中
     this.centerSizeView();
@@ -5528,7 +5523,7 @@ export class Meta2d {
       rect = this.getRect();
     }
     const ratio = (width - padding[1] - padding[3]) / rect.width;
-    this.scale(ratio);
+    this.setScale(ratio);
 
     this.topView(padding[0]);
     if (pageMode) {
@@ -5549,7 +5544,7 @@ export class Meta2d {
       ratio = (height - padding[0] - padding[2]) / rect.height;
     }
     // Phase D6 quirk 11.1 #1 后:rect 是 world,ratio 即绝对 target scale。
-    this.scale(ratio);
+    this.setScale(ratio);
     //height充满时是居中
     this.topView(padding[0]);
   }

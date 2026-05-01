@@ -140,6 +140,21 @@ export interface Options {
   unFill?: boolean;
   roles?: string[];
   crossOrigin?: string;
+  /**
+   * Phase D4 quirk 11.3 #3 — opt-in dirty-pen-only render fast path.
+   *
+   * When `true` and the canvas-side `dirtyPens` Set is small (<80% of total),
+   * the main offscreen layer's `renderPens` skips the full-array forEach side
+   * effects and only iterates the dirty subset. Falls back to full render on:
+   * `movingPens != null`, `drawingLine`, `pencilLine`, animate-tick > 0,
+   * locked toggle, viewport scale/translate, theme switch, or `dirtyPens === null`
+   * sentinel (set by `markAllDirty()`).
+   *
+   * Default `false` — flag-off ship for one minor cycle. Enable per-instance
+   * for opt-in benchmarking; default flip planned in a separate followup commit
+   * after grayed visual-regression evidence.
+   */
+  dirtyPenRender?: boolean;
 }
 
 export const defaultOptions: Options = {
@@ -220,6 +235,7 @@ export const defaultOptions: Options = {
   diagramOptions: {},
   svgPathStroke:true,
   reconnetTimes:10,
+  dirtyPenRender: false,
 };
 
 export interface PenPlugin {

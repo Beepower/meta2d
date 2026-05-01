@@ -195,6 +195,23 @@ export class Canvas {
   movingPens?: Pen[];
 
   patchFlagsLines: Set<Pen> = new Set();
+  /**
+   * Phase D4 quirk 11.3 #3 — per-pen dirty set for opt-in fast-path render.
+   *
+   * - `Set<Pen>` (possibly empty) → fast path eligible if also `< 80%` of total
+   *   pens and no escape conditions (movingPens / drawingLine / pencilLine /
+   *   animates).
+   * - `null` sentinel → "all dirty" (set by `markAllDirty()`); always falls
+   *   back to full render (viewport scale/translate, theme switch, locked
+   *   toggle, batch mutations).
+   *
+   * Maintained by `markDirty(pen)` / `markAllDirty()` adjacent to all
+   * `this.patchFlags = true` sites. Reset to `new Set()` at the tail of every
+   * `render()` cycle (see Step 2.6 in plan harmonic-stirring-summit.md).
+   *
+   * Only consulted when `store.options.dirtyPenRender === true`. Default off.
+   */
+  dirtyPens: Set<Pen> | null = new Set();
   dock?: { xDock?: Point; yDock?: Point };
 
   prevAnchor?: Point;
@@ -318,6 +335,7 @@ export class Canvas {
     this.tooltip = new Tooltip(parentElement, store);
     this.tooltip.box.onmouseleave = (e) => {
       this.patchFlags = true;
+      this.markDirty(this.store.lastHover); // Phase D4 quirk 11.3 #3
       this.store.lastHover && (this.store.lastHover.calculative!.hover = false);
       let hover = this.store.data.pens.find(
         (item) => item.calculative!.hover === true
@@ -1161,12 +1179,14 @@ export class Canvas {
           });
           this.calcActiveRect();
           this.patchFlags = true;
+          this.store.active?.forEach((pen) => this.markDirty(pen)); // Phase D4 quirk 11.3 #3
         }
         this.hotkeyType = HotkeyType.None;
         this.movingAnchor = undefined;
         if (this.magnifierCanvas.magnifier) {
           this.magnifierCanvas.magnifier = false;
           this.patchFlags = true;
+          this.markAllDirty(); // Phase D4 quirk 11.3 #3 — magnifier overlay全屏
         }
         break;
       case 'E':
@@ -1300,6 +1320,7 @@ export class Canvas {
       );
       pen.anchors![index] = anchor;
       this.patchFlags = true;
+      this.markDirty(pen); // Phase D4 quirk 11.3 #3
     }
   }
 
@@ -2218,6 +2239,7 @@ export class Canvas {
                 }
               }
               this.patchFlags = true;
+              this.markAllDirty(); // Phase D4 quirk 11.3 #3 — selection toggle
             } else if (e.ctrlKey && e.shiftKey && this.store.hover.parentId) {
               this.active([this.store.hover]);
             } else {
@@ -3255,6 +3277,7 @@ export class Canvas {
     this.sizeCPs = undefined;
     this.store.activeAnchor = undefined;
     this.patchFlags = true;
+    activePens.forEach((p) => this.markDirty(p)); // Phase D4 quirk 11.3 #3 — clear active border
     !drawing && this.store.emitter.emit('inactive', activePens);
   }
 
@@ -3276,6 +3299,7 @@ export class Canvas {
     this.calcActiveRect();
     this.initTemplateCanvas(pens);
     this.patchFlags = true;
+    pens.forEach((p) => this.markDirty(p)); // Phase D4 quirk 11.3 #3 — paint active border
     emit && this.store.emitter.emit('active', this.store.active);
   }
 
@@ -3414,6 +3438,8 @@ export class Canvas {
           pen?.onMouseMove?.(pen, pt);
           if (this.store.lastHoverContainer !== this.store.hoverContainer) {
             this.patchFlags = true;
+            this.markDirty(this.store.lastHoverContainer); // Phase D4 quirk 11.3 #3
+            this.markDirty(this.store.hoverContainer);
             if (this.store.lastHoverContainer) {
               this.store.lastHoverContainer.calculative!.containerHover = false;
               this.store.emitter.emit('leave', this.store.lastHoverContainer);
@@ -3429,6 +3455,7 @@ export class Canvas {
             this.store.hoverContainer = undefined;
             if(this.store.lastHoverContainer !== this.store.hoverContainer){
               this.patchFlags = true;
+              this.markDirty(this.store.lastHoverContainer); // Phase D4 quirk 11.3 #3
               const movingPen =
               this.store.lastHoverContainer!.calculative!.canvas!.store.pens[this.store.lastHoverContainer!.id! + movingSuffix];
               if (this.store.lastHoverContainer && !movingPen) {
@@ -3540,6 +3567,8 @@ export class Canvas {
 
     if (this.store.lastHover !== this.store.hover) {
       this.patchFlags = true;
+      this.markDirty(this.store.lastHover); // Phase D4 quirk 11.3 #3
+      this.markDirty(this.store.hover);
       if (this.store.lastHover) {
         this.store.lastHover.calculative!.hover = false;
         setHover(
@@ -3877,6 +3906,7 @@ export class Canvas {
     ) {
       if (anchor !== this.store.hoverAnchor) {
         this.patchFlags = true;
+        this.markDirty(pen); // Phase D4 quirk 11.3 #3 — anchor on pen
       }
       this.store.hoverAnchor = anchor;
       this.store.hover = pen;
@@ -5009,6 +5039,7 @@ export class Canvas {
       this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
     pen.calculative!.patchFlags = true;
     this.patchFlags = true;
+    this.markDirty(pen); // Phase D4 quirk 11.3 #3
 
     if (pen.children) {
       pen.children.forEach((id) => {
@@ -5032,6 +5063,7 @@ export class Canvas {
           pen.calculative!.radialGradient = undefined;
         }
         this.patchFlags = true;
+        this.markDirty(pen); // Phase D4 quirk 11.3 #3
         pen.calculative!.gradientTimer = undefined;
       }, 50);
     }
@@ -5110,14 +5142,33 @@ export class Canvas {
     this.renderTimer = undefined;
     this.lastRender = now;
     const offscreenCtx = this.offscreen.getContext('2d')!;
-    offscreenCtx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
+
+    // Phase D4 quirk 11.3 #3 — opt-in clip-rect fast path.
+    // 计算 dirty union(world-space)。null → 走 full path。
+    let clipRect: Rect | null = null;
+    if (this.shouldUseFastPath()) {
+      this.expandDirtyByOverlap();
+      clipRect = this.computeDirtyUnion();
+    }
+
+    if (clipRect === null) {
+      offscreenCtx.clearRect(0, 0, this.offscreen.width, this.offscreen.height);
+    }
     offscreenCtx.save();
     // Phase D6 quirk 11.1 #1:viewport zoom 通过 ctx.scale 在 render 时应用,
     // 不再 mutate pen.x/y/w/h。pens 在 world-space。
     offscreenCtx.translate(this.store.data.x, this.store.data.y);
     offscreenCtx.scale(this.store.data.scale, this.store.data.scale);
+    if (clipRect) {
+      // Fast path:在 world-space 下 clip + clearRect 仅 dirty union 区域,
+      // renderPens 接收 clipRect 后用 bbox intersect 跳过非 overlap pen。
+      offscreenCtx.beginPath();
+      offscreenCtx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+      offscreenCtx.clip();
+      offscreenCtx.clearRect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+    }
     globalThis.debugRender && console.time('renderPens');
-    this.renderPens();
+    this.renderPens(clipRect ?? undefined);
     globalThis.debugRender && console.timeEnd('renderPens');
     this.renderBorder();
     this.renderHoverPoint();
@@ -5133,9 +5184,137 @@ export class Canvas {
     this.canvasImageBottom.render();
     this.canvasImage.render();
     this.patchFlags = false;
+    // Phase D4 quirk 11.3 #3 — reset dirty set for next frame.
+    // patchFlagsLines 在 inactive() / mouseup 等处已自维护清理。
+    this.dirtyPens = new Set();
   };
 
-  renderPens = () => {
+  /**
+   * Phase D4 quirk 11.3 #3 — mark a single pen as dirty for the next render frame.
+   * If `pen` is omitted → falls through to {@link markAllDirty}. Inert when
+   * `dirtyPens === null` (already "all dirty" sentinel).
+   *
+   * Embedded adjacent to all `this.patchFlags = true` sites where the affected
+   * pen is identifiable. Non-identifiable mutations call `markAllDirty()` instead.
+   */
+  markDirty = (pen?: Pen) => {
+    if (this.dirtyPens === null) return;
+    if (pen) {
+      this.dirtyPens.add(pen);
+    } else {
+      this.markAllDirty();
+    }
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 — sentinel "all pens dirty". Disables fast path until
+   * the next render() reset to a fresh empty Set. Used for viewport scale/translate,
+   * theme switch, locked toggle, batch mutations, and any case where per-pen
+   * tracking is impractical.
+   */
+  markAllDirty = () => {
+    this.dirtyPens = null;
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 — propagate dirty into:
+   *   1. Parent → children cascade(transitive descendants）
+   *   2. connectedLines union(via `patchFlagsLines` already-maintained Set)
+   *   3. z-order overlap(any pen whose worldRect intersects a seed dirty rect）
+   *
+   * No-op when `dirtyPens === null` (already全脏)or empty。Called once per
+   * render frame inside fast-path branch before computing union。
+   */
+  private expandDirtyByOverlap = () => {
+    if (this.dirtyPens === null) return;
+    if (this.dirtyPens.size === 0) return;
+    const dirty = this.dirtyPens;
+    const stack: Pen[] = Array.from(dirty);
+    while (stack.length > 0) {
+      const pen = stack.pop()!;
+      pen.children?.forEach((id) => {
+        const child = this.store.pens[id];
+        if (child && !dirty.has(child)) {
+          dirty.add(child);
+          stack.push(child);
+        }
+      });
+    }
+    this.patchFlagsLines.forEach((line) => dirty.add(line));
+    const seedRects: Rect[] = [];
+    dirty.forEach((p) => {
+      const r = p.calculative?.worldRect;
+      if (r) seedRects.push(r);
+    });
+    if (seedRects.length === 0) return;
+    for (const pen of this.store.data.pens) {
+      if (dirty.has(pen)) continue;
+      const r = pen.calculative?.worldRect;
+      if (!r) continue;
+      for (const seed of seedRects) {
+        if (rectInRect(r, seed)) {
+          dirty.add(pen);
+          break;
+        }
+      }
+    }
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 — union bbox of dirty pens' worldRect, expanded by
+   * conservative padding (stroke + shadow blur + safety) so clipped redraw
+   * doesn't leave halo artifacts. Returns `null` if no usable dirty rects.
+   *
+   * PADDING is a world-space constant covering V2 contract (stroke ≤5) +
+   * default shadowBlur (64) + safety margin. Phase D6.1 viewport zoom is in
+   * ctx.scale at render time so world-space padding is screen-space-independent.
+   */
+  private computeDirtyUnion = (): Rect | null => {
+    if (this.dirtyPens === null) return null;
+    if (this.dirtyPens.size === 0) return null;
+    const pens: Pen[] = [];
+    this.dirtyPens.forEach((p) => {
+      if (p.calculative?.worldRect) pens.push(p);
+    });
+    if (pens.length === 0) return null;
+    const union = getRect(pens);
+    const PADDING = 80;
+    union.x -= PADDING;
+    union.y -= PADDING;
+    union.width += PADDING * 2;
+    union.height += PADDING * 2;
+    union.ex = union.x + union.width;
+    union.ey = union.y + union.height;
+    return union;
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 — gate for clip-rect fast path in {@link render}.
+   * 任一条件不满足 → full clearRect+forEach path (零行为差)。
+   *
+   * Escape conditions (intentionally conservative):
+   *   - `options.dirtyPenRender !== true` — opt-in flag default off
+   *   - `dirtyPens === null` — sentinel "all dirty"
+   *   - `dirtyPens.size === 0` — no recorded mutation, edge / first frame
+   *   - `dirtyPens.size > pens.length * 0.8` — fast path slower than full
+   *   - `movingPens` — drag pipeline complete decoupling from dirty-pen
+   *     (avoids interaction with DEBT-P10-DRAG-* registered bugs)
+   *   - `drawingLine` / `pencilLine` — interactive draw owns its own redraw
+   *   - `store.animates.size > 0` — animate tick already self-loops patchFlags
+   */
+  private shouldUseFastPath = (): boolean => {
+    if (!this.store.options.dirtyPenRender) return false;
+    if (this.dirtyPens === null) return false;
+    if (this.dirtyPens.size === 0) return false;
+    if (this.dirtyPens.size > this.store.data.pens.length * 0.8) return false;
+    if (this.movingPens) return false;
+    if (this.drawingLine) return false;
+    if (this.pencilLine) return false;
+    if (this.store.animates.size > 0) return false;
+    return true;
+  };
+
+  renderPens = (clipRect?: Rect) => {
     const ctx = this.offscreen.getContext('2d') as CanvasRenderingContext2D;
     ctx.strokeStyle = this.store.styles.color;//getGlobalColor(this.store);
 
@@ -5151,6 +5330,14 @@ export class Canvas {
       //   continue;
       // }
       if (pen.calculative!.inView) {
+        // Phase D4 quirk 11.3 #3 — fast-path bbox intersect skip.
+        // clipRect is in world-space (matches ctx.scale+translate already applied).
+        if (clipRect) {
+          const r = pen.calculative!.worldRect;
+          if (r && !rectInRect(r, clipRect)) {
+            continue;
+          }
+        }
         if (
           pen.canvasLayer === CanvasLayer.CanvasMain &&
           pen.name !== 'gif' &&
@@ -8050,6 +8237,7 @@ export class Canvas {
         }
         calcTextRect(pen);
         this.patchFlags = true;
+        this.markDirty(pen); // Phase D4 quirk 11.3 #3
         this.pushHistory({
           type: EditType.Update,
           pens: [deepClone(pen, true)],
@@ -8946,6 +9134,7 @@ export class Canvas {
       }
     }
     this.patchFlags = true;
+    this.markDirty(this.store.hover); // Phase D4 quirk 11.3 #3
   }
 
   addAnchorHand() {
@@ -8969,11 +9158,13 @@ export class Canvas {
         rotatePoint(this.store.activeAnchor.prev, 180, this.store.activeAnchor);
         this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
+        this.markDirty(this.store.active![0]); // Phase D4 quirk 11.3 #3
       } else if (!this.store.activeAnchor.next) {
         this.store.activeAnchor.next = { ...this.store.activeAnchor.prev };
         rotatePoint(this.store.activeAnchor.next, 180, this.store.activeAnchor);
         this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
+        this.markDirty(this.store.active![0]); // Phase D4 quirk 11.3 #3
       }
 
       this.pushHistory({
@@ -8997,15 +9188,18 @@ export class Canvas {
         this.store.activeAnchor.prev = undefined;
         this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
+        this.markDirty(this.store.active![0]); // Phase D4 quirk 11.3 #3
       } else if (this.hoverType === HoverType.LineAnchorNext) {
         this.store.activeAnchor.next = undefined;
         this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
+        this.markDirty(this.store.active![0]); // Phase D4 quirk 11.3 #3
       } else {
         this.store.activeAnchor.prev = undefined;
         this.store.activeAnchor.next = undefined;
         this.initLineRect(this.store.active![0]);
         this.patchFlags = true;
+        this.markDirty(this.store.active![0]); // Phase D4 quirk 11.3 #3
       }
 
       this.pushHistory({

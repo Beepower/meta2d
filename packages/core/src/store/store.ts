@@ -237,7 +237,7 @@ export interface Meta2dStore {
   options: Options;
   theme: Theme;
   emitter: Emitter;
-  dpiRatio?: number;
+  dpiRatio: number;
   clipboard?: Meta2dClipboard;
   patchFlagsBackground?: boolean; // 是否需要绘制底层图片   是否需要重绘背景，包含网格
   patchFlagsTop?: boolean; // 是否需要重绘标尺
@@ -285,6 +285,7 @@ export const createStore = () => {
     },
     histories: [],
     pens: {},
+    dpiRatio: 1,
     path2dMap: new WeakMap(),
     animateMap: new WeakMap(),
     active: [],

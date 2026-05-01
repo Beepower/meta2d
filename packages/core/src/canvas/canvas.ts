@@ -1998,7 +1998,8 @@ export class Canvas {
         this.drawingLine = this.createDrawingLine(pt);
         let _pt = getFromAnchor(this.drawingLine);
         this.drawingLine.calculative!.activeAnchor = _pt;
-        connectLine(this.store.hover, anchor, this.drawingLine, pt);
+        connectLine(
+              this.store.hover!, anchor, this.drawingLine, pt);
         this.drawline();
         return;
       }
@@ -2651,11 +2652,12 @@ export class Canvas {
       // 自动锚点（单击节点），完成绘画
       if (this.store.options.autoAnchor && this.hoverType === HoverType.Node) {
         const to = getToAnchor(this.drawingLine)!;
-        const anchor = nearestAnchor(this.store.hover, e);
+        const anchor = nearestAnchor(this.store.hover!, e);
         to.x = anchor.x;
         to.y = anchor.y;
         this.drawingLine.autoTo = true;
-        connectLine(this.store.hover, anchor, this.drawingLine, to);
+        connectLine(
+              this.store.hover!, anchor, this.drawingLine, to);
         this.drawline();
         this.finishDrawline(true);
 

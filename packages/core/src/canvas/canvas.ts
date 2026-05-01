@@ -1474,10 +1474,13 @@ export class Canvas {
     let num = 0;
     let lastH = 0;
     let lastW = 0;
+    // Phase D6.2 (quirk 11.1 #1 cont.): pens are world-space. `e` is calibrated
+    // to world-space by calibrateMouse upstream, and pen.width/height come from
+    // the design-time ComponentDef (also world-space). Multiplying by scale
+    // here would bake viewport zoom into pen geometry — exactly the inverse of
+    // the D6.1 keystone. All `* this.store.data.scale` factors dropped below.
     for (const pen of pens) {
       if (!pen.parentId) {
-        pen.width *= this.store.data.scale;
-        pen.height *= this.store.data.scale;
         pen.x = e.x - pen.width / 2 + lastW;
         pen.y = e.y - pen.height / 2 + lastH;
         if (pen.tags && pen.tags.includes('meta3d')) {
@@ -1486,35 +1489,35 @@ export class Canvas {
         }
         if((pen as any).dataset){
           if(num % 2 === 0){
-            lastW = pen.width - 40 * this.store.data.scale;
+            lastW = pen.width - 40;
           }else{
             lastW = 0;
           }
           num ++;
           if(num % 2 === 0){
-            lastH += pen.height + 10 * this.store.data.scale;
+            lastH += pen.height + 10;
           }
           delete (pen as any).dataset;
         }
         if((pen as any).temOffsetX){
-          pen.x += (pen as any).temOffsetX*this.store.data.scale;
+          pen.x += (pen as any).temOffsetX;
           delete (pen as any).temOffsetX;
         }
         if((pen as any).temOffsetY){
-          pen.y += (pen as any).temOffsetY*this.store.data.scale;
+          pen.y += (pen as any).temOffsetY;
           delete  (pen as any).temOffsetY;
         }
       }
     }
-    //大屏区域
+    //大屏区域 (world-space; compared against world-space pen rects below)
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
     if (width && height) {
       let rect = {
         x: this.store.data.origin.x,
         y: this.store.data.origin.y,
-        width: width * this.store.data.scale,
-        height: height * this.store.data.scale,
+        width,
+        height,
       };
       let flag = true;
       for (const pen of pens) {
@@ -5683,12 +5686,18 @@ export class Canvas {
       calcInView(pen);
       pen.onMove?.(pen);
       if (pen.isRuleLine) {
+        // Phase D6.2 (quirk 11.1 #1 cont.): isRuleLine is a viewport-anchored
+        // ruler that must visually land on the screen edge. pens are world-space
+        // and the render pipeline applies `ctx.translate(data.x, data.y);
+        // ctx.scale(data.scale, data.scale)` — to reach screen-x = 0 in world
+        // coords we need x_world = -data.x / data.scale (and same for y).
+        const scale = this.store.data.scale || 1;
         if (!pen.width) {
           // 垂直线，移动 y 即可
-          pen.y = -this.store.data.y;
+          pen.y = -this.store.data.y / scale;
         } else if (!pen.height) {
           // 水平线
-          pen.x = -this.store.data.x;
+          pen.x = -this.store.data.x / scale;
         }
         this.updatePenRect(pen);
       }

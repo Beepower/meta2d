@@ -666,7 +666,7 @@ export class Meta2d {
         return;
       }
       let params = queryURLParams(_pen.iframe!.split('?')[1] || '');
-      let value: any = this.getSendData(e.data, pen);
+      let value: any = this.getSendData(e.data as any, pen);
       if(e.list){
         value = this.getEventData(e.list as any, pen);
       }
@@ -687,7 +687,7 @@ export class Meta2d {
         console.warn('[meta2d] Emit value must be a string');
         return;
       }
-      let value: any = this.getSendData(e.data, pen);
+      let value: any = this.getSendData(e.data as any, pen);
       if(e.list){
         value = this.getEventData(e.list as any, pen);
       }
@@ -1132,7 +1132,7 @@ export class Meta2d {
     const height =
       data?.height || this.store.data?.height || this.store.options?.height;
     if (width && height) {
-      this.canvas.canvasTemplate.canvas.style.backgroundImage = null;
+      this.canvas.canvasTemplate.canvas.style.backgroundImage = '';
       this.canvas && (this.canvas.canvasTemplate.bgPatchFlags = true);
     } else {
       this.canvas.canvasTemplate.canvas.style.backgroundImage = url
@@ -1150,11 +1150,11 @@ export class Meta2d {
         }
       }
     } else {
-      this.store.bkImg = null;
+      this.store.bkImg = undefined;
     }
   }
 
-  setBackgroundColor(color: string = this.store.data.background) {
+  setBackgroundColor(color: string = this.store.data.background!) {
     this.store.data.background = color;
     // this.store.patchFlagsBackground = true;
     this.canvas && (this.canvas.canvasTemplate.bgPatchFlags = true);
@@ -1200,7 +1200,7 @@ export class Meta2d {
         this.setTheme(data.theme);
       }
       updateIframes(data.pens);
-      this.setBackgroundImage(data.bkImage, data);
+      this.setBackgroundImage(data.bkImage!, data);
       Object.assign(this.store.data, data);
       this.store.data.pens = [];
       // 第一遍赋初值
@@ -1251,7 +1251,7 @@ export class Meta2d {
     setTimeout(() => {
       const pen = this.store.data.pens.find((pen) => pen.autofocus);
       if (pen) {
-        this.focus(pen.id);
+        this.focus(pen.id!);
       }
     }, 100);
     if (this.store.data.iconUrls) {
@@ -1282,7 +1282,7 @@ export class Meta2d {
         if(pen.x>10 || pen.y>10 || pen.width>10 || pen.height>10){
           // 子图元坐标值很大
           dirtyPens.push(pen);
-        }else if(!parent.children||!parent.children!.includes(pen.id)){
+        }else if(!parent!.children||!parent!.children!.includes(pen.id!)){
           //已经解组但子图元还有父图元id
           dirtyPens.push(pen);
         }
@@ -1360,8 +1360,8 @@ export class Meta2d {
     //   }
     // }
     // ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
-    this.store.data = this.store.cacheDatas[index].data;
-    this.setBackgroundImage(this.store.data.bkImage);
+    this.store.data = this.store.cacheDatas![index]!.data;
+    this.setBackgroundImage(this.store.data.bkImage!);
     this.store.pens = {};
     this.store.data.pens.forEach((pen) => {
       pen.calculative!.canvas = this.canvas;
@@ -1382,9 +1382,9 @@ export class Meta2d {
 
   loadLineAnimateDraws(){
     globalStore.lineAnimateDraws = {}
-    Object.entries(this.store.data.lineAnimateDraws).forEach(([key,drawFunc])=>{
+    Object.entries(this.store.data.lineAnimateDraws || {}).forEach(([key,drawFunc])=>{
       // @ts-ignore
-      globalStore.lineAnimateDraws[key] = new Function('ctx','pen','state','index',drawFunc);
+      globalStore.lineAnimateDraws[key] = new Function('ctx','pen','state','index',drawFunc as string);
     })
   }
 
@@ -1396,7 +1396,7 @@ export class Meta2d {
       (pen) =>
         pen.name?.endsWith('Dom') ||
         (pen.name && isDomShapes.includes(pen.name)) ||
-        (pen.name && this.store.options.domShapes.includes(pen.name)) ||
+        (pen.name && this.store.options.domShapes!.includes(pen.name)) ||
         pen.externElement || pen.isDom
     ).length;
     const aningNum = this.store.animates.size;
@@ -1434,8 +1434,8 @@ export class Meta2d {
           if (!this.store.bindDatas[item.dataId]) {
             this.store.bindDatas[item.dataId] = [];
           }
-          this.store.bindDatas[item.dataId].push({
-            id: pen.id,
+          this.store.bindDatas[item.dataId]!.push({
+            id: pen.id!,
             formItem,
           });
         });
@@ -1498,9 +1498,9 @@ export class Meta2d {
           if (!this.store.bind[realTime.bind.id]) {
             this.store.bind[realTime.bind.id] = [];
           }
-          this.store.bind[realTime.bind.id].push({
-            id: pen.id,
-            key: realTime.key,
+          this.store.bind[realTime.bind!.id]!.push({
+            id: pen.id!,
+            key: realTime.key!,
           });
           if(Jet){
             if (productId && deviceId && propertyId) {
@@ -1523,11 +1523,11 @@ export class Meta2d {
           }
           if(realTime.bind.class === 'iot'){
             if(realTime.bind.compute_name){
-              let c_idx = computes.findIndex((item) => item.id === realTime.bind.id);
+              let c_idx = computes.findIndex((item) => item.id === realTime.bind!.id);
               if(c_idx === -1){
                 computes.push(deepClone(realTime.bind));
               }
-              let idx = devices.findIndex((item) => item.deviceId === realTime.bind.deviceId);
+              let idx = devices.findIndex((item) => item.deviceId === realTime.bind!.deviceId);
               if(idx > -1){
                 if (!devices[idx].properties.includes(realTime.bind.key)) {
                   devices[idx].properties.push(realTime.bind.key);
@@ -1553,7 +1553,7 @@ export class Meta2d {
                   token: realTime.bind.token
                 });
               }
-              let index = properties.findIndex((item) => item.key === realTime.bind.id);
+              let index = properties.findIndex((item) => item.key === realTime.bind!.id);
               if (index === -1) {
                 properties.push({
                   key: realTime.bind.id,
@@ -1582,7 +1582,7 @@ export class Meta2d {
         actions?.forEach((action)=>{
           action.data?.forEach((item)=>{
             if(item.class === 'iot'){
-              let bind = item.prop.split('#');
+              let bind = item.prop!.split('#');
               let idx = devices.findIndex((item) => item.deviceId === bind[0]);
               if(idx > -1){
                 if (!devices[idx].properties.includes(bind[1])) {

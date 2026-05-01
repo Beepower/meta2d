@@ -196,7 +196,7 @@ export class Canvas {
   movingPens?: Pen[];
 
   patchFlagsLines: Set<Pen> = new Set();
-  dock?: { xDock: Point; yDock: Point };
+  dock?: { xDock?: Point; yDock?: Point };
 
   prevAnchor?: Point;
   nextAnchor?: Point;
@@ -3006,7 +3006,7 @@ export class Canvas {
       this.store.options.autoAlignGrid && this.store.data.grid;
     // 如果开启了自动网格,并且不是连线，则使pen对齐网格
     if (autoAlignGrid && !pen.type) {
-      const gridSize = this.store.data.gridSize || this.store.options.gridSize;
+      const gridSize = this.store.data.gridSize || this.store.options.gridSize || 20;
       const { origin, scale } = this.store.data;
       const { x, y } = pen;
       const obj = { x, y };
@@ -3035,7 +3035,7 @@ export class Canvas {
     let movedPens:Pen[] = this.getAllFollowersByPens(this.store.active!,false);
     const initPens = deepClone(movedPens, true);
     // const pens = deepClone(this.store.active, true);
-    const gridSize = this.store.data.gridSize || this.store.options.gridSize;
+    const gridSize = this.store.data.gridSize || this.store.options.gridSize || 20;
     const { origin, scale } = this.store.data;
     const autoAlignGrid =
       this.store.options.autoAlignGrid && (this.store.data.grid || this.store.options.grid);

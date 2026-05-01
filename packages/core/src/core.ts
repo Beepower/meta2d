@@ -2846,7 +2846,7 @@ export class Meta2d {
   }
 
   reconnectNetwork(index:number){
-    const net = this.store.data.networks[index];
+    const net = this.store.data.networks![index]!;
     if (net.protocol === 'mqtt') {
       this.mqttClients && this.mqttClients[net.index!]?.end();
       this.connectNetMqtt(net);
@@ -2888,7 +2888,10 @@ export class Meta2d {
     if(!(iot&&iot?.devices?.length)||(iot&&iot.enable === false)){
       return;
     }
-    let { url, password, username } = await this.getMqttUrl();
+    const mqttUrl = await this.getMqttUrl();
+    let url = mqttUrl?.url;
+    let password = mqttUrl?.password;
+    let username = mqttUrl?.username;
     if(!url){
       url = globalThis.iotUrl;
     }
@@ -2896,7 +2899,7 @@ export class Meta2d {
       console.warn('iot Request address error')
       return;
     }
-    const {token, room, data} = await this.getIotToken(iot.devices,iot.protocol==='websocket'?1:undefined,iot.room);
+    const {token, room, data} = await this.getIotToken(iot.devices!,iot.protocol==='websocket'?1:undefined,iot.room);
     if(data){
       // 初始数据
       this.socketCallback( JSON.stringify(data), {
@@ -2940,19 +2943,19 @@ export class Meta2d {
           this.iotMqttClient && this.iotMqttClient.publish(`le5le-iot/subscribe/ping`, token);
         }
       },300000);
-      if(this.store.data.iot.computes?.length){
+      if(this.store.data.iot!.computes?.length){
         let flag = false;
-        this.store.data.iot.computes.forEach((item)=>{
-          if(item.times>0){
+        this.store.data.iot!.computes.forEach((item)=>{
+          if(item.times!>0){
             flag = true;
           }
         });
-        this.iotAggregatePublish(this.store.data.iot.computes);
+        this.iotAggregatePublish(this.store.data.iot!.computes);
         iot.times = 0;
         if(flag){
           iot.interval = setInterval(()=>{
-            iot.times += 1;
-            let arr = this.store.data.iot.computes.filter((item)=>item.times && iot.times%item.times===0);
+            iot.times! += 1;
+            let arr = this.store.data.iot!.computes!.filter((item)=>item.times && iot.times!%item.times===0);
             if(arr.length){
               this.iotAggregatePublish(arr);
             }
@@ -2996,7 +2999,7 @@ export class Meta2d {
         return this.iotAggregateBuild(_item);
       })
 
-      this.iotMqttClient.publish(`le5le-iot/${this.store.data.iot.room}/property/aggregate`, JSON.stringify(data));
+      this.iotMqttClient.publish(`le5le-iot/${this.store.data.iot!.room}/property/aggregate`, JSON.stringify(data));
     }
   }
 
@@ -3042,7 +3045,7 @@ export class Meta2d {
     if(net.enable === false){
       return;
     }
-    this.eventSources[net.index!] = new EventSource(net.url,{withCredentials:net.withCredentials});
+    this.eventSources[net.index!] = new EventSource(net.url!,{withCredentials:net.withCredentials});
     this.eventSources[net.index!].onmessage = (e) => {
       this.socketCallback(e.data, { type: 'SSE', url: net.url, name:net.name, net });
     };
@@ -3056,7 +3059,7 @@ export class Meta2d {
     this.eventSources.forEach((es) => {
       if (es) {
         es.close();
-        es = undefined;
+        es = undefined as any;
       }
     });
   }
@@ -3086,7 +3089,7 @@ export class Meta2d {
     if(options?.username&&options.username.includes('${')){
       let keys = options.username.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
-        keys.forEach((key) => {
+        keys.forEach((key: string) => {
           options.username = options.username.replace(
             `\${${key}}`,this.getDynamicParam(key)
           );
@@ -3096,7 +3099,7 @@ export class Meta2d {
     if(options?.password&&options.password.includes('${')){
       let keys = options.password.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
-        keys.forEach((key) => {
+        keys.forEach((key: string) => {
           options.password = options.password.replace(
             `\${${key}}`,this.getDynamicParam(key)
           );
@@ -3188,18 +3191,18 @@ export class Meta2d {
       return;
     }
     let url = net.url;
-    if(url.indexOf('${') > -1){
-      let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
+    if(url!.indexOf('${') > -1){
+      let keys = url!.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
         keys.forEach((key) => {
-          url = url.replace(
+          url = url!.replace(
             `\${${key}}`,this.getDynamicParam(key)
           );
         });
       }
     }
     this.websockets[net.index!] = new WebSocket(
-      url,
+      url!,
       net.protocols || undefined
     );
     this.websockets[net.index!].onmessage = (e) => {
@@ -3208,10 +3211,10 @@ export class Meta2d {
     this.websockets[net.index!].onerror = (error) => {
       this.store.emitter.emit('error', { type: 'websocket', error });
     };
-    this.websockets[net.index!].onclose = () => {
+    this.websockets[net.index!]!.onclose = () => {
       if (this.store.options.reconnetTimes) {
-        net.times++;
-        if (net.times >= this.store.options.reconnetTimes) {
+        (net.times as number)++;
+        if (net.times! >= this.store.options.reconnetTimes) {
           net.times = 0;
           this.websockets[net.index!].onclose = null;
           this.websockets[net.index!]?.close();

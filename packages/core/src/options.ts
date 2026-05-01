@@ -150,9 +150,16 @@ export interface Options {
    * locked toggle, viewport scale/translate, theme switch, or `dirtyPens === null`
    * sentinel (set by `markAllDirty()`).
    *
-   * Default `false` — flag-off ship for one minor cycle. Enable per-instance
-   * for opt-in benchmarking; default flip planned in a separate followup commit
-   * after grayed visual-regression evidence.
+   * Default `true` since 2026-05-01 (Day 53 task 2). Original opt-in default-off
+   * design (commit `21d43c6a`) flipped after batch-flag (`37768d7d`) +
+   * option-gate (`e908de56`) optimizations brought mass-mutation overhead from
+   * 8.4x slowdown to ~12% slowdown. Real-browser stress (2000 pens) loadModel
+   * delta now ~+80ms wall (3 trials avg, vs 647ms baseline). V2 perf-budgets
+   * 17/17 + meta2d adapter 556/556 + V2 vitest 2014/2014-eligible all pass
+   * under default-on. See M3 retrospective §2.6.3.
+   *
+   * Pass `false` per-instance to disable (e.g. for diagrams that thrash via
+   * non-batched mass mutation outside `Canvas.beginBatch`/`endBatch` fences).
    */
   dirtyPenRender?: boolean;
 }
@@ -235,7 +242,7 @@ export const defaultOptions: Options = {
   diagramOptions: {},
   svgPathStroke:true,
   reconnetTimes:10,
-  dirtyPenRender: false,
+  dirtyPenRender: true,
 };
 
 export interface PenPlugin {

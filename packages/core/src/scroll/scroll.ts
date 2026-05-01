@@ -6,19 +6,19 @@ export class Scroll {
   v: HTMLElement;
   isDownH: number | undefined;
   isDownV: number | undefined;
-  x: number;
-  y: number;
-  hSize: number;
-  vSize: number;
-  scrollX: number;
-  scrollY: number;
-  lastScrollX: number;
-  lastScrollY: number;
-  rect: Rect;
-  isShow: boolean;
+  x!: number;
+  y!: number;
+  hSize!: number;
+  vSize!: number;
+  scrollX!: number;
+  scrollY!: number;
+  lastScrollX!: number;
+  lastScrollY!: number;
+  rect!: Rect;
+  isShow!: boolean;
   isV: any; //大屏页面
-  padding: number;
-  pageMode: boolean; //页面模式
+  padding!: number;
+  pageMode!: boolean; //页面模式
   constructor(public parent: Canvas) {
     this.h = document.createElement('div');
     this.v = document.createElement('div');

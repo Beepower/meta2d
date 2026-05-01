@@ -89,7 +89,7 @@ function doWarning(meta2d:Meta2d, mess: any){
   }
 }
 
-globalThis.doWarning = doWarning
+globalThis.doWarning = doWarning as any
 
 function getTime(timestamp: number){
   const now = new Date(timestamp);

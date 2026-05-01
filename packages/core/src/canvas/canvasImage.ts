@@ -23,8 +23,8 @@ export class CanvasImage {
   animateOffsScreen = createOffscreen();
   fitOffscreen = createOffscreen();
   fitFlag = false; //开启自定义填充
-  currentFit:string;
-  activeFit: Fit;
+  currentFit!: string;
+  activeFit!: Fit;
 
   constructor(
     public parentElement: HTMLElement,

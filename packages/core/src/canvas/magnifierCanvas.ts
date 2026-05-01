@@ -8,7 +8,7 @@ export class MagnifierCanvas {
   offscreen = createOffscreen();
   domOffscreen = createOffscreen();
   private magnifierSize: number = 300;
-  magnifier: boolean;
+  magnifier!: boolean;
 
   constructor(
     public parentCanvas: Canvas,

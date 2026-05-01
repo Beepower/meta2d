@@ -131,7 +131,7 @@ export class Meta2d {
     this.registerAnchors(commonAnchors());
     globalThis.meta2d = this;
     this.initEventFns();
-    this.store.emitter.on('*', this.onEvent);
+    this.store.emitter.on('*', this.onEvent as any);
   }
 
   facePen = facePen;
@@ -1807,14 +1807,14 @@ export class Meta2d {
   on<T = any>(type: EventType, handler: Handler<T>): Meta2d;
   on(type: '*', handler: WildcardHandler): Meta2d;
   on(type: EventType | '*', handler: WildcardHandler | Handler) {
-    this.store.emitter.on(type, handler);
+    (this.store.emitter.on as any)(type, handler);
     return this;
   }
 
   off<T = any>(type: EventType, handler: Handler<T>): Meta2d;
   off(type: '*', handler: WildcardHandler): Meta2d;
   off(type: EventType | '*', handler: WildcardHandler | Handler) {
-    this.store.emitter.off(type, handler);
+    (this.store.emitter.off as any)(type, handler);
     return this;
   }
 

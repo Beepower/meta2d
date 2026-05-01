@@ -21,11 +21,11 @@ export class Dialog {
   close: HTMLElement;
   title: HTMLElement;
   body: HTMLElement;
-  x: number;
-  y: number;
-  url: string;
+  x!: number;
+  y!: number;
+  url!: string;
   meta2dDiv: HTMLElement;
-  dialogMeta2d: Meta2d;
+  dialogMeta2d!: Meta2d;
   store: Meta2dStore;
   data:any;
   constructor(public parentElement: HTMLElement, store: Meta2dStore) {

@@ -8,8 +8,8 @@ export class ViewMap {
   readonly ratio = this.boxWidth / this.boxHeight;
   readonly padding = 5;
   img: HTMLImageElement;
-  isShow: boolean;
-  isDown: boolean;
+  isShow!: boolean;
+  isDown!: boolean;
   view: HTMLElement; // 可视区域外框
   timer: any;
   constructor(public parent: Canvas) {

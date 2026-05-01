@@ -43,9 +43,9 @@ export class Message {
   box: HTMLElement;
   icon: HTMLElement;
   text: HTMLElement;
-  closeBtn: HTMLElement;
+  closeBtn!: HTMLElement;
   duration: number; //定时销毁时间
-  content: string;
+  content!: string;
   theme: Theme; //主题
   placement: string; //位置
   height:number;

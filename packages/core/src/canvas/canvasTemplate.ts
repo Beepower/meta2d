@@ -16,9 +16,9 @@ export class CanvasTemplate {
   canvas = document.createElement('canvas');
   offscreen = createOffscreen();
   bgOffscreen = createOffscreen();
-  patchFlags: boolean;
-  bgPatchFlags: boolean;
-  fit: boolean; //是否自适应布局
+  patchFlags!: boolean;
+  bgPatchFlags!: boolean;
+  fit!: boolean; //是否自适应布局
   constructor(public parentElement: HTMLElement, public store: Meta2dStore) {
     parentElement.appendChild(this.canvas);
     this.canvas.style.backgroundRepeat = 'no-repeat';

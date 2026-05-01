@@ -25,8 +25,8 @@ export class Popconfirm {
   icon: HTMLElement;
   confirm: HTMLElement;
   cancel: HTMLElement;
-  x: number;
-  y: number;
+  x!: number;
+  y!: number;
   constructor(public parentElement: HTMLElement, private store: Meta2dStore) {
     this.box = document.createElement('div');
     this.text = document.createElement('div');

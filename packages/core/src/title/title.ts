@@ -3,7 +3,7 @@ import { Point } from '../point';
 
 export class Title {
   box: HTMLElement;
-  private currentAnchor: Point; // 本次 tooltip 在哪个画笔上
+  private currentAnchor!: Point; // 本次 tooltip 在哪个画笔上
   constructor(public parentElement: HTMLElement) {
     this.box = document.createElement('div');
     this.box.className = 'meta2d-title';

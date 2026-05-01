@@ -11,9 +11,9 @@ export class Tooltip {
   text: HTMLElement;
   arrowUp: HTMLElement;
   arrowDown: HTMLElement;
-  x: number;
-  y: number;
-  private currentPen: Pen; // 本次 tooltip 在哪个画笔上
+  x!: number;
+  y!: number;
+  private currentPen!: Pen; // 本次 tooltip 在哪个画笔上
   constructor(public parentElement: HTMLElement, private store: Meta2dStore) {
     this.box = document.createElement('div');
     this.text = document.createElement('div');

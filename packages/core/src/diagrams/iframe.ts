@@ -3,7 +3,7 @@ import { Point } from '../point';
 import { deepClone, getRootDomain } from '../utils';
 
 const iframes:{
-  [key: string]: HTMLElement;
+  [key: string]: HTMLElement | null;
 } = {};
 
 export function clearIframes() {
@@ -24,7 +24,7 @@ export function updateIframes(pens: Pen[]) {
 }
 
 function matchIframe(pen: Pen) {
-  const div = iframes[pen.iframe];
+  const div = iframes[pen.iframe!];
   if (div) {
     pen.calculative!.singleton.div = div;
     generateAroundDiv(pen);
@@ -60,7 +60,7 @@ export function iframe(pen: Pen) {
     div.style.top = '-9999px';
     div.style.width = worldRect.width + 'px';
     div.style.height = worldRect.height + 'px';
-    pen.calculative!.canvas!.externalElements?.parentElement.appendChild(div);
+    pen.calculative!.canvas!.externalElements?.parentElement?.appendChild(div);
     setElemPosition(pen, div);
     pen.calculative!.singleton.div = div;
     const iframe = document.createElement('iframe');
@@ -69,7 +69,7 @@ export function iframe(pen: Pen) {
     iframe.scrolling = pen.scrolling || 'no';
     iframe.frameBorder = '0';
     iframe.style.border = 'none';
-    iframe.src = pen.iframe;
+    iframe.src = pen.iframe!;
     iframe.allowFullscreen = true;
     pen.calculative!.iframe = pen.iframe;
     div.appendChild(iframe);
@@ -82,7 +82,7 @@ export function iframe(pen: Pen) {
   if (pen.calculative!.patchFlags) {
     setElemPosition(pen, pen.calculative!.singleton.div);
   }
-  pen.onRenderPenRaw(pen);
+  pen.onRenderPenRaw!(pen);
   return new Path2D();
 }
 
@@ -92,9 +92,9 @@ function destory(pen: Pen) {
     if (!pen.calculative!.canvas!.store.data.locked) {
       // 手动删除iframe
       pen.calculative!.singleton.div.remove();
-      iframes[pen.calculative!.iframe] = null;
+      iframes[pen.calculative!.iframe!] = null;
     }else{
-      iframes[pen.calculative!.iframe] = pen.calculative!.singleton.div;
+      iframes[pen.calculative!.iframe!] = pen.calculative!.singleton.div;
       delete pen.calculative!.singleton.div;
     }
   }
@@ -108,7 +108,7 @@ function move(pen: Pen) {
 function beforeValue(pen: Pen, value: any) {
   if (value.iframe) {
     if (pen.calculative!.singleton.div) {
-      pen.calculative!.singleton.div.children[0].src = value.iframe;
+      (pen.calculative!.singleton.div.children[0] as HTMLIFrameElement).src = value.iframe;
       pen.calculative!.iframe = value.iframe;
     }
   }
@@ -190,7 +190,7 @@ function mouseMove(pen: Pen, e: Point) {
   }
   if (initOperationalRect(pen.operationalRect)) {
     if (
-      pen.calculative!.zIndex < 5 &&
+      pen.calculative!.zIndex! < 5 &&
       e.x > pen.x + pen.width * pen.operationalRect!.x &&
       e.x <
         pen.x +
@@ -201,10 +201,10 @@ function mouseMove(pen: Pen, e: Point) {
           pen.height * (pen.operationalRect!.y + pen.operationalRect!.height)
     ) {
       if (pen.calculative!.singleton.div) {
-        let children: HTMLElement[] =
-          pen.calculative!.singleton.div.parentNode.children;
+        let children: HTMLCollection =
+          pen.calculative!.singleton.div.parentNode!.children;
         for (let i = 0; i < 6; i++) {
-          children[i].style.pointerEvents = 'none';
+          (children[i] as HTMLElement).style.pointerEvents = 'none';
         }
       }
     }
@@ -231,7 +231,7 @@ function initOperationalRect(operationalRect: any) {
 
 function removeAllButFirst(parent: HTMLElement) {
   while (parent.childNodes.length > 1) {
-      parent.removeChild(parent.lastChild);
+      parent.removeChild(parent.lastChild!);
   }
 }
 
@@ -255,7 +255,7 @@ function generateAroundDiv(pen: Pen) {
   if(!isLinux && pen.blur){
     (top.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
-  top.style.backgroundColor = pen.blurBackground;
+  top.style.backgroundColor = pen.blurBackground || '';
   div.appendChild(top);
 
   const right = document.createElement('div');
@@ -268,7 +268,7 @@ function generateAroundDiv(pen: Pen) {
   if(!isLinux && pen.blur){
     (right.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
-  right.style.backgroundColor = pen.blurBackground;
+  right.style.backgroundColor = pen.blurBackground || '';
   div.appendChild(right);
 
   const bottom = document.createElement('div');
@@ -281,7 +281,7 @@ function generateAroundDiv(pen: Pen) {
   if(!isLinux && pen.blur){
     (bottom.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
-  bottom.style.backgroundColor = pen.blurBackground;
+  bottom.style.backgroundColor = pen.blurBackground || '';
   div.appendChild(bottom);
 
   const left = document.createElement('div');
@@ -293,7 +293,7 @@ function generateAroundDiv(pen: Pen) {
   if(!isLinux && pen.blur){
     (left.style as any)['backdrop-filter'] = `blur(${pen.blur}px)`;
   }
-  left.style.backgroundColor = pen.blurBackground;
+  left.style.backgroundColor = pen.blurBackground || '';
   div.appendChild(left);
 
   let mouseEnter = () => {
@@ -312,7 +312,7 @@ function updatePointerEvents(pen: Pen) {
   if (!pen.calculative!.canvas!.store.data.locked && !pen.locked) {
     return;
   }
-  if (pen.calculative!.zIndex < 5) {
+  if (pen.calculative!.zIndex! < 5) {
     let children: any = pen.calculative!.singleton.div.parentNode.children;
     for (let i = 1; i < 6; i++) {
       children[i].style.pointerEvents = 'initial';
@@ -326,7 +326,7 @@ function renderPenRaw(pen: Pen) {
       const img = new Image();
       img.crossOrigin =
         pen.crossOrigin === 'undefined'
-          ? undefined
+          ? null
           : pen.crossOrigin || pen.calculative!.canvas!.store.options.crossOrigin || 'anonymous';
       if (
         pen.calculative!.canvas!.store.options.cdn &&
@@ -384,7 +384,7 @@ async function handleSaveImg(pen: Pen) {
     const img = new Image();
     img.crossOrigin =
       pen.crossOrigin === 'undefined'
-        ? undefined
+        ? null
         : pen.crossOrigin || pen.calculative!.canvas!.store.options.crossOrigin || 'anonymous';
     img.src = canvas.toDataURL('image/png', 0.1);
     if (img.src.length > 10) {

@@ -43,8 +43,8 @@ export class CanvasImage {
     this.canvas.style.width = w + 'px';
     this.canvas.style.height = h + 'px';
 
-    w = (w * this.store.dpiRatio) | 0;
-    h = (h * this.store.dpiRatio) | 0;
+    w = (w! * this.store.dpiRatio) | 0;
+    h = (h! * this.store.dpiRatio) | 0;
 
     this.canvas.width = w;
     this.canvas.height = h;
@@ -115,18 +115,18 @@ export class CanvasImage {
       .getContext('2d')
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.animateOffsScreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.fitOffscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvas
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
   hasImage(pen: Pen) {
-    pen.calculative!.hasImage =
+    pen.calculative!.hasImage = !!(
       pen.calculative &&
       pen.calculative!.inView &&
       // !pen.isBottom == !this.isBottom && // undefined == false 结果 false
@@ -134,7 +134,8 @@ export class CanvasImage {
         (!this.isBottom && pen.canvasLayer === CanvasLayer.CanvasImage)) &&
       pen.image &&
       pen.calculative!.img &&
-      pen.name !== 'gif';
+      pen.name !== 'gif'
+    );
 
     return pen.calculative!.hasImage;
   }
@@ -299,10 +300,10 @@ export class CanvasImage {
 
     if (!this.isBottom && !this.store.data.locked && this.fitFlag) {
       const width =
-        (this.store.data.width || this.store.options.width) *
+        (this.store.data.width || this.store.options.width || 0) *
         this.store.data.scale;
       const height =
-        (this.store.data.height || this.store.options.height) *
+        (this.store.data.height || this.store.options.height || 0) *
         this.store.data.scale;
       const x =
         this.store.data.origin.x + this.store.data.x ||

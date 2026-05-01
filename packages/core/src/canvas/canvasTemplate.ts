@@ -32,8 +32,8 @@ export class CanvasTemplate {
     this.canvas.style.width = w + 'px';
     this.canvas.style.height = h + 'px';
 
-    w = (w * this.store.dpiRatio) | 0;
-    h = (h * this.store.dpiRatio) | 0;
+    w = (w! * this.store.dpiRatio) | 0;
+    h = (h! * this.store.dpiRatio) | 0;
 
     this.canvas.width = w;
     this.canvas.height = h;
@@ -213,8 +213,8 @@ export class CanvasTemplate {
       return;
     }
     ctx.save();
-    const width = (data.width || options.width) * scale;
-    const height = (data.height || options.height) * scale;
+    const width = (data.width || options.width || 0) * scale;
+    const height = (data.height || options.height || 0) * scale;
     const startX = (data.x || options.x || 0) + origin.x;
     const startY = (data.y || options.y || 0) + origin.y;
     // if (width && height && gridRotate) {
@@ -223,9 +223,9 @@ export class CanvasTemplate {
     //   ctx.translate(-width / 2, -height / 2);
     // }
     ctx.lineWidth = 1;
-    ctx.strokeStyle = gridColor || options.gridColor;
+    ctx.strokeStyle = gridColor || options.gridColor || '';
     ctx.beginPath();
-    let size = (gridSize || options.gridSize) * scale;
+    let size = (gridSize || options.gridSize || 0) * scale;
     size = size < 0 ? 0 : size;
     if (!width || !height) {
       const ratio = this.store.dpiRatio;

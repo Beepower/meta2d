@@ -19,7 +19,7 @@ export class ViewMap {
 
     this.box.appendChild(this.img);
     this.box.appendChild(this.view);
-    this.parent.externalElements?.parentElement.appendChild(this.box);
+    this.parent.externalElements?.parentElement?.appendChild(this.box);
 
     this.box.className = 'meta2d-map';
     this.box.onmousedown = this.onMouseDown;
@@ -66,7 +66,7 @@ export class ViewMap {
     const data = this.parent.store.data;
     if (data.pens.length) {
       this.img.style.display = 'block';
-      this.img.src = this.parent.toPng(0, undefined, true);
+      this.img.src = this.parent.toPng(0, undefined, true) || '';
       this.setView();
     } else {
       this.img.style.display = 'none';
@@ -99,7 +99,7 @@ export class ViewMap {
         clearTimeout(this.timer);
         this.timer = setTimeout(()=>{
           if(this.parent.store.bkImg){
-            this.img.src = this.parent.toPng(0, undefined, true);
+            this.img.src = this.parent.toPng(0, undefined, true) || '';
           }
         },300);
       }

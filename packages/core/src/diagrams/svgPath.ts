@@ -9,9 +9,9 @@ import {
   translatePath,
 } from './svg/parse';
 
-export function svgPath(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
-  const store: Meta2dStore = pen.calculative!.canvas.store;
-  const pathText = store.data.paths[pen.pathId];
+export function svgPath(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D | undefined {
+  const store: Meta2dStore = pen.calculative!.canvas!.store;
+  const pathText = store.data.paths?.[pen.pathId!];
   if (!pathText) {
     return new Path2D();
   }

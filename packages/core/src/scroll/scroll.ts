@@ -4,8 +4,8 @@ import { getRect, Rect } from '../rect';
 export class Scroll {
   h: HTMLElement;
   v: HTMLElement;
-  isDownH: number;
-  isDownV: number;
+  isDownH: number | undefined;
+  isDownV: number | undefined;
   x: number;
   y: number;
   hSize: number;
@@ -218,7 +218,7 @@ export class Scroll {
     if (y < 0 && rect.y + this.parent.store.data.y >= 0) {
       return true;
     }
-    if (y > 0 && rect.ey - this.parent.height + this.parent.store.data.y <= 0) {
+    if (y > 0 && rect.ey! - this.parent.height + this.parent.store.data.y <= 0) {
       return true;
     }
     return false;

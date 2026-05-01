@@ -128,7 +128,7 @@ export function getSendData(meta2d:Meta2d, pen: Pen, e: Event){
           (item: any) => item.propertyId === key
         );
         if (realTime) {
-          list[index].properties[key] = (_pen as any)[realTime.key];
+          list[index].properties[key] = (_pen as any)[realTime.key!];
         }
       } else if (
         typeof item.value[key] === 'string' &&

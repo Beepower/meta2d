@@ -431,7 +431,7 @@ export function isBezierIntersectRectangle(from: Point, to: Point, rect: Rect) {
   return false;
 }
 
-export function createSvgPath(path:SVGGeometryElement,from: Point, cp1: Point, cp2?: Point, to?: Point,) {
+export function createSvgPath(path: SVGGeometryElement | undefined, from: Point, cp1: Point | undefined, cp2: Point | undefined, to: Point) {
   let d = ''
   if(!path){
     d += `M${from.x} ${from.y} `

@@ -5015,13 +5015,13 @@ export class Canvas {
       }
       pen.calculative!.gradientTimer = setTimeout(() => {
         if (pen.calculative!.lineGradient) {
-          pen.calculative!.lineGradient = null;
+          pen.calculative!.lineGradient = undefined;
         }
         if (pen.calculative!.gradient) {
-          pen.calculative!.gradient = null;
+          pen.calculative!.gradient = undefined;
         }
         if (pen.calculative!.radialGradient) {
-          pen.calculative!.radialGradient = null;
+          pen.calculative!.radialGradient = undefined;
         }
         this.patchFlags = true;
         pen.calculative!.gradientTimer = undefined;

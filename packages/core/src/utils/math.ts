@@ -18,33 +18,33 @@ export function abs(num: number, percent: number | string): number {
  * @param collection 集合规范，与数学上相同，如[0, 100]，前闭后闭；如[0, 100)，前闭后开；
  * @returns undefined 说明参数不规范 ，true 说明在范围内，false 说明不在范围内
  */
-export function valueInRange(realValue: number, collection: unknown): boolean | undefined {
+export function valueInRange(realValue: number, collection: unknown): boolean {
   if (isNaN(realValue)) {
     console.warn(`realValue not number`);
-    return;
+    return false;
   }
   if (typeof collection !== 'string') {
     console.warn('collection must be string');
-    return;
+    return false;
   }
   const [start, end] = [collection[0], collection[collection.length - 1]];
   if (!['[', '('].includes(start)) {
     console.warn('collection must start with "[" or "("');
-    return;
+    return false;
   }
   if (![']', ')'].includes(end)) {
     console.warn('collection must end with "]" or ")"');
-    return;
+    return false;
   }
   const nums = collection.substring(1, collection.length - 1).split(',');
   if (nums.length !== 2) {
     console.warn('collection must have 2 numbers');
-    return;
+    return false;
   }
   const [startNum, endNum] = [+nums[0], +nums[1]];
   if (startNum >= endNum) {
     console.warn('startNum must less than endNum');
-    return;
+    return false;
   }
   // 大于 startNum 左肯定成立
   const left =
@@ -70,7 +70,7 @@ export function valueInRange(realValue: number, collection: unknown): boolean | 
  * @param collection 集合
  * @returns undefined 说明参数不规范 ，true 说明在范围内，false 说明不在范围内
  */
-export function valueInArray(realValue: any, collection: unknown): boolean | undefined {
+export function valueInArray(realValue: any, collection: unknown): boolean {
   // if (isNaN(realValue)) {
   //   console.warn(`realValue not number`);
   //   return;
@@ -78,12 +78,12 @@ export function valueInArray(realValue: any, collection: unknown): boolean | und
   //允许字符串的情况
   if (typeof collection !== 'string') {
     console.warn('collection must be string');
-    return;
+    return false;
   }
   const [start, end] = [collection[0], collection[collection.length - 1]];
   if (start !== '[' || end !== ']') {
     console.warn('collection must start with "[" and end with "]"');
-    return;
+    return false;
   }
   const numStrs = collection.substring(1, collection.length - 1).split(',');
   for (const numStr of numStrs) {
@@ -93,7 +93,7 @@ export function valueInArray(realValue: any, collection: unknown): boolean | und
       const [startNum, endNum] = [+start, +end];
       if (startNum >= endNum) {
         console.warn('startNum must less than endNum');
-        return;
+        return false;
       }
       if (realValue >= startNum && realValue <= endNum) {
         return true;
@@ -106,7 +106,7 @@ export function valueInArray(realValue: any, collection: unknown): boolean | und
       //   const [start, end] = [num[0], num[num.length - 1]];
       //   if (!((start !== '"' && end !== '"')||(start !== "'" && end !== "'"))) {
       //     console.warn('Not a valid string');
-      //     return;
+      //     return false;
       //   }else{
       //     num = num.substring(1, num.length - 1)
       //   }

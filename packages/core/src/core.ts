@@ -2469,11 +2469,6 @@ export class Meta2d {
     this.canvas.scale(scale, center);
   }
 
-  /** @deprecated 用 setTranslate(x, y) 替代 (Phase D6 quirk 11.1 #2) */
-  translate(x: number, y: number) {
-    this.canvas.translate(x, y);
-  }
-
   /**
    * Phase D6 quirk 11.1 #6 — 原子设置整个视口状态。
    * @see Canvas#setViewport
@@ -5494,10 +5489,13 @@ export class Meta2d {
     };
     calcCenter(pensRect);
     const { center } = pensRect;
-    const { scale, origin, x: dataX, y: dataY } = this.store.data;
-    this.translate(
-      (viewCenter.x - origin.x) / scale - center.x - dataX / scale,
-      (viewCenter.y - origin.y) / scale - center.y - dataY / scale
+    const { scale, origin } = this.store.data;
+    // Phase D6.4-followup: 老 translate(arg) 等价 store.data.x += arg*scale。
+    // 代入 arg = (viewCenter.x - origin.x)/scale - center.x - dataX/scale 后,
+    // dataX 自然抵消,得 setTranslate 绝对值 = viewCenter.x - origin.x - center.x*scale
+    this.canvas.setTranslate(
+      viewCenter.x - origin.x - center.x * scale,
+      viewCenter.y - origin.y - center.y * scale,
     );
     const { canvas } = this.canvas;
     const x = (canvas.scrollWidth - canvas.offsetWidth) / 2;
@@ -5575,11 +5573,12 @@ export class Meta2d {
     }
     calcCenter(pensRect);
     const { center } = pensRect;
-    const { scale, origin, x: dataX, y: dataY } = this.store.data;
-
-    this.translate(
-      (viewCenter.x - origin.x) / scale - center.x - dataX / scale,
-      (paddingTop - origin.y) / scale - pensRect.y - dataY / scale
+    const { scale, origin } = this.store.data;
+    // Phase D6.4-followup: 同 fitTemplateView 的代数化简(dataX/dataY 抵消)。
+    // y-arg 用 paddingTop - pensRect.y 而非 viewCenter.y - center.y(top-aligned)。
+    this.canvas.setTranslate(
+      viewCenter.x - origin.x - center.x * scale,
+      paddingTop - origin.y - pensRect.y * scale,
     );
     const { canvas } = this.canvas;
     const x = (canvas.scrollWidth - canvas.offsetWidth) / 2;
@@ -5594,13 +5593,12 @@ export class Meta2d {
     const pensRect: Rect = this.getPenRect(rect as any);
     calcCenter(pensRect);
     const { center } = pensRect;
-    const { scale, origin, x: dataX, y: dataY } = this.store.data;
-    // center 的值，在缩放和拖拽画布过程中不发生变化，是相对值
-    // viewCenter 是一个绝对值，需要根据 origin 的值，来计算出相对的值
-    // store.data.x 是画布偏移值，在 translate 方法中与 scale 相关，这里也需要计算
-    this.translate(
-      (viewCenter.x - origin.x) / scale - center.x - dataX / scale,
-      (viewCenter.y - origin.y) / scale - center.y - dataY / scale
+    const { scale, origin } = this.store.data;
+    // Phase D6.4-followup: 直接用 setTranslate 设绝对值,store.data.x 不再参与公式
+    // (代数推导后抵消)。center 是 pensRect 内的相对中心,viewCenter 是屏幕绝对坐标。
+    this.canvas.setTranslate(
+      viewCenter.x - origin.x - center.x * scale,
+      viewCenter.y - origin.y - center.y * scale,
     );
     const { canvas } = this.canvas;
     const x = (canvas.scrollWidth - canvas.offsetWidth) / 2;

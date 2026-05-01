@@ -659,8 +659,10 @@ export class Canvas {
         this.scroll.wheel(e.deltaY < 0);
         return;
       }
-      const scale = this.store.data.scale || 1;
-      this.translate(-e.deltaX / scale, -e.deltaY / scale);
+      this.setTranslate(
+        this.store.data.x - e.deltaX,
+        this.store.data.y - e.deltaY,
+      );
       return;
     }
     if (Math.abs((e as any).wheelDelta) > 100) {
@@ -1832,10 +1834,9 @@ export class Canvas {
           return;
         }
         if (this.lastOffsetX) {
-          const { scale } = this.store.data;
-          this.translate(
-            (x - this.lastOffsetX) / scale,
-            (y - this.lastOffsetY) / scale
+          this.setTranslate(
+            this.store.data.x + (x - this.lastOffsetX),
+            this.store.data.y + (y - this.lastOffsetY),
           );
         }
 
@@ -2360,15 +2361,14 @@ export class Canvas {
         this.hotkeyType === HotkeyType.Translate ||
         this.mouseRight === MouseRight.Translate
       ) {
-        const { scale } = this.store.data;
         // if (Math.abs(e.x - this.mouseDown.x) > 30) {
         //   return;
         // }
-        let x = (e.x - this.mouseDown.x) / scale;
-        let y = (e.y - this.mouseDown.y) / scale;
-        e.shiftKey && !e.ctrlKey && (y = 0);
-        e.ctrlKey && (x = 0);
-        this.translate(x, y);
+        let dx = e.x - this.mouseDown.x;
+        let dy = e.y - this.mouseDown.y;
+        e.shiftKey && !e.ctrlKey && (dy = 0);
+        e.ctrlKey && (dx = 0);
+        this.setTranslate(this.store.data.x + dx, this.store.data.y + dy);
         return;
       }
 
@@ -5595,93 +5595,8 @@ export class Canvas {
   };
 
 
+  /** Phase D6.4-followup: setTranslate 的 asyncTranslate debounce 句柄(原 translate 老 API 字段)。*/
   transTimeout: any;
-  /**
-   * @deprecated 用 setTranslate(absX, absY) 或 setViewport({x,y,zoom}) 替代 (Phase D6 quirk 11.1 #2)
-   *
-   * 老 add-delta 语义:`store.data.x += dx * scale`。保留是因为 padding clamp 逻辑
-   * 与内部 wheel pan / drag pan / fitView 的 caller 数学相互依赖,Phase D6.4 minimal
-   * 暂不删 wrapper(完整删除 + 内部 callers 全迁 + padding clamp 搬到 setTranslate
-   * 留 D6.4-followup,需要 V2 端验证 fitView / wheel pan 行为不退化)。
-   */
-  translate(x: number = 0, y: number = 0) {
-    this.store.data.x += x * this.store.data.scale;
-    this.store.data.y += y * this.store.data.scale;
-    this.store.data.x = Math.round(this.store.data.x);
-    this.store.data.y = Math.round(this.store.data.y);
-    if (this.store.options.padding) {
-      let p = formatPadding(this.store.options.padding);
-      const width = this.store.data.width || this.store.options.width || 0;
-      const height = this.store.data.height || this.store.options.height || 0;
-      if (this.width < (width + p[1] + p[3]) * this.store.data.scale) {
-        if (
-          this.store.data.x + this.store.data.origin.x >
-          p[3] * this.store.data.scale
-        ) {
-          this.store.data.x =
-            p[3] * this.store.data.scale - this.store.data.origin.x;
-        }
-
-        if (
-          this.store.data.x +
-            this.store.data.origin.x +
-            width * this.store.data.scale <
-          this.width - p[1] * this.store.data.scale
-        ) {
-          this.store.data.x =
-            this.width -
-            p[1] * this.store.data.scale -
-            (this.store.data.origin.x + width * this.store.data.scale);
-        }
-      }
-      if (this.height < (height + p[0] + p[2]) * this.store.data.scale) {
-        if (
-          this.store.data.y + this.store.data.origin.y >
-          p[0] * this.store.data.scale
-        ) {
-          this.store.data.y =
-            p[0] * this.store.data.scale - this.store.data.origin.y;
-        }
-        if (
-          this.store.data.y +
-            this.store.data.origin.y +
-            height * this.store.data.scale <
-          this.height - p[2] * this.store.data.scale
-        ) {
-          this.store.data.y =
-            this.height -
-            p[2] * this.store.data.scale -
-            (this.store.data.origin.y + height * this.store.data.scale);
-        }
-      }
-    }
-    //TODO 当初为什么加异步
-    // setTimeout(() => {
-    if(this.store.data.asyncTranslate){
-      clearTimeout(this.transTimeout);
-      this.transTimeout = setTimeout( ()=> {
-        this.canvasTemplate.init();
-        this.canvasImage.init();
-        this.canvasImageBottom.init();
-        this.render();
-      }, 300);
-    }else{
-      this.canvasTemplate.init();
-      this.canvasImage.init();
-      this.canvasImageBottom.init();
-      this.render();
-    }
-    // });
-    this.store.emitter.emit('translate', {
-      x: this.store.data.x,
-      y: this.store.data.y,
-    });
-    this.tooltip.translate(x, y);
-    if (this.scroll && this.scroll.isShow) {
-      this.scroll.translate(x, y);
-    }
-    this.onMovePens();
-  }
 
   onMovePens() {
     const map = this.parent.map;
@@ -5781,19 +5696,93 @@ export class Canvas {
 
   /**
    * Phase D6 quirk 11.1 #2 — 绝对设置 viewport translate(非加 delta)。
-   * 旧 translate(x,y) 是 store.data.x += x*scale,本 API 直接 set 终值。
+   *
+   * Phase D6.4-followup: 吸收 deprecated translate() 全部副作用(padding clamp /
+   * asyncTranslate / tooltip & scroll 同步 / onMovePens 钩子),Canvas.translate +
+   * Meta2d.translate wrappers 已删除。
+   *
+   * 旧 translate(dx, dy) 是 store.data.x += dx*scale,迁移公式:
+   *   `setTranslate(store.data.x + dx*scale, store.data.y + dy*scale)`
+   *
+   * tooltip / scroll 接收 post-clamp 的 world-unit delta(从 store 状态推导);
+   * 旧 translate 把 caller 原始 delta 透传(pre-clamp)— 此差异是绝对 API 的必然。
    */
   setTranslate(x: number, y: number) {
+    const oldX = this.store.data.x;
+    const oldY = this.store.data.y;
     this.store.data.x = Math.round(x);
     this.store.data.y = Math.round(y);
-    this.canvasTemplate.init();
-    this.canvasImage.init();
-    this.canvasImageBottom.init();
-    this.render();
+    if (this.store.options.padding) {
+      let p = formatPadding(this.store.options.padding);
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
+      if (this.width < (width + p[1] + p[3]) * this.store.data.scale) {
+        if (
+          this.store.data.x + this.store.data.origin.x >
+          p[3] * this.store.data.scale
+        ) {
+          this.store.data.x =
+            p[3] * this.store.data.scale - this.store.data.origin.x;
+        }
+        if (
+          this.store.data.x +
+            this.store.data.origin.x +
+            width * this.store.data.scale <
+          this.width - p[1] * this.store.data.scale
+        ) {
+          this.store.data.x =
+            this.width -
+            p[1] * this.store.data.scale -
+            (this.store.data.origin.x + width * this.store.data.scale);
+        }
+      }
+      if (this.height < (height + p[0] + p[2]) * this.store.data.scale) {
+        if (
+          this.store.data.y + this.store.data.origin.y >
+          p[0] * this.store.data.scale
+        ) {
+          this.store.data.y =
+            p[0] * this.store.data.scale - this.store.data.origin.y;
+        }
+        if (
+          this.store.data.y +
+            this.store.data.origin.y +
+            height * this.store.data.scale <
+          this.height - p[2] * this.store.data.scale
+        ) {
+          this.store.data.y =
+            this.height -
+            p[2] * this.store.data.scale -
+            (this.store.data.origin.y + height * this.store.data.scale);
+        }
+      }
+    }
+    if (this.store.data.asyncTranslate) {
+      clearTimeout(this.transTimeout);
+      this.transTimeout = setTimeout(() => {
+        this.canvasTemplate.init();
+        this.canvasImage.init();
+        this.canvasImageBottom.init();
+        this.render();
+      }, 300);
+    } else {
+      this.canvasTemplate.init();
+      this.canvasImage.init();
+      this.canvasImageBottom.init();
+      this.render();
+    }
     this.store.emitter.emit('translate', {
       x: this.store.data.x,
       y: this.store.data.y,
     });
+    const scale = this.store.data.scale || 1;
+    const dx = (this.store.data.x - oldX) / scale;
+    const dy = (this.store.data.y - oldY) / scale;
+    this.tooltip.translate(dx, dy);
+    if (this.scroll && this.scroll.isShow) {
+      this.scroll.translate(dx, dy);
+    }
+    this.onMovePens();
   }
 
   /**

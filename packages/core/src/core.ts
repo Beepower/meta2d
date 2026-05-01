@@ -1394,9 +1394,9 @@ export class Meta2d {
     const imgDrawNum = this.store.data.pens.filter((pen) => pen.image&&pen.calculative!.inView).length;
     const domNum = this.store.data.pens.filter(
       (pen) =>
-        pen.name.endsWith('Dom') ||
-        isDomShapes.includes(pen.name) ||
-        this.store.options.domShapes.includes(pen.name) ||
+        pen.name?.endsWith('Dom') ||
+        (pen.name && isDomShapes.includes(pen.name)) ||
+        (pen.name && this.store.options.domShapes.includes(pen.name)) ||
         pen.externElement || pen.isDom
     ).length;
     const aningNum = this.store.animates.size;

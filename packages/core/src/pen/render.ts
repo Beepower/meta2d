@@ -724,7 +724,7 @@ function getBezierPoints(
     func = threeBezier;
   }
   for (let i = 0; i < num; i++) {
-    points.push(func(i / num, p1, p2, p3, p4));
+    points.push(func!(i / num, p1!, p2!, p3!, p4!));
   }
   if (p4) {
     points.push(p4);
@@ -1087,7 +1087,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     fill =
       pen.disabledTextColor ||
       pen.disabledColor ||
-      pSBC(0.4, getTextColor(pen, store));
+      pSBC(0.4, getTextColor(pen, store)) ?? undefined;
   } else if (pen.calculative!.hover) {
     fill = pen.hoverTextColor || pen.hoverColor || store.styles.hoverColor;
   } else if (pen.calculative!.active) {
@@ -1126,7 +1126,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
   const textAlign = pen.textAlign || store.options.textAlign;
   const oneRowHeight = fontSize * lineHeight;
   pen.calculative!.textLines && pen.calculative!.textLines.forEach((text, i) => {
-    const textLineWidth = pen.calculative!.textLineWidths[i];
+    const textLineWidth = pen.calculative!.textLineWidths![i]!;
     let x = 0;
     if (textAlign === 'center') {
       x = (width - textLineWidth) / 2;
@@ -1965,9 +1965,9 @@ export function ctxDrawPath(
     if (pen.type === PenType.Line && pen.borderWidth) {
       ctx.save();
       ctx.beginPath();
-      const lineWidth = pen.calculative!.lineWidth + pen.calculative!.borderWidth;
+      const lineWidth = pen.calculative!.lineWidth! + pen.calculative!.borderWidth!;
       ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = pen.borderColor;
+      ctx.strokeStyle = pen.borderColor || '';
       if (path_from) {
         ctx.save();
         ctx.lineCap = pen.fromLineCap as CanvasLineCap;
@@ -2007,7 +2007,7 @@ export function ctxDrawPath(
     }
 
     const progress =
-      (pen.calculative!.progress - (pen.calculative!.min || 0)) /
+      ((pen.calculative!.progress ?? 0) - (pen.calculative!.min || 0)) /
       ((pen.calculative!.max || 1) - (pen.calculative!.min || 0));
     if (progress != null && !isNaN(progress)) {
       // 从左往右 x, y, x + width * progress, y
@@ -2342,7 +2342,7 @@ function setElementAnimateOnLine(ctx:CanvasRenderingContext2D,line:Pen,type:stri
       if(!draw)return;
       break
   }
-  renderElementOnLine(ctx,line,draw)
+  renderElementOnLine(ctx,line,draw!)
 }
 
 function lineAnimateImageRender(imgs: HTMLImageElement[]) {
@@ -2432,7 +2432,7 @@ function renderElementOnLine(ctx: CanvasRenderingContext2D, line:Pen, draw:Funct
   } else {
     // 原有的间隔重复模式
     const dash = Array.isArray(line.lineAnimateDash)? line.lineAnimateDash : (line.lineAnimateDash?.split(',').map(i=>Number(i)) || [10,20])
-    const elesPos = computeLineDashSegments(len,dash,line.lineAnimateDashOffset!,line.lineAnimateElementCount)
+    const elesPos = computeLineDashSegments(len,dash,line.lineAnimateDashOffset!,line.lineAnimateElementCount!)
     elesPos.forEach((i,index)=>{
       const pos:any = calculateLineFrameStates(line,i.start)
       if(!pos)return
@@ -3037,8 +3037,8 @@ export function pushPenAnchor(pen: Pen, pt: Point) {
   pen.calculative!.worldAnchors!.push(worldAnchor);
 
   if (pen.calculative!.worldRect) {
-    if (pen.rotate % 360) {
-      rotatePoint(pt, -pen.rotate, pen.calculative!.worldRect!.center);
+    if (pen.rotate! % 360) {
+      rotatePoint(pt, -pen.rotate!, pen.calculative!.worldRect!.center!);
     }
 
     const anchor = {
@@ -3134,7 +3134,7 @@ export function translateLine(pen: Pen, x: number, y: number) {
 
 export function deleteTempAnchor(pen: Pen) {
   if (pen && pen.calculative && pen.calculative!.worldAnchors!.length) {
-    let to: Point = getToAnchor(pen);
+    let to: Point | undefined = getToAnchor(pen);
 
     // 第一次画线
     if (!pen.anchors || !pen.anchors!.length) {
@@ -3148,12 +3148,12 @@ export function deleteTempAnchor(pen: Pen) {
     }
     // 拖拽终点
     else if (to === pen.calculative!.activeAnchor) {
-      pen.calculative!.worldAnchors = [pen.calculative!.worldAnchors![0]];
+      pen.calculative!.worldAnchors = [pen.calculative!.worldAnchors![0]!];
     }
     // 拖拽起点
     else if (pen.calculative!.worldAnchors![0] === pen.calculative!.activeAnchor) {
       pen.calculative!.worldAnchors = [
-        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1],
+        pen.calculative!.worldAnchors![pen.calculative!.worldAnchors!.length - 1]!,
       ];
     }
   }
@@ -3205,7 +3205,7 @@ export function connectLine(
 
   if (lineAnchor.connectTo) {
     const p = pen.calculative!.canvas!.store.pens[lineAnchor.connectTo];
-    disconnectLine(p, getAnchor(p, lineAnchor.anchorId), line, lineAnchor);
+    if (p) disconnectLine(p, getAnchor(p, lineAnchor.anchorId!)!, line, lineAnchor);
   }
 
   if (!pen.connectedLines) {
@@ -3221,9 +3221,9 @@ export function connectLine(
 
   if (i < 0) {
     pen.connectedLines.push({
-      lineId: line.id,
-      lineAnchor: lineAnchor.id,
-      anchor: anchor.id,
+      lineId: line.id!,
+      lineAnchor: lineAnchor.id!,
+      anchor: anchor.id!,
     });
   }
 
@@ -3242,18 +3242,20 @@ export function connectLine(
     anchor,
   });
   // 新增连线生命周期
-  let fromPen =
-    line.calculative!.worldAnchors?.length >= 2
-      ? line.calculative!.worldAnchors?.[0].connectTo
-      : undefined;
-  let fromAnchor =
-    line.calculative!.worldAnchors?.length >= 2
-      ? line.calculative!.canvas.store.pens[
-          line.calculative!.worldAnchors?.[0].connectTo
-        ]?.anchors.find(
-          (i) => i.id === line.calculative!.worldAnchors?.[0].anchorId
-        )
-      : undefined; // num
+  const lineAnchors = line.calculative!.worldAnchors;
+  const hasFrom = (lineAnchors?.length ?? 0) >= 2;
+  let fromPen: Pen | undefined;
+  let fromAnchor: Point | undefined;
+  if (hasFrom && lineAnchors) {
+    const firstAnchor = lineAnchors[0];
+    const fromConnectTo = firstAnchor?.connectTo;
+    if (fromConnectTo) {
+      fromPen = line.calculative!.canvas!.store.pens[fromConnectTo];
+      fromAnchor = fromPen?.anchors?.find(
+        (i) => i.id === firstAnchor?.anchorId
+      );
+    }
+  }
   pen.onConnectLine?.(pen, {
     line,
     lineAnchor,
@@ -3351,7 +3353,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
   if (!pen.calculative!.duration) {
     pen.calculative!.duration = 0;
     for (const f of pen.frames) {
-      pen.calculative!.duration += f.duration;
+      pen.calculative!.duration += f.duration!;
       for (const k in f) {
         if (k !== 'duration' && !(pen as any)[k]) {
           if (k === 'scale') {
@@ -3369,7 +3371,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
     pen.calculative!.start = now;
     pen.calculative!.frameIndex = 0;
     pen.calculative!.frameStart = pen.calculative!.start;
-    pen.calculative!.frameDuration = pen.frames[0].duration;
+    pen.calculative!.frameDuration = pen.frames[0]!.duration;
     pen.calculative!.frameEnd =
       pen.calculative!.frameStart + pen.calculative!.frameDuration;
     pen.calculative!.cycleIndex = 1;
@@ -3389,7 +3391,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
       const store = pen.calculative!.canvas!.store;
       pen.calculative!.childrenVisible = {};
       pen.children.forEach((id) => {
-        pen.calculative!.childrenVisible[id] = store.pens[id].visible;
+        pen.calculative!.childrenVisible![id] = store.pens[id]?.visible;
       });
     }
     pen.calculative!.initRect!.rotate = pen.calculative!.rotate || 0;
@@ -3411,12 +3413,12 @@ export function setNodeAnimate(pen: Pen, now: number) {
     const pos = (now - pen.calculative!.start) % pen.calculative!.duration || pen.calculative!.duration;
     let d = 0;
     for (const frame of pen.frames) {
-      d += frame.duration;
+      d += frame.duration!;
       if (pos > d) {
-        if(!pen.frames[frameIndex].switch) {
+        if(!pen.frames[frameIndex]!.switch) {
           pen.calculative!.prevFrameRect = deepClone(pen.calculative!.worldRect);
           //上一个动画帧结束
-          pen.frames[frameIndex].switch = true;
+          pen.frames[frameIndex]!.switch = true;
         }
         ++frameIndex;
       } else {
@@ -3432,11 +3434,11 @@ export function setNodeAnimate(pen: Pen, now: number) {
     if (frameIndex !== pen.calculative!.frameIndex) {
       frameChanged = true;
       pen.calculative!.frameIndex = frameIndex;
-      pen.calculative!.frameDuration = pen.frames[frameIndex].duration;
+      pen.calculative!.frameDuration = pen.frames[frameIndex]!.duration;
       if (frameIndex > 0) {
-        pen.calculative!.frameStart += pen.frames[frameIndex-1].duration;
+        pen.calculative!.frameStart! += pen.frames[frameIndex-1]!.duration!;
       }
-      pen.calculative!.frameEnd = pen.calculative!.frameStart + pen.calculative!.frameDuration;
+      pen.calculative!.frameEnd = pen.calculative!.frameStart! + pen.calculative!.frameDuration!;
     }
     // 新循环播放
     let cycleChanged = false;
@@ -3445,11 +3447,11 @@ export function setNodeAnimate(pen: Pen, now: number) {
         f.switch = false
       })
       //每次循环结束保持最初状态
-      pen.calculative!.worldRect = deepClone(pen.calculative!.initRect);
+      pen.calculative!.worldRect = deepClone(pen.calculative!.initRect)!;
       pen.calculative!.prevFrameRect = deepClone(pen.calculative!.initRect);
 
       pen.calculative!.cycleIndex = cycleIndex;
-      pen.calculative!.frameStart = pen.calculative!.start + pen.calculative!.duration * (cycleIndex - 1);
+      pen.calculative!.frameStart = pen.calculative!.start! + pen.calculative!.duration * (cycleIndex - 1);
       cycleChanged = true;
     }
 

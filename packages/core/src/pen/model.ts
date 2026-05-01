@@ -699,11 +699,11 @@ export interface Pen extends Rect {
   setTheme?: (pen:Pen,styles:any) => void;
   onConnectLine?: (line: Pen, e: {
     lineAnchor: Point;
-    fromAnchor: Point;
+    fromAnchor: Point | undefined;
     line: Pen;
     anchor: Point;
     pen: Pen;
-    fromPen: Pen
+    fromPen: Pen | undefined;
   }) => void;
 }
 

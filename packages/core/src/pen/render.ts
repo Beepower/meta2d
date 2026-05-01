@@ -434,7 +434,7 @@ function drawLinearGradientLine(
   if (pen.calculative!.gradientColorStop) {
     colors = pen.calculative!.gradientColorStop;
   } else {
-    colors = formatGradient(pen.calculative!.lineGradientColors).colors;
+    colors = formatGradient(pen.calculative!.lineGradientColors!).colors;
     pen.calculative!.gradientColorStop = colors;
   }
   ctx.strokeStyle = getLinearGradient(
@@ -551,14 +551,14 @@ function ctxDrawLinearGradientPath(ctx: CanvasRenderingContext2D, pen: Pen) {
         if (pen.fromLineCap && pen.fromLineCap !== 'butt') {
           ctx.save();
           flag = true;
-          ctx.lineCap = pen.fromLineCap;
+          ctx.lineCap = pen.fromLineCap as CanvasLineCap;
         }
       }
       if (i !== 0 && i === anchors.length - 2) {
         if (pen.toLineCap && pen.toLineCap !== 'butt') {
           ctx.save();
           flag = true;
-          ctx.lineCap = pen.toLineCap;
+          ctx.lineCap = pen.toLineCap as CanvasLineCap;
         }
       }
 
@@ -569,7 +569,7 @@ function ctxDrawLinearGradientPath(ctx: CanvasRenderingContext2D, pen: Pen) {
       if (anchors.length === 2 && i === 0) {
         ctx.save();
         flag = true;
-        ctx.lineCap = pen.toLineCap;
+        ctx.lineCap = pen.toLineCap as CanvasLineCap;
         let _y = 0.1;
         let _x = 0.1;
         if (_next.x - _last.x === 0) {
@@ -797,12 +797,13 @@ function strokeLinearGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
     lineGradientToColor,
     lineGradientAngle,
   } = pen.calculative!;
+  if (!worldRect || !lineGradientFromColor || !lineGradientToColor) return;
   return linearGradient(
     ctx,
     worldRect,
     lineGradientFromColor,
     lineGradientToColor,
-    lineGradientAngle
+    lineGradientAngle ?? 0
   );
 }
 
@@ -1969,7 +1970,7 @@ export function ctxDrawPath(
       ctx.strokeStyle = pen.borderColor;
       if (path_from) {
         ctx.save();
-        ctx.lineCap = pen.fromLineCap;
+        ctx.lineCap = pen.fromLineCap as CanvasLineCap;
         ctx.stroke(path_from);
         ctx.restore();
       }
@@ -1983,7 +1984,7 @@ export function ctxDrawPath(
       }
       if (path_to) {
         ctx.save();
-        ctx.lineCap = pen.toLineCap;
+        ctx.lineCap = pen.toLineCap as CanvasLineCap;
         ctx.stroke(path_to);
         ctx.restore();
       }
@@ -2059,14 +2060,14 @@ export function ctxDrawPath(
         if (store.options.svgPathStroke || pen.name !== 'svgPath') {
           if (path_from) {
             ctx.save();
-            ctx.lineCap = pen.fromLineCap;
+            ctx.lineCap = pen.fromLineCap as CanvasLineCap;
             ctx.stroke(path_from);
             ctx.restore();
           }
           ctx.stroke(path);
           if (path_to) {
             ctx.save();
-            ctx.lineCap = pen.toLineCap;
+            ctx.lineCap = pen.toLineCap as CanvasLineCap;
             ctx.stroke(path_to);
             ctx.restore();
           }
@@ -2098,7 +2099,7 @@ export function ctxDrawPath(
           if (path instanceof Path2D) {
             if (path_from && !pen.lineAnimateType) {
               ctx.save();
-              ctx.lineCap = pen.fromLineCap;
+              ctx.lineCap = pen.fromLineCap as CanvasLineCap;
               ctx.stroke(path_from);
               ctx.restore();
             }

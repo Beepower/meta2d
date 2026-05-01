@@ -879,9 +879,10 @@ export class Meta2d {
       delete network.data;
     }
     if(network.protocol === 'iot'){
-      if (this.store.data.iot.room) {
+      const iot = this.store.data.iot;
+      if (iot && iot.room) {
         let payload = {
-          token: this.store.data.iot.token,
+          token: iot.token,
           data: value,
         };
         if (value.name) {
@@ -906,7 +907,7 @@ export class Meta2d {
             keys.forEach((key: string) => {
               let arr = key.split('#');
               payload.push({
-                token: this.store.data.iot.token,
+                token: iot.token,
                 deviceId: arr[0],
                 key: arr[1],
                 name: arr[1] + '_' + value.name,
@@ -916,7 +917,7 @@ export class Meta2d {
 
             this.iotMqttClient &&
               this.iotMqttClient.publish(
-                `le5le-iot/${this.store.data.iot.room}/property/aggregate`,
+                `le5le-iot/${iot.room}/property/aggregate`,
                 JSON.stringify(payload)
               );
             return;
@@ -925,13 +926,13 @@ export class Meta2d {
 
         this.iotMqttClient &&
           this.iotMqttClient.publish(
-            `le5le-iot/${this.store.data.iot.room}/properties/set`,
+            `le5le-iot/${iot.room}/properties/set`,
             JSON.stringify(payload)
           );
       } else {
         this.iotMqttClient &&
           this.iotMqttClient.publish(
-            `le5le-iot/property/set/${this.store.data.iot?.token}`,
+            `le5le-iot/property/set/${iot.token}`,
             JSON.stringify(value)
           );
       }
@@ -1172,7 +1173,7 @@ export class Meta2d {
   } = {}) {
     this.store.data.grid = grid;
     this.store.data.gridColor = gridColor;
-    this.store.data.gridSize = gridSize < 0 ? 0 : gridSize;
+    this.store.data.gridSize = gridSize !== undefined && gridSize < 0 ? 0 : gridSize;
     this.store.data.gridRotate = gridRotate;
     // this.store.patchFlagsBackground = true;
     this.canvas && (this.canvas.canvasTemplate.bgPatchFlags = true);
@@ -1219,7 +1220,7 @@ export class Meta2d {
       // }
     }
 
-    this.canvas.patchFlagsLines.forEach((pen) => {
+    this.canvas.patchFlagsLines?.forEach((pen) => {
       if (pen.type) {
         this.canvas.initLineRect(pen);
       }

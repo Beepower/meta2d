@@ -544,10 +544,10 @@ export class Canvas {
             if (blob !== null) {
               const isGif = name === 'gif';
               const pen = await this.fileToPen(blob, isGif);
-              pen.height! = (pen.height! / pen.width!) * 100,
-              pen.width! = 100;
-              pen.x! = x - 50 / 2,
-              pen.y! = y - (pen.height! / pen.width!) * 50,
+              pen.height = (pen.height / pen.width) * 100,
+              pen.width = 100;
+              pen.x = x - 50 / 2,
+              pen.y = y - (pen.height / pen.width) * 50,
               pen.externElement = isGif,
               this.addPens([pen]);
               this.active([pen]);
@@ -1466,32 +1466,32 @@ export class Canvas {
     let lastW = 0;
     for (const pen of pens) {
       if (!pen.parentId) {
-        pen.width! *= this.store.data.scale;
-        pen.height! *= this.store.data.scale;
-        pen.x! = e.x - pen.width! / 2 + lastW;
-        pen.y! = e.y - pen.height! / 2 + lastH;
+        pen.width *= this.store.data.scale;
+        pen.height *= this.store.data.scale;
+        pen.x = e.x - pen.width / 2 + lastW;
+        pen.y = e.y - pen.height / 2 + lastH;
         if (pen.tags && pen.tags.includes('meta3d')) {
-          pen.x! = this.store.data.origin.x;
-          pen.y! = this.store.data.origin.y;
+          pen.x = this.store.data.origin.x;
+          pen.y = this.store.data.origin.y;
         }
         if((pen as any).dataset){
           if(num % 2 === 0){
-            lastW = pen.width! - 40 * this.store.data.scale;
+            lastW = pen.width - 40 * this.store.data.scale;
           }else{
             lastW = 0;
           }
           num ++;
           if(num % 2 === 0){
-            lastH += pen.height! + 10 * this.store.data.scale;
+            lastH += pen.height + 10 * this.store.data.scale;
           }
           delete (pen as any).dataset;
         }
         if((pen as any).temOffsetX){
-          pen.x! += (pen as any).temOffsetX*this.store.data.scale;
+          pen.x += (pen as any).temOffsetX*this.store.data.scale;
           delete (pen as any).temOffsetX;
         }
         if((pen as any).temOffsetY){
-          pen.y! += (pen as any).temOffsetY*this.store.data.scale;
+          pen.y += (pen as any).temOffsetY*this.store.data.scale;
           delete  (pen as any).temOffsetY;
         }
       }
@@ -1510,33 +1510,33 @@ export class Canvas {
       for (const pen of pens) {
         if (!pen.parentId) {
           let points = [
-            { x: pen.x!, y: pen.y! },
-            { x: pen.x! + pen.width!, y: pen.y! },
-            { x: pen.x!, y: pen.y! + pen.height! },
-            { x: pen.x! + pen.width!, y: pen.y! + pen.height! },
-            { x: pen.x! + pen.width! / 2, y: pen.y! + pen.height! / 2 },
+            { x: pen.x, y: pen.y },
+            { x: pen.x + pen.width, y: pen.y },
+            { x: pen.x, y: pen.y + pen.height },
+            { x: pen.x + pen.width, y: pen.y + pen.height },
+            { x: pen.x + pen.width / 2, y: pen.y + pen.height / 2 },
           ];
           if (
-            (pen.x! === rect!.x &&
-              pen.y! === rect!.y &&
-              pen.width! === rect!.width &&
-              pen.height! === rect!.height) ||
+            (pen.x === rect!.x &&
+              pen.y === rect!.y &&
+              pen.width === rect!.width &&
+              pen.height === rect!.height) ||
             points.some((point) => pointInRect(point, rect))
           ) {
             flag = false;
             //严格范围模式下对齐大屏边界
             if (this.store.options.strictScope) {
-              if (pen.x! < rect!.x) {
-                pen.x! = rect!.x;
+              if (pen.x < rect!.x) {
+                pen.x = rect!.x;
               }
-              if (pen.y! < rect!.y) {
-                pen.y! = rect!.y;
+              if (pen.y < rect!.y) {
+                pen.y = rect!.y;
               }
-              if (pen.x! + pen.width! > rect!.x + rect!.width) {
-                pen.x! = rect!.x + rect!.width - pen.width!;
+              if (pen.x + pen.width > rect!.x + rect!.width) {
+                pen.x = rect!.x + rect!.width - pen.width;
               }
-              if (pen.y! + pen.height! > rect!.y + rect!.height) {
-                pen.y! = rect!.y + rect!.height - pen.height!;
+              if (pen.y + pen.height > rect!.y + rect!.height) {
+                pen.y = rect!.y + rect!.height - pen.height;
               }
             }
             break;
@@ -1619,10 +1619,10 @@ export class Canvas {
         continue;
       }
       if(abs && !pen.parentId) {
-        pen.x! = pen.x! * this.store.data.scale + this.store.data.origin.x;
-        pen.y! = pen.y! * this.store.data.scale + this.store.data.origin.y;
-        pen.width! = pen.width! * this.store.data.scale;
-        pen.height! = pen.height! * this.store.data.scale;
+        pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
+        pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
+        pen.width = pen.width * this.store.data.scale;
+        pen.height = pen.height * this.store.data.scale;
       }
       this.makePen(pen);
       list.push(pen);
@@ -2221,11 +2221,11 @@ export class Canvas {
           this.store.active!.forEach((pen) => {
             this.activeInitPos.push({
               x:
-                (pen.calculative!.worldRect!.x! - this.activeRect!.x!) /
-                this.activeRect!.width!,
+                (pen.calculative!.worldRect!.x - this.activeRect!.x) /
+                this.activeRect!.width,
               y:
-                (pen.calculative!.worldRect!.y! - this.activeRect!.y!) /
-                this.activeRect!.height!,
+                (pen.calculative!.worldRect!.y - this.activeRect!.y) /
+                this.activeRect!.height,
             });
           });
           break;
@@ -2395,8 +2395,8 @@ export class Canvas {
 
         // 移动节点锚点
         if (this.movingAnchor) {
-          const x = e.x - this.movingAnchor.x!;
-          const y = e.y - this.movingAnchor.y!;
+          const x = e.x - this.movingAnchor.x;
+          const y = e.y - this.movingAnchor.y;
           this.translateAnchor(x, y);
           this.render();
           return;
@@ -2505,8 +2505,8 @@ export class Canvas {
       ) {
         this.clearDock();
         this.dock = calcAnchorDock(this.store, pt);
-        this.dock?.xDock && (pt.x! += this.dock!.xDock.step!);
-        this.dock?.yDock && (pt.y! += this.dock!.yDock.step!);
+        this.dock?.xDock && (pt.x += this.dock!.xDock.step!);
+        this.dock?.yDock && (pt.y += this.dock!.yDock.step!);
       }
       if (
         this.mouseDown &&
@@ -2760,10 +2760,10 @@ export class Canvas {
           // 只存在一个缓存图元
           if (this.addCaches.length === 1) {
             const target = this.addCaches[0]!;
-            target.width = this.dragRect.width! / this.store.data.scale;
-            target.height = this.dragRect.height! / this.store.data.scale;
-            e.x = (this.dragRect.x! + this.dragRect.ex!) / 2;
-            e.y = (this.dragRect.y! + this.dragRect.ey!) / 2;
+            target.width = this.dragRect.width / this.store.data.scale;
+            target.height = this.dragRect.height / this.store.data.scale;
+            e.x = (this.dragRect.x + this.dragRect.ex!) / 2;
+            e.y = (this.dragRect.y + this.dragRect.ey!) / 2;
           }
         }
         this.dropPens(this.addCaches, e);
@@ -3013,8 +3013,8 @@ export class Canvas {
       if (autoAlignGrid && !this.movingPens![i]!.type) {
         const rect = this.getPenRect(this.movingPens![i]!);
         // 算出偏移了多少个网格
-        const m = parseInt((rect!.x! / gridSize!).toFixed());
-        const n = parseInt((rect!.y! / gridSize!).toFixed());
+        const m = parseInt((rect!.x / gridSize!).toFixed());
+        const n = parseInt((rect!.y / gridSize!).toFixed());
         const x1 = m * gridSize!;
         const y1 = n * gridSize!;
         // 算出最终的偏移坐标
@@ -3033,14 +3033,14 @@ export class Canvas {
         }
       });
       this.patchFlagsLines.clear();
-      pen.calculative!.x = pen.x!;
-      pen.calculative!.y = pen.y!;
+      pen.calculative!.x = pen.x;
+      pen.calculative!.y = pen.y;
       if (pen.calculative!.initRect) {
         pen.calculative!.initRect.x = pen.calculative!.x;
         pen.calculative!.initRect.y = pen.calculative!.y;
-        pen.calculative!.initRect.ex = pen.calculative!.x! + pen.calculative!.width!;
+        pen.calculative!.initRect.ex = pen.calculative!.x + pen.calculative!.width;
         pen.calculative!.initRect.ey =
-          pen.calculative!.y! + pen.calculative!.height!;
+          pen.calculative!.y + pen.calculative!.height;
       }
       calcChildrenInitRect(pen);
       if(pen.parentId){
@@ -3434,8 +3434,8 @@ export class Canvas {
         // Reason: top-center handle visually competes with bbox top edge; top-left
         // is more natural anchor for "rotate this bounding box".
         const rotatePt = {
-          x: this.activeRect.x!,
-          y: this.activeRect.y! - 30,
+          x: this.activeRect.x,
+          y: this.activeRect.y - 30,
         };
         if (this.activeRect.rotate) {
           rotatePoint(rotatePt, this.activeRect.rotate, this.activeRect.pivot || this.activeRect.center!);
@@ -3666,7 +3666,7 @@ export class Canvas {
           // 锚点贴边吸附
           if (!(pt as any).ctrlKey) {
             const _wr = this.store.hover!.calculative!.worldRect!;
-            const x = _wr.x!, y = _wr.y!, ex = _wr.ex!, ey = _wr.ey!;
+            const x = _wr.x, y = _wr.y, ex = _wr.ex!, ey = _wr.ey!;
             const rotate = _wr.rotate, center = _wr.center;
             if (rotate) {
               const pts: Point[] = [
@@ -3680,25 +3680,25 @@ export class Canvas {
               });
               let last = pts[pts.length - 1]!;
               for (const item of pts) {
-                if (last.y! > pt.y! !== item.y! > pt.y!) {
+                if (last.y > pt.y !== item.y > pt.y) {
                   const tempx =
-                    item.x! +
-                    ((pt.y! - item.y!) * (last.x! - item.x!)) / (last.y! - item.y!);
-                  if (Math.abs(tempx - this.store.pointAt!.x!) < 10) {
+                    item.x +
+                    ((pt.y - item.y) * (last.x - item.x)) / (last.y - item.y);
+                  if (Math.abs(tempx - this.store.pointAt!.x) < 10) {
                     this.store.pointAt!.x = tempx;
                   }
                 }
                 last = item;
               }
             } else {
-              if (this.store.pointAt!.x! - 10 < x) {
+              if (this.store.pointAt!.x - 10 < x) {
                 this.store.pointAt!.x = x;
-              } else if (this.store.pointAt!.x! + 10 > ex) {
+              } else if (this.store.pointAt!.x + 10 > ex) {
                 this.store.pointAt!.x = ex;
               }
-              if (this.store.pointAt!.y! - 10 < y) {
+              if (this.store.pointAt!.y - 10 < y) {
                 this.store.pointAt!.y = y;
-              } else if (this.store.pointAt!.y! + 10 > ey) {
+              } else if (this.store.pointAt!.y + 10 > ey) {
                 this.store.pointAt!.y = ey;
               }
             }
@@ -3942,10 +3942,10 @@ export class Canvas {
     // TODO 窗口大小变化没有刷新图纸
     for (const pen of this.store.data.pens) {
       if(pen.isRuleLine){
-        if (!pen.width!) {
-          pen.height! = this.height;
-        } else if (!pen.height!) {
-          pen.width! = this.width;
+        if (!pen.width) {
+          pen.height = this.height;
+        } else if (!pen.height) {
+          pen.width = this.width;
         }
         this.updatePenRect(pen);
       }
@@ -3980,10 +3980,10 @@ export class Canvas {
       return;
     }
     if(abs) {
-      pen.x! = pen.x! * this.store.data.scale + this.store.data.origin.x;
-      pen.y! = pen.y! * this.store.data.scale + this.store.data.origin.y;
-      pen.width! = pen.width! * this.store.data.scale;
-      pen.height! = pen.height! * this.store.data.scale;
+      pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
+      pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
+      pen.width = pen.width * this.store.data.scale;
+      pen.height = pen.height * this.store.data.scale;
     }
     this.makePen(pen);
     this.active([pen]);
@@ -4003,10 +4003,10 @@ export class Canvas {
       return undefined as any;
     }
     if(abs) {
-      pen.x! = pen.x! * this.store.data.scale + this.store.data.origin.x;
-      pen.y! = pen.y! * this.store.data.scale + this.store.data.origin.y;
-      pen.width! = pen.width! * this.store.data.scale;
-      pen.height! = pen.height! * this.store.data.scale;
+      pen.x = pen.x * this.store.data.scale + this.store.data.origin.x;
+      pen.y = pen.y * this.store.data.scale + this.store.data.origin.y;
+      pen.width = pen.width * this.store.data.scale;
+      pen.height = pen.height * this.store.data.scale;
     }
     this.makePen(pen);
     this.active([pen]);
@@ -4442,10 +4442,10 @@ export class Canvas {
       this._del([pen]);
       return;
     }
-    if (!isFinite(pen.x!) || !isFinite(pen.x!)) {
+    if (!isFinite(pen.x) || !isFinite(pen.x)) {
       return;
     }
-    if (pen.x! == null || pen.y! == null) {
+    if (pen.x == null || pen.y == null) {
       return;
     }
     const rect = getLineRect(pen);
@@ -4548,8 +4548,8 @@ export class Canvas {
           this.drawingLine.calculative!.worldAnchors!.length - 2
         ];
       if (
-        Math.abs(toLast!.x! - to!.x!) / this.store.data.scale < 5 &&
-        Math.abs(toLast!.y! - to!.y!) / this.store.data.scale < 5
+        Math.abs(toLast!.x - to!.x) / this.store.data.scale < 5 &&
+        Math.abs(toLast!.y - to!.y) / this.store.data.scale < 5
       ) {
         this.drawingLine.calculative!.worldAnchors!.pop();
       }
@@ -5089,7 +5089,7 @@ export class Canvas {
     ctx.strokeStyle = this.store.styles.color;//getGlobalColor(this.store);
 
     for (const pen of this.store.data.pens) {
-      if (!isFinite(pen.x!)) {
+      if (!isFinite(pen.x)) {
         continue;
       }
       // if (pen.template) {
@@ -5157,9 +5157,9 @@ export class Canvas {
         ctx.translate(0.5, 0.5);
         const pivot = this.activeRect.pivot || this.activeRect.center;
         if (this.activeRect.rotate) {
-          ctx.translate( pivot!.x!, pivot!.y!);
+          ctx.translate( pivot!.x, pivot!.y);
           ctx.rotate((this.activeRect.rotate * Math.PI) / 180);
-          ctx.translate(-pivot!.x!, -pivot!.y!);
+          ctx.translate(-pivot!.x, -pivot!.y);
         }
         ctx.strokeStyle = this.store.styles.activeColor!;
 
@@ -5168,10 +5168,10 @@ export class Canvas {
         ctx.lineWidth = this.store.options.activeLineWidth || 1;
         ctx.setLineDash(this.store.options.activeLineDash || []);
         ctx.strokeRect(
-          this.activeRect.x!,
-          this.activeRect.y!,
-          this.activeRect.width!,
-          this.activeRect.height!
+          this.activeRect.x,
+          this.activeRect.y,
+          this.activeRect.width,
+          this.activeRect.height
         );
         ctx.setLineDash([]);
         ctx.lineWidth = 1;
@@ -5189,8 +5189,8 @@ export class Canvas {
         // BeePower fork (KD-008 PoC): handle at top-LEFT, not top-center
         // (matches hit-test at this.activeRect.x).
         ctx.beginPath();
-        ctx.moveTo(this.activeRect.x!, this.activeRect.y!);
-        ctx.lineTo(this.activeRect.x!, this.activeRect.y! - 30);
+        ctx.moveTo(this.activeRect.x, this.activeRect.y);
+        ctx.lineTo(this.activeRect.x, this.activeRect.y - 30);
         ctx.stroke();
 
         // Draw rotate control points.
@@ -5198,8 +5198,8 @@ export class Canvas {
         ctx.strokeStyle = this.store.styles.activeColor!;
         ctx.fillStyle = '#ffffff';
         ctx.arc(
-          this.activeRect.x!,
-          this.activeRect.y! - 30,
+          this.activeRect.x,
+          this.activeRect.y - 30,
           5,
           0,
           Math.PI * 2
@@ -5283,18 +5283,18 @@ export class Canvas {
               rotate *= -1;
             }
             ctx.save();
-            ctx.translate(anchor.x!, anchor.y!);
+            ctx.translate(anchor.x, anchor.y);
             ctx.rotate((rotate * Math.PI) / 180);
-            ctx.translate(-anchor.x!, -anchor.y!);
+            ctx.translate(-anchor.x, -anchor.y);
             ctx.rect(
-              anchor.x! - (anchor.length! * this.store.data.scale) / 2,
-              anchor.y! - size!,
+              anchor.x - (anchor.length! * this.store.data.scale) / 2,
+              anchor.y - size!,
               anchor.length! * this.store.data.scale,
               size! * 2
             );
             ctx.restore();
           } else {
-            ctx.arc(anchor.x!, anchor.y!, size!, 0, Math.PI * 2);
+            ctx.arc(anchor.x, anchor.y, size!, 0, Math.PI * 2);
           }
           if (this.store.hover!.type && this.store.hoverAnchor === anchor) {
             ctx.save();
@@ -5336,7 +5336,7 @@ export class Canvas {
                   hoverAnchorColor
                 );
               }
-              ctx.arc(anchor.x!, anchor.y!, size! + 1.5, 0, Math.PI * 2);
+              ctx.arc(anchor.x, anchor.y, size! + 1.5, 0, Math.PI * 2);
               ctx.stroke();
               ctx.restore();
             }
@@ -5362,14 +5362,14 @@ export class Canvas {
         this.sizeCPs.forEach((pt, i) => {
           if (this.activeRect!.rotate) {
             ctx.save();
-            ctx.translate(pt.x!, pt.y!);
+            ctx.translate(pt.x, pt.y);
             ctx.rotate((this.activeRect!.rotate * Math.PI) / 180);
-            ctx.translate(-pt.x!, -pt.y!);
+            ctx.translate(-pt.x, -pt.y);
           }
           if (i < 4 || this.hotkeyType === HotkeyType.Resize) {
             ctx.beginPath();
-            ctx.fillRect(pt.x! - 4.5, pt.y! - 4.5, 8, 8);
-            ctx.strokeRect(pt.x! - 5.5, pt.y! - 5.5, 10, 10);
+            ctx.fillRect(pt.x - 4.5, pt.y - 4.5, 8, 8);
+            ctx.strokeRect(pt.x - 5.5, pt.y - 5.5, 10, 10);
           }
           if (this.activeRect!.rotate) {
             ctx.restore();
@@ -5384,16 +5384,16 @@ export class Canvas {
       ctx.strokeStyle = this.store.options.dragColor!;
       ctx.beginPath();
       ctx.strokeRect(
-        this.dragRect.x!,
-        this.dragRect.y!,
-        this.dragRect.width!,
-        this.dragRect.height!
+        this.dragRect.x,
+        this.dragRect.y,
+        this.dragRect.width,
+        this.dragRect.height
       );
       ctx.fillRect(
-        this.dragRect.x!,
-        this.dragRect.y!,
-        this.dragRect.width!,
-        this.dragRect.height!
+        this.dragRect.x,
+        this.dragRect.y,
+        this.dragRect.width,
+        this.dragRect.height
       );
       ctx.restore();
     }
@@ -5402,15 +5402,15 @@ export class Canvas {
       ctx.strokeStyle = this.store.options.dockColor!;
       if (this.dock.xDock) {
         ctx.beginPath();
-        ctx.moveTo(this.dock.xDock.x!, this.dock.xDock.y!);
-        ctx.lineTo(this.dock.xDock.x!, this.dock.xDock.prev!.y!);
+        ctx.moveTo(this.dock.xDock.x, this.dock.xDock.y);
+        ctx.lineTo(this.dock.xDock.x, this.dock.xDock.prev!.y);
         ctx.stroke();
       }
 
       if (this.dock.yDock) {
         ctx.beginPath();
-        ctx.moveTo(this.dock.yDock.x!, this.dock.yDock.y!);
-        ctx.lineTo(this.dock.yDock.prev!.x!, this.dock.yDock.y!);
+        ctx.moveTo(this.dock.yDock.x, this.dock.yDock.y);
+        ctx.lineTo(this.dock.yDock.prev!.x, this.dock.yDock.y);
         ctx.stroke();
       }
     }
@@ -5420,7 +5420,7 @@ export class Canvas {
  renderPensAnchors = () => {
     // 总是显示锚点 不受locked影响
     for (const pen of this.store.data.pens) {
-      if (!isFinite(pen.x!)) {
+      if (!isFinite(pen.x)) {
         continue;
       }
       if (pen.anchorVisible === true) {
@@ -5616,12 +5616,12 @@ export class Canvas {
       calcInView(pen);
       pen.onMove?.(pen);
       if (pen.isRuleLine) {
-        if (!pen.width!) {
+        if (!pen.width) {
           // 垂直线，移动 y 即可
-          pen.y! = -this.store.data.y;
-        } else if (!pen.height!) {
+          pen.y = -this.store.data.y;
+        } else if (!pen.height) {
           // 水平线
-          pen.x! = -this.store.data.x;
+          pen.x = -this.store.data.x;
         }
         this.updatePenRect(pen);
       }
@@ -5660,10 +5660,10 @@ export class Canvas {
         const lineScale = 1 / s; //s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
         const lineCenter = pen.calculative!.worldRect!.center;
-        if (!pen.width!) {
+        if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
-        } else if (!pen.height!) {
+        } else if (!pen.height) {
           // 水平线
           scalePen(pen, lineScale, lineCenter);
         }
@@ -5706,10 +5706,10 @@ export class Canvas {
         const lineScale = s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
         const lineCenter = pen.calculative!.worldRect!.center;
-        if (!pen.width!) {
+        if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
-        } else if (!pen.height!) {
+        } else if (!pen.height) {
           // 水平线
           scalePen(pen, lineScale, lineCenter);
         }
@@ -5812,8 +5812,8 @@ export class Canvas {
       }
     }
 
-    const w = this.activeRect.width!;
-    const h = this.activeRect.height!;
+    const w = this.activeRect.width;
+    const h = this.activeRect.height;
     let offsetX = x - this.lastOffsetX;
     let offsetY = y - this.lastOffsetY;
     this.lastOffsetX = x;
@@ -5840,51 +5840,51 @@ export class Canvas {
           height: height * this.store.data.scale,
         };
 
-        if (this.activeRect.x! < vRect.x!) {
+        if (this.activeRect.x < vRect.x) {
           this.activeRect.width =
-            this.activeRect.width! - (vRect.x! - this.activeRect.x!);
+            this.activeRect.width - (vRect.x - this.activeRect.x);
           this.activeRect.x = vRect.x;
         }
-        if (this.activeRect.y! < vRect.y!) {
+        if (this.activeRect.y < vRect.y) {
           this.activeRect.height =
-            this.activeRect.height! - (vRect.y! - this.activeRect.y!);
+            this.activeRect.height - (vRect.y - this.activeRect.y);
           this.activeRect.y = vRect.y;
         }
-        if (this.activeRect.x! + this.activeRect.width! > vRect.x! + vRect.width!) {
+        if (this.activeRect.x + this.activeRect.width > vRect.x + vRect.width) {
           this.activeRect.width =
-            this.activeRect.width! -
-            (this.activeRect.x! +
-              this.activeRect.width! -
-              (vRect.x! + vRect.width!));
-          this.activeRect.x = vRect.x! + vRect.width! - this.activeRect.width;
+            this.activeRect.width -
+            (this.activeRect.x +
+              this.activeRect.width -
+              (vRect.x + vRect.width));
+          this.activeRect.x = vRect.x + vRect.width - this.activeRect.width;
           this.activeRect.ex = this.activeRect.x + this.activeRect.width;
         }
         if (
-          this.activeRect.y! + this.activeRect.height! >
-          vRect.y! + vRect.height!
+          this.activeRect.y + this.activeRect.height >
+          vRect.y + vRect.height
         ) {
           this.activeRect.height =
-            this.activeRect.height! -
-            (this.activeRect.y! +
-              this.activeRect.height! -
-              (vRect.y! + vRect.height!));
-          this.activeRect.y = vRect.y! + vRect.height! - this.activeRect.height;
+            this.activeRect.height -
+            (this.activeRect.y +
+              this.activeRect.height -
+              (vRect.y + vRect.height));
+          this.activeRect.y = vRect.y + vRect.height - this.activeRect.height;
           this.activeRect.ey = this.activeRect.y + this.activeRect.height;
         }
       }
     }
     calcCenter(this.activeRect);
 
-    const scaleX = this.activeRect.width! / w;
-    const scaleY = this.activeRect.height! / h;
+    const scaleX = this.activeRect.width / w;
+    const scaleY = this.activeRect.height / h;
     this.store.active!.forEach((pen, i) => {
       pen.calculative!.worldRect!.x =
-        this.activeInitPos[i]!.x * this.activeRect!.width! + this.activeRect!.x!;
+        this.activeInitPos[i]!.x * this.activeRect!.width + this.activeRect!.x;
       pen.calculative!.worldRect!.y =
-        this.activeInitPos[i]!.y * this.activeRect!.height! + this.activeRect!.y!;
-      pen.calculative!.worldRect!.width! *= scaleX;
+        this.activeInitPos[i]!.y * this.activeRect!.height + this.activeRect!.y;
+      pen.calculative!.worldRect!.width *= scaleX;
       pen.calculative!.iconWidth && (pen.calculative!.iconWidth *= scaleX);
-      pen.calculative!.worldRect!.height! *= scaleY;
+      pen.calculative!.worldRect!.height *= scaleY;
       pen.calculative!.iconHeight && (pen.calculative!.iconHeight *= scaleY);
       calcRightBottom(pen.calculative!.worldRect!);
       calcCenter(pen.calculative!.worldRect!);
@@ -5968,28 +5968,28 @@ export class Canvas {
           height: height * this.store.data.scale,
         };
 
-        if (rect!.x! < vRect.x!) {
+        if (rect!.x < vRect.x) {
           rect!.x = vRect.x;
           vFlag = true;
         }
-        if (rect!.y! < vRect.y!) {
+        if (rect!.y < vRect.y) {
           rect!.y = vRect.y;
           vFlag = true;
         }
-        if (rect!.x! + rect!.width! > vRect.x! + vRect.width!) {
-          rect!.x = vRect.x! + vRect.width! - rect!.width!;
+        if (rect!.x + rect!.width > vRect.x + vRect.width) {
+          rect!.x = vRect.x + vRect.width - rect!.width;
           vFlag = true;
         }
-        if (rect!.y! + rect!.height! > vRect.y! + vRect.height!) {
-          rect!.y = vRect.y! + vRect.height! - rect!.height!;
+        if (rect!.y + rect!.height > vRect.y + vRect.height) {
+          rect!.y = vRect.y + vRect.height - rect!.height;
           vFlag = true;
         }
       }
     }
 
     const offset: Point = {
-      x: rect!.x! - this.activeRect.x!,
-      y: rect!.y! - this.activeRect.y!,
+      x: rect!.x - this.activeRect.x,
+      y: rect!.y - this.activeRect.y,
     };
     if (!this.store.options.disableDock && !vFlag) {
       this.clearDock();
@@ -5998,18 +5998,18 @@ export class Canvas {
       const { xDock, yDock } = this.dock;
       let dockPen: Pen | undefined;
       if (xDock) {
-        offset.x! += xDock.step!;
+        offset.x += xDock.step!;
         dockPen = this.store.pens[xDock.penId!];
         dockPen!.calculative!.isDock = true;
       }
       if (yDock) {
-        offset.y! += yDock.step!;
+        offset.y += yDock.step!;
         dockPen = this.store.pens[yDock.penId!];
         dockPen!.calculative!.isDock = true;
       }
     }
 
-    this.translatePens(this.movingPens!, offset.x!, offset.y!, true);
+    this.translatePens(this.movingPens!, offset.x, offset.y, true);
   }
 
   /**
@@ -6157,36 +6157,36 @@ export class Canvas {
             _pt,
             relativePt
           );
-          offsetX = _pt.x! - this.store.activeAnchor!.x!;
-          offsetY = _pt.y! - this.store.activeAnchor!.y!;
+          offsetX = _pt.x - this.store.activeAnchor!.x;
+          offsetY = _pt.y - this.store.activeAnchor!.y;
         } else if (!keyOptions.ctrlKey && keyOptions.shiftKey) {
           let _pt = {
             x: pt.x,
             y: relativePt.y,
           };
-          offsetX = _pt.x! - this.store.activeAnchor!.x!;
-          offsetY = _pt.y! - this.store.activeAnchor!.y!;
+          offsetX = _pt.x - this.store.activeAnchor!.x;
+          offsetY = _pt.y - this.store.activeAnchor!.y;
         } else if (keyOptions.ctrlKey && !keyOptions.shiftKey) {
           let _pt = {
             x: relativePt.x,
             y: pt.y,
           };
-          offsetX = _pt.x! - this.store.activeAnchor!.x!;
-          offsetY = _pt.y! - this.store.activeAnchor!.y!;
+          offsetX = _pt.x - this.store.activeAnchor!.x;
+          offsetY = _pt.y - this.store.activeAnchor!.y;
         } else {
-          offsetX = pt.x! - this.store.activeAnchor!.x!;
-          offsetY = pt.y! - this.store.activeAnchor!.y!;
+          offsetX = pt.x - this.store.activeAnchor!.x;
+          offsetY = pt.y - this.store.activeAnchor!.y;
         }
       } else {
         if(!keyOptions.ctrlKey && keyOptions.shiftKey){
-          offsetX = pt.x! - this.store.activeAnchor!.x!;
+          offsetX = pt.x - this.store.activeAnchor!.x;
           offsetY = 0;
         }else if(keyOptions.ctrlKey && !keyOptions.shiftKey){
           offsetX = 0;
-          offsetY = pt.y! - this.store.activeAnchor!.y!;
+          offsetY = pt.y - this.store.activeAnchor!.y;
         }else{
-          offsetX = pt.x! - this.store.activeAnchor!.x!;
-          offsetY = pt.y! - this.store.activeAnchor!.y!;
+          offsetX = pt.x - this.store.activeAnchor!.x;
+          offsetY = pt.y - this.store.activeAnchor!.y;
         }
       }
       translatePoint(this.store.activeAnchor!, offsetX, offsetY);
@@ -6196,16 +6196,16 @@ export class Canvas {
         this.store.hoverAnchor.penId !== this.store.activeAnchor!.penId
       ) {
         if (this.store.hoverAnchor.type === PointType.Line) {
-          offsetX = pt.x! - this.store.activeAnchor!.x!;
-          offsetY = pt.y! - this.store.activeAnchor!.y!;
+          offsetX = pt.x - this.store.activeAnchor!.x;
+          offsetY = pt.y - this.store.activeAnchor!.y;
           getDistance(
             this.store.activeAnchor!,
             this.store.hoverAnchor,
             this.store
           );
         } else {
-          offsetX = this.store.hoverAnchor.x! - this.store.activeAnchor!.x!;
-          offsetY = this.store.hoverAnchor.y! - this.store.activeAnchor!.y!;
+          offsetX = this.store.hoverAnchor.x - this.store.activeAnchor!.x;
+          offsetY = this.store.hoverAnchor.y - this.store.activeAnchor!.y;
         }
         translatePoint(this.store.activeAnchor!, offsetX, offsetY);
 
@@ -6487,8 +6487,8 @@ export class Canvas {
       } else {
         translateRect(pen.calculative!.worldRect, x, y);
         this.updatePenRect(pen, { worldRectIsReady: true });
-        pen.calculative!.x = pen.x!;
-        pen.calculative!.y = pen.y!;
+        pen.calculative!.x = pen.x;
+        pen.calculative!.y = pen.y;
         if (pen.calculative!.initRect) {
           pen.calculative!.initRect.x = pen.calculative!.x;
           pen.calculative!.initRect.y = pen.calculative!.y;
@@ -6542,8 +6542,8 @@ export class Canvas {
       } else {
         translateRect(pen.calculative!.worldRect, x, y);
         this.updatePenRect(pen, { worldRectIsReady: true });
-        pen.calculative!.x = pen.x!;
-        pen.calculative!.y = pen.y!;
+        pen.calculative!.x = pen.x;
+        pen.calculative!.y = pen.y;
         if (pen.calculative!.initRect) {
           pen.calculative!.initRect.x = pen.calculative!.x;
           pen.calculative!.initRect.y = pen.calculative!.y;
@@ -6730,8 +6730,8 @@ export class Canvas {
       }
       translatePoint(
         lineAnchor,
-        penAnchor.x! - lineAnchor.x! + offsetX,
-        penAnchor.y! - lineAnchor.y! + offsetY
+        penAnchor.x - lineAnchor.x + offsetX,
+        penAnchor.y - lineAnchor.y + offsetY
       );
       if (
         this.store.options.autoPolyline &&
@@ -6814,16 +6814,16 @@ export class Canvas {
       rotatePoint(pen.calculative!.worldRect!.center!, angle, rect.center!);
       if (pen.parentId) {
         pen.calculative!.worldRect!.x =
-          pen.calculative!.worldRect!.center!.x! -
-          pen.calculative!.worldRect!.width! / 2;
+          pen.calculative!.worldRect!.center!.x -
+          pen.calculative!.worldRect!.width / 2;
         pen.calculative!.worldRect!.y =
-          pen.calculative!.worldRect!.center!.y! -
-          pen.calculative!.worldRect!.height! / 2;
-        pen.x! = (pen.calculative!.worldRect!.x! - rect!.x!) / rect!.width!;
-        pen.y! = (pen.calculative!.worldRect!.y! - rect!.y!) / rect!.height!;
+          pen.calculative!.worldRect!.center!.y -
+          pen.calculative!.worldRect!.height / 2;
+        pen.x = (pen.calculative!.worldRect!.x - rect!.x) / rect!.width;
+        pen.y = (pen.calculative!.worldRect!.y - rect!.y) / rect!.height;
       } else {
-        pen.x! = pen.calculative!.worldRect!.center!.x! - pen.width! / 2;
-        pen.y! = pen.calculative!.worldRect!.center!.y! - pen.height! / 2;
+        pen.x = pen.calculative!.worldRect!.center!.x - pen.width / 2;
+        pen.y = pen.calculative!.worldRect!.center!.y - pen.height / 2;
       }
       pen.rotate = pen.calculative!.rotate;
       this.updatePenRect(pen);
@@ -7163,19 +7163,19 @@ export class Canvas {
 
     const curPage = sessionStorage.getItem('page');
     const scale = this.store.data.scale;
-    if(this.store.clipboard!.mousePos&&(Math.abs(this.store.clipboard!.mousePos.x!-this.mousePos.x)>100*scale||Math.abs(this.store.clipboard!.mousePos.y!-this.mousePos.y)>100*scale)){
-      let _x = -this.store.clipboard!.initRect!.width!/this.store.clipboard!.scale!/10/(scale);
-      let _y = -this.store.clipboard!.initRect!.height!/this.store.clipboard!.scale!/10/(scale);
-      let offsetX = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.width!/2+_x;
-      let offsetY = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.height!/2+_y;
+    if(this.store.clipboard!.mousePos&&(Math.abs(this.store.clipboard!.mousePos.x-this.mousePos.x)>100*scale||Math.abs(this.store.clipboard!.mousePos.y-this.mousePos.y)>100*scale)){
+      let _x = -this.store.clipboard!.initRect!.width/this.store.clipboard!.scale!/10/(scale);
+      let _y = -this.store.clipboard!.initRect!.height/this.store.clipboard!.scale!/10/(scale);
+      let offsetX = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.width/2+_x;
+      let offsetY = (scale-this.store.clipboard!.scale!)*this.store.clipboard!.initRect!.height/2+_y;
       if(scale<this.store.clipboard!.scale!){
         // 减小粘贴偏移量
-        offsetX = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.width!/2+_x;
-        offsetY = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.height!/2+_y;
+        offsetX = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.width/2+_x;
+        offsetY = (scale-this.store.clipboard!.scale!)/((this.store.clipboard!.scale!-scale)*100)*this.store.clipboard!.initRect!.height/2+_y;
       }
       if(this.store.clipboard!.pens!.length>1){
-        offsetX = (scale-1)*this.store.clipboard!.initRect!.width!/this.store.clipboard!.scale!/2;
-        offsetY = (scale-1)*this.store.clipboard!.initRect!.height!/this.store.clipboard!.scale!/2;
+        offsetX = (scale-1)*this.store.clipboard!.initRect!.width/this.store.clipboard!.scale!/2;
+        offsetY = (scale-1)*this.store.clipboard!.initRect!.height/this.store.clipboard!.scale!/2;
       }
       this.store.clipboard!.pos = { x: this.mousePos.x-offsetX, y: this.mousePos.y-offsetY };
       this.store.clipboard!.offset = 0;
@@ -7292,27 +7292,27 @@ export class Canvas {
       )!;
 
       const { origin, scale } = this.store.data;
-      pen.x! = origin.x + rect!.x! * scale;
-      pen.y! = origin.y + rect!.y! * scale;
-      pen.width! = rect!.width! * scale;
-      pen.height! = rect!.height! * scale;
+      pen.x = origin.x + rect!.x * scale;
+      pen.y = origin.y + rect!.y * scale;
+      pen.width = rect!.width * scale;
+      pen.height = rect!.height * scale;
 
-      initRect.x = origin.x + initRect.x! * scale;
-      initRect.y = origin.y + initRect.y! * scale;
+      initRect.x = origin.x + initRect.x * scale;
+      initRect.y = origin.y + initRect.y * scale;
       calcCenter(initRect);
 
       if (this.store.clipboard!.pos) {
-        pen.x! -= initRect.center!.x! - this.store.clipboard!.pos!.x;
-        pen.y! -= initRect.center!.y! - this.store.clipboard!.pos!.y;
+        pen.x -= initRect.center!.x - this.store.clipboard!.pos!.x;
+        pen.y -= initRect.center!.y - this.store.clipboard!.pos!.y;
       }
       if(this.keyOptions && this.keyOptions.altKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey)){
-        pen.x! =-this.store.data.x+ this.width / 2 - pen.width! / 2;
-        pen.y! =-this.store.data.y+ this.height / 2 - pen.height! / 2;
+        pen.x =-this.store.data.x+ this.width / 2 - pen.width / 2;
+        pen.y =-this.store.data.y+ this.height / 2 - pen.height / 2;
       }else if(this.keyOptions && this.keyOptions.shiftKey && (this.keyOptions.ctrlKey || this.keyOptions.metaKey || this.keyOptions.F)){
 
       }else{
-        pen.x! += this.store.clipboard!.offset! * this.store.data.scale;
-        pen.y! += this.store.clipboard!.offset! * this.store.data.scale;
+        pen.x += this.store.clipboard!.offset! * this.store.data.scale;
+        pen.y += this.store.clipboard!.offset! * this.store.data.scale;
       }
     }
     this.makePen(pen);
@@ -7609,7 +7609,7 @@ export class Canvas {
               this.store.pens[this.store.hover.parentId]?.children?.forEach((_id)=>{
                 const pen = this.store.pens[_id]!;
                 if(pointInRect(pt, pen.calculative!.worldRect!)){
-                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect!.center!.x!) ** 2  +(pt.y - pen.calculative!.worldRect!.center!.y!) ** 2 );
+                  const dis = Math.sqrt((pt.x - pen.calculative!.worldRect!.center!.x) ** 2  +(pt.y - pen.calculative!.worldRect!.center!.y) ** 2 );
                   if(dis < distance){
                     distance = dis;
                     id = _id;
@@ -7677,12 +7677,12 @@ export class Canvas {
     // this.inputDiv.style.fontSize = pen.calculative!.fontSize + 'px';
     // this.inputDiv.style.color = getTextColor(pen, this.store);
     this.inputParent.style.left =
-      textRect!.x! + this.store.data.x - (pen.calculative!.textLeft || 0) + 'px'; //+ 5
+      textRect!.x + this.store.data.x - (pen.calculative!.textLeft || 0) + 'px'; //+ 5
     this.inputParent.style.top =
-      textRect!.y! + this.store.data.y - (pen.calculative!.textTop || 0) + 'px'; //+ 5
+      textRect!.y + this.store.data.y - (pen.calculative!.textTop || 0) + 'px'; //+ 5
     let _width = textRect!.width ;//+ (pen.textLeft || 0);
-    this.inputParent.style.width = (_width! < 0 ? 12 : _width!) + 'px'; //(textRect.width < pen.width! ? 0 : 10)
-    this.inputParent.style.height = textRect!.height! + (pen.textTop || 0) + 'px'; //   (textRect.height < pen.height! ? 0 : 10)
+    this.inputParent.style.width = (_width! < 0 ? 12 : _width!) + 'px'; //(textRect.width < pen.width ? 0 : 10)
+    this.inputParent.style.height = textRect!.height + (pen.textTop || 0) + 'px'; //   (textRect.height < pen.height ? 0 : 10)
     this.inputParent.style.zIndex = '9999';
     this.inputParent.style.background = background;
     if (pen.rotate! % 360) {
@@ -7852,7 +7852,7 @@ export class Canvas {
       }
     } else {
       if (pen.whiteSpace === undefined || pen.whiteSpace === 'break-all') {
-        let tem = (pen.calculative!.worldTextRect.width || 12) / scale; //pen.width! / scale - ( pen.textLeft || 0);
+        let tem = (pen.calculative!.worldTextRect.width || 12) / scale; //pen.width / scale - ( pen.textLeft || 0);
         if (tem < 0) {
           tem = 0;
         }
@@ -8490,10 +8490,10 @@ export class Canvas {
       Object.assign(pen, rect);
     } else {
       const { origin, scale } = this.store.data;
-      pen.x! = origin.x + rect!.x * scale;
-      pen.y! = origin.y + rect!.y * scale;
-      pen.width! = rect!.width * scale;
-      pen.height! = rect!.height * scale;
+      pen.x = origin.x + rect!.x * scale;
+      pen.y = origin.y + rect!.y * scale;
+      pen.width = rect!.width * scale;
+      pen.height = rect!.height * scale;
     }
     this.updatePenRect(pen);
     this.execPenResize(pen, true);
@@ -8513,18 +8513,18 @@ export class Canvas {
     if (pen.parentId) {
       // 子节点的 rect 只与父节点 rect 有关
       return {
-        x: pen.x!,
-        y: pen.y!,
-        width: pen.width!,
-        height: pen.height!,
+        x: pen.x,
+        y: pen.y,
+        width: pen.width,
+        height: pen.height,
       };
     }
 
     return {
-      x: (pen.x! - origin.x) / scale,
-      y: (pen.y! - origin.y) / scale,
-      width: pen.width! / scale,
-      height: pen.height! / scale,
+      x: (pen.x - origin.x) / scale,
+      y: (pen.y - origin.y) / scale,
+      width: pen.width / scale,
+      height: pen.height / scale,
     };
   }
 
@@ -8536,7 +8536,7 @@ export class Canvas {
   ) {
     const rect = getRect(this.store.data.pens);
     const _scale = this.store.data.scale;
-    if (!isFinite(rect!.width!)) {
+    if (!isFinite(rect!.width)) {
       throw new Error('can not to png, because width is not finite');
     }
     const oldRect = deepClone(rect);
@@ -8548,8 +8548,8 @@ export class Canvas {
     let isRight = false,
       isBottom = false;
     if (isDrawBkImg) {
-      rect!.x! += storeData.x;
-      rect!.y! += storeData.y;
+      rect!.x += storeData.x;
+      rect!.y += storeData.y;
       calcRightBottom(rect!);
       if (rectInRect(rect!, this.canvasRect, true)) {
         // 全部在区域内，那么 rect 就是 canvasRect
@@ -8582,22 +8582,22 @@ export class Canvas {
 
     // 有背景图，也添加 padding
     const p = formatPadding(padding);
-    rect!.x! -= p[3]! * _scale;
-    rect!.y! -= p[0]! * _scale;
-    rect!.width! += (p[3]! + p[1]!) * _scale;
-    rect!.height! += (p[0]! + p[2]!) * _scale;
+    rect!.x -= p[3]! * _scale;
+    rect!.y -= p[0]! * _scale;
+    rect!.width += (p[3]! + p[1]!) * _scale;
+    rect!.height += (p[0]! + p[2]!) * _scale;
     // 扩大图
     // const scale =
     //   rect!.width > rect!.height ? longSide / rect!.width : longSide / rect!.height;
-    const scale = (maxWidth || 1920) / rect!.width!;
-    rect!.width! *= scale;
-    rect!.height! *= scale;
+    const scale = (maxWidth || 1920) / rect!.width;
+    rect!.width *= scale;
+    rect!.height *= scale;
 
     calcRightBottom(rect!);
 
     const canvas = document.createElement('canvas');
-    canvas.width = rect!.width!;
-    canvas.height = rect!.height!;
+    canvas.width = rect!.width;
+    canvas.height = rect!.height;
     if (
       canvas.width > 32767 ||
       canvas.height > 32767 ||
@@ -8633,8 +8633,8 @@ export class Canvas {
       ctx.fillRect(
         0,
         0,
-        vRect.width! + (p[1]! + p[3]!) * _scale,
-        vRect.height! + (p[0]! + p[2]!) * _scale
+        vRect.width + (p[1]! + p[3]!) * _scale,
+        vRect.height + (p[0]! + p[2]!) * _scale
       );
       ctx.restore();
     }
@@ -8645,33 +8645,33 @@ export class Canvas {
           this.store.bkImg!,
           p[3]! * _scale || 0,
           p[0]! * _scale || 0,
-          vRect.width!,
-          vRect.height!
+          vRect.width,
+          vRect.height
         );
       } else {
-        const x = rect!.x! < 0 ? -rect!.x! : 0;
-        const y = rect!.y! < 0 ? -rect!.y! : 0;
+        const x = rect!.x < 0 ? -rect!.x : 0;
+        const y = rect!.y < 0 ? -rect!.y : 0;
         ctx.drawImage(
           this.store.bkImg!,
           x,
           y,
-          this.canvasRect.width!,
-          this.canvasRect.height!
+          this.canvasRect.width,
+          this.canvasRect.height
         );
       }
     }
     if (background && !isV) {
       // 绘制背景颜色
       if (isDrawBkImg) {
-        const x = rect!.x! < 0 ? -rect!.x! : 0;
-        const y = rect!.y! < 0 ? -rect!.y! : 0;
+        const x = rect!.x < 0 ? -rect!.x : 0;
+        const y = rect!.y < 0 ? -rect!.y : 0;
         ctx.save();
         ctx.fillStyle = background;
         ctx.fillRect(
           x,
           y,
-          this.canvasRect.width!,
-          this.canvasRect.height!
+          this.canvasRect.width,
+          this.canvasRect.height
         );
         ctx.restore();
       }else{
@@ -8680,15 +8680,15 @@ export class Canvas {
         ctx.fillRect(
           0,
           0,
-          oldRect!.width! + (p[3]! + p[1]!) * _scale,
-          oldRect!.height! + (p[0]! + p[2]!) * _scale
+          oldRect!.width + (p[3]! + p[1]!) * _scale,
+          oldRect!.height + (p[0]! + p[2]!) * _scale
         );
         ctx.restore();
       }
     }
 
     if (!isDrawBkImg) {
-      ctx.translate(-rect!.x!, -rect!.y!);
+      ctx.translate(-rect!.x, -rect!.y);
     } else {
       // 平移画布，画笔的 worldRect 不变化
       if (isV) {
@@ -8696,11 +8696,11 @@ export class Canvas {
         //   -oldRect.x + p[3] * _scale || 0,
         //   -oldRect.y + p[0] * _scale || 0
         // );
-        ctx.translate(-rect!.x!, -rect!.y!);
+        ctx.translate(-rect!.x, -rect!.y);
       } else {
         ctx.translate(
-          (isRight ? storeData.x : -oldRect!.x!) + p[3]! * _scale || 0,
-          (isBottom ? storeData.y : -oldRect!.y!) + p[0]! * _scale || 0
+          (isRight ? storeData.x : -oldRect!.x) + p[3]! * _scale || 0,
+          (isBottom ? storeData.y : -oldRect!.y) + p[0]! * _scale || 0
         );
       }
     }
@@ -8740,24 +8740,24 @@ export class Canvas {
     const allPens = this.getAllByPens(pens);
     let ids = allPens.map((pen) => pen.id);
     const rect = getRect(allPens);
-    if (!isFinite(rect!.width!)) {
+    if (!isFinite(rect!.width)) {
       throw new Error('can not to png, because width is not finite');
     }
     const oldRect = deepClone(rect)!;
     const p = formatPadding(padding);
-    rect!.x! -= p[3]!;
-    rect!.y! -= p[0]!;
-    rect!.width! += p[3]! + p[1]!;
-    rect!.height! += p[0]! + p[2]!;
+    rect!.x -= p[3]!;
+    rect!.y -= p[0]!;
+    rect!.width += p[3]! + p[1]!;
+    rect!.height += p[0]! + p[2]!;
     calcRightBottom(rect!);
 
-    const scale = (maxWidth || rect!.width!) / rect!.width!;
-    rect!.width! *= scale;
-    rect!.height! *= scale;
+    const scale = (maxWidth || rect!.width) / rect!.width;
+    rect!.width *= scale;
+    rect!.height *= scale;
 
     const canvas = document.createElement('canvas');
-    canvas.width = rect!.width!;
-    canvas.height = rect!.height!;
+    canvas.width = rect!.width;
+    canvas.height = rect!.height;
     if (
       canvas.width > 32767 ||
       canvas.height > 32767 ||
@@ -8783,13 +8783,13 @@ export class Canvas {
       ctx.fillRect(
         0,
         0,
-        oldRect.width! + (p[3]! + p[1]!),
-        oldRect.height! + (p[0]! + p[2]!)
+        oldRect.width + (p[3]! + p[1]!),
+        oldRect.height + (p[0]! + p[2]!)
       );
       ctx.restore();
     }
     // // 平移画布，画笔的 worldRect 不变化
-    ctx.translate(-oldRect.x! + p[3]!, -oldRect.y! + p[0]!);
+    ctx.translate(-oldRect.x + p[3]!, -oldRect.y + p[0]!);
 
     for (const pen of this.store.data.pens) {
       if (ids.includes(pen.id)) {
@@ -8918,7 +8918,7 @@ export class Canvas {
 
   gotoView(x: number, y: number) {
     let rect = getRect(this.store.data.pens);
-    if (!isFinite(rect!.width!)) {
+    if (!isFinite(rect!.width)) {
       throw new Error('can not move view, because width is not finite');
     }
     const width = this.store.data.width || this.store.options.width;
@@ -8932,8 +8932,8 @@ export class Canvas {
         height: height * this.store.data.scale,
       };
     }
-    this.store.data.x = this.canvas.clientWidth / 2 - x * rect!.width! - rect!.x!;
-    this.store.data.y = this.canvas.clientHeight / 2 - y * rect!.height! - rect!.y!;
+    this.store.data.x = this.canvas.clientWidth / 2 - x * rect!.width - rect!.x;
+    this.store.data.y = this.canvas.clientHeight / 2 - y * rect!.height - rect!.y;
     this.onMovePens();
     this.canvasTemplate.init();
     this.canvasImage.init();
@@ -8964,27 +8964,27 @@ export class Canvas {
     const width = (this.store.data.width || this.store.options.width);
     const height = (this.store.data.height || this.store.options.height);
     let point = {
-      x: (pt.x! - this.store.data.origin.x) / this.store.data.scale,
-      y: (pt.y! - this.store.data.origin.y) / this.store.data.scale,
+      x: (pt.x - this.store.data.origin.x) / this.store.data.scale,
+      y: (pt.y - this.store.data.origin.y) / this.store.data.scale,
     }
     const fit = this.canvasImage.activeFit!;
     // if (pointInRect(point, { x:fit.x-0.01, y:0, width, height })) {
       this.externalElements.style.cursor = 'default';
-      if (point.y > height! * fit.y! - 10 && point.y < height! * fit.y! + 10) {
+      if (point.y > height! * fit.y - 10 && point.y < height! * fit.y + 10) {
         current = 'top';
         this.externalElements.style.cursor = 'row-resize';
       }
-      if (point.y > height! * (fit.y! + fit.height!) - 10 && point.y < height! * (fit.y! + fit.height!) + 10) {
+      if (point.y > height! * (fit.y + fit.height) - 10 && point.y < height! * (fit.y + fit.height) + 10) {
         current = 'bottom';
         this.externalElements.style.cursor = 'row-resize';
 
       }
-      if (point.x > width! * fit.x! - 10 && point.x < width! * fit.x!) {
+      if (point.x > width! * fit.x - 10 && point.x < width! * fit.x) {
         current = 'left';
         this.externalElements.style.cursor = 'col-resize';
 
       }
-      if (point.x > width! * (fit.x! + fit.width!) - 10 && point.x < width! * (fit.x! + fit.width!) + 10) {
+      if (point.x > width! * (fit.x + fit.width) - 10 && point.x < width! * (fit.x + fit.width) + 10) {
         current = 'right';
         this.externalElements.style.cursor = 'col-resize';
 
@@ -9015,7 +9015,7 @@ export class Canvas {
   }
 
   makeFit(){
-    if(this.dragRect!.width!<100 && this.dragRect!.height!<100){
+    if(this.dragRect!.width<100 && this.dragRect!.height<100){
       return;
     }
     //将所有当前框选的图元设置到该容器中
@@ -9047,39 +9047,39 @@ export class Canvas {
     const scale = this.store.data.scale;
     const width = this.store.data.width || this.store.options.width;
     const height = this.store.data.height || this.store.options.height;
-    let x = (Math.floor(_rect!.x!) - this.store.data.origin.x) / scale / width!;
-    let y = (Math.floor(_rect!.y!) - this.store.data.origin.y) / scale / height!;
+    let x = (Math.floor(_rect!.x) - this.store.data.origin.x) / scale / width!;
+    let y = (Math.floor(_rect!.y) - this.store.data.origin.y) / scale / height!;
     let rect:Fit = {
       x,
       y,
-      width: (Math.ceil(_rect!.width!) + 1) / scale / width!,
-      height: (Math.ceil(_rect!.height!) + 1) / scale / height!,
+      width: (Math.ceil(_rect!.width) + 1) / scale / width!,
+      height: (Math.ceil(_rect!.height) + 1) / scale / height!,
       children:pens.map(pen=>pen.id!),
       id:s8(),
       active:true
     }
-    if(rect!.x! < -0.1){
+    if(rect!.x < -0.1){
       rect!.x = -0.1;
     }
-    if(rect!.y! < -0.1){
+    if(rect!.y < -0.1){
       rect!.y = -0.1;
     }
-    if(rect!.width! > 0.5){
+    if(rect!.width > 0.5){
       rect.left = true;
       rect.right = true;
       rect.leftValue = rect!.x;
-      rect.rightValue = 1 - (rect!.x!+rect!.width!);
+      rect.rightValue = 1 - (rect!.x+rect!.width);
     }else{
-      if(rect!.x! < 0.5){
+      if(rect!.x < 0.5){
         rect.left = true;
         rect.leftValue = rect!.x;
-        if(rect!.x! > 0.2 && (rect!.x!+rect!.width!) > 0.5){
+        if(rect!.x > 0.2 && (rect!.x+rect!.width) > 0.5){
           rect.right = true;
-          rect.rightValue = 1 - (rect!.x!+rect!.width!);
+          rect.rightValue = 1 - (rect!.x+rect!.width);
         }
       }else{
         rect.right = true;
-        rect.rightValue = 1 - (rect!.x!+rect!.width!);
+        rect.rightValue = 1 - (rect!.x+rect!.width);
       }
     }
     if(rect.leftValue! < 0.05){
@@ -9088,18 +9088,18 @@ export class Canvas {
     if(rect.rightValue! < 0.05){
       rect.rightValue = 0;
     }
-    if(rect!.height! > 0.5){
+    if(rect!.height > 0.5){
       rect.top = true;
       rect.bottom = true;
       rect.topValue = rect!.y;
-      rect.bottomValue = 1 - (rect!.y!+rect!.height!);
+      rect.bottomValue = 1 - (rect!.y+rect!.height);
     }else{
-      if(rect!.y! < 0.5){
+      if(rect!.y < 0.5){
         rect.top = true;
         rect.topValue = rect!.y;
       }else{
         rect.bottom = true;
-        rect.bottomValue = 1 - (rect!.y!+rect!.height!);
+        rect.bottomValue = 1 - (rect!.y+rect!.height);
       }
     }
     if(rect.topValue! < 0.05){
@@ -9132,9 +9132,9 @@ export class Canvas {
         if (y < -0.1) {
           y = -0.1;
         }
-        let gap = y - fit.y!;
-        fit.height! -= gap;
-        if (fit.height! < 0.01) {
+        let gap = y - fit.y;
+        fit.height -= gap;
+        if (fit.height < 0.01) {
           fit.height = 0.01 ;
           return;
         }
@@ -9144,7 +9144,7 @@ export class Canvas {
         if (y > 1.1) {
           y = 1.1;
         }
-        fit.height = y - fit.y!;
+        fit.height = y - fit.y;
         if (fit.height <= 0.01) {
           fit.height = 0.01;
         }
@@ -9153,9 +9153,9 @@ export class Canvas {
         if (x < - 0.1) {
           x = - 0.1;
         }
-        let gap = x - fit.x!;
-        fit.width! -= gap;
-        if (fit.width! < 0.01) {
+        let gap = x - fit.x;
+        fit.width -= gap;
+        if (fit.width < 0.01) {
           fit.width = 0.01;
           return;
         }
@@ -9165,16 +9165,16 @@ export class Canvas {
         if (x > 1.1) {
           x = 1.1;
         }
-        fit.width = x - fit.x!;
+        fit.width = x - fit.x;
         if (fit.width <= 0.01) {
           fit.width = 0.01;
         }
       }
       let rect = {
-        x:fit.x! * width! * scale + this.store.data.origin.x,
-        y:fit.y! * height! * scale + this.store.data.origin.y,
-        width:fit.width!* width! * scale,
-        height:fit.height! * height! * scale,
+        x:fit.x * width! * scale + this.store.data.origin.x,
+        y:fit.y * height! * scale + this.store.data.origin.y,
+        width:fit.width* width! * scale,
+        height:fit.height * height! * scale,
       };
       calcRightBottom(rect);
       const pens = this.store.data.pens.filter((pen)=>{
@@ -9206,22 +9206,22 @@ export class Canvas {
       fit.bottom = undefined;
       fit.bottomValue = undefined;
 
-      if(fit.width! > 0.5){
+      if(fit.width > 0.5){
         fit.left = true;
         fit.right = true;
         fit.leftValue =  fit.x;
-        fit.rightValue = 1 - (fit.x!+fit.width!);
+        fit.rightValue = 1 - (fit.x+fit.width);
       }else{
-        if(fit.x! < 0.5){
+        if(fit.x < 0.5){
           fit.left = true;
           fit.leftValue = fit.x;
-          if(fit.x! > 0.2 && (fit.x!+fit.width!) > 0.5){
+          if(fit.x > 0.2 && (fit.x+fit.width) > 0.5){
             fit.right = true;
-            fit.rightValue = 1 - (fit.x!+fit.width!);
+            fit.rightValue = 1 - (fit.x+fit.width);
           }
         }else{
           fit.right = true;
-          fit.rightValue =  1 - (fit.x!+fit.width!);
+          fit.rightValue =  1 - (fit.x+fit.width);
         }
       }
       if( Math.abs(fit.leftValue!) < 0.05){
@@ -9230,18 +9230,18 @@ export class Canvas {
       if(Math.abs(fit.rightValue!) < 0.05){
         fit.rightValue = 0;
       }
-      if(fit.height! > 0.5){
+      if(fit.height > 0.5){
         fit.top = true;
         fit.bottom = true;
         fit.topValue =  fit.y;
-        fit.bottomValue = 1 - (fit.y!+fit.height!);
+        fit.bottomValue = 1 - (fit.y+fit.height);
       }else{
-        if(fit.y! < 0.5){
+        if(fit.y < 0.5){
           fit.top = true;
-          fit.topValue =  fit.y!-0;
+          fit.topValue =  fit.y-0;
         }else{
           fit.bottom = true;
-          fit.bottomValue = 1 - (fit.y!+fit.height!);
+          fit.bottomValue = 1 - (fit.y+fit.height);
         }
       }
 
@@ -9272,9 +9272,9 @@ export class Canvas {
     }
     if(fit.right){
       if(fit.rightValue){
-        fit.width = 1 - (Math.abs(fit.rightValue)<1?fit.rightValue:fit.rightValue/width!) - fit.x!;
+        fit.width = 1 - (Math.abs(fit.rightValue)<1?fit.rightValue:fit.rightValue/width!) - fit.x;
       }else{
-        fit.width = 1 - fit.x!;
+        fit.width = 1 - fit.x;
       }
     }
     if(fit.top){
@@ -9286,9 +9286,9 @@ export class Canvas {
     }
     if(fit.bottom){
       if(fit.bottomValue){
-        fit.height = 1 - (Math.abs(fit.bottomValue)<1?fit.bottomValue:fit.bottomValue/height!) - fit.y!;
+        fit.height = 1 - (Math.abs(fit.bottomValue)<1?fit.bottomValue:fit.bottomValue/height!) - fit.y;
       }else{
-        fit.height = 1 - fit.y!;
+        fit.height = 1 - fit.y;
       }
     }
     this.canvasImage.init();

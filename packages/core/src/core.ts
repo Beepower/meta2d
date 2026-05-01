@@ -1281,7 +1281,7 @@ export class Meta2d {
       let pen = pens[i];
       if(pen.parentId){
         const parent = this.store.pens[pen.parentId];
-        if(pen.x!>10 || pen.y!>10 || pen.width!>10 || pen.height!>10){
+        if(pen.x>10 || pen.y>10 || pen.width>10 || pen.height>10){
           // 子图元坐标值很大
           dirtyPens.push(pen);
         }else if(!parent.children||!parent.children.includes(pen.id)){
@@ -2143,7 +2143,7 @@ export class Meta2d {
     };
     // const p = pens.find((pen) => {
     //   // TODO: js 计算误差，可能导致包含着其它的 pens 的最大 pen 无法计算出来
-    //   return pen.width! === rect.width && pen.height! === rect.height;
+    //   return pen.width === rect.width && pen.height === rect.height;
     // });
     // // 其中一个认为是父节点
     // const oneIsParent = p && showChild == undefined;
@@ -5081,8 +5081,8 @@ export class Meta2d {
               pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.width;
             pen.calculative!.width = pen.calculative!.worldRect!.width;
             pen.calculative!.x = pen.calculative!.worldRect!.x;
-            pen.width! = pen.calculative!.worldRect!.width;
-            pen.x! = pen.calculative!.worldRect!.x;
+            pen.width = pen.calculative!.worldRect!.width;
+            pen.x = pen.calculative!.worldRect!.x;
             pen.textWidth *= ratio
             pen.calculative!.textWidth *= ratio;
             this.canvas.updatePenRect(pen, { worldRectIsReady: false });
@@ -5202,8 +5202,8 @@ export class Meta2d {
               pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.height;
             pen.calculative!.height = pen.calculative!.worldRect!.height;
             pen.calculative!.y = pen.calculative!.worldRect!.y;
-            pen.height! = pen.calculative!.worldRect!.height;
-            pen.y! = pen.calculative!.worldRect!.y;
+            pen.height = pen.calculative!.worldRect!.height;
+            pen.y = pen.calculative!.worldRect!.y;
             this.canvas.updatePenRect(pen, { worldRectIsReady: false });
             if (pen.externElement) {
               pen.onResize?.(pen);
@@ -6776,7 +6776,7 @@ export class Meta2d {
     //如果本身就是 一个 组合图元
     const parents = components.filter((pen) => !pen.parentId);
     const p = components.find((pen) => {
-      return pen.width! === rect.width && pen.height! === rect.height;
+      return pen.width === rect.width && pen.height === rect.height;
     });
     const oneIsParent = p && showChild === undefined;
     if (parents.length === 1) {

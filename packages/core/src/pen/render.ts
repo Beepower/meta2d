@@ -2710,16 +2710,16 @@ export function calcWorldRects(pen: Pen) {
   const store: Meta2dStore = pen.calculative!.canvas!.store;
 
   let rect: Rect = {
-    x: pen.x!,
-    y: pen.y!,
+    x: pen.x,
+    y: pen.y,
     width: 0,
     height: 0,
   };
 
   if (!pen.parentId || (pen.parentId && !store.pens[pen.parentId])) {
     pen.parentId = undefined;
-    rect.width = pen.width!;
-    rect.height = pen.height!;
+    rect.width = pen.width;
+    rect.height = pen.height;
     rect.rotate = pen.rotate;
     calcRightBottom(rect);
     calcCenter(rect);
@@ -2733,10 +2733,10 @@ export function calcWorldRects(pen: Pen) {
       parentRect = calcWorldRects(parent);
     }
 
-    rect.x = parentRect.x + parentRect.width * pen.x!;
-    rect.y = parentRect.y + parentRect.height * pen.y!;
-    rect.width = parentRect.width * pen.width!;
-    rect.height = parentRect.height * pen.height!;
+    rect.x = parentRect.x + parentRect.width * pen.x;
+    rect.y = parentRect.y + parentRect.height * pen.y;
+    rect.width = parentRect.width * pen.width;
+    rect.height = parentRect.height * pen.height;
     if (parent.flipX) {
       rect.x =
         parentRect.width - (rect.x - parentRect.x + rect.width) + parentRect.x;
@@ -3094,8 +3094,8 @@ export function nearestAnchor(pen: Pen, pt: Point) {
 }
 
 export function translateLine(pen: Pen, x: number, y: number) {
-  pen.x! += x;
-  pen.y! += y;
+  pen.x += x;
+  pen.y += y;
 
   if (pen.anchors) {
     pen.anchors!.forEach((a) => {
@@ -3357,10 +3357,10 @@ export function setNodeAnimate(pen: Pen, now: number) {
     pen.calculative!.prevFrameRect = deepClone(pen.calculative!.worldRect);
     if (pen.parentId) {
       pen.calculative!.initRelativeRect = {
-        x: pen.x!,
-        y: pen.y!,
-        width: pen.width!,
-        height: pen.height!,
+        x: pen.x,
+        y: pen.y,
+        width: pen.width,
+        height: pen.height,
       };
     }
     if (pen.children?.length) {
@@ -3909,8 +3909,8 @@ export function rotatePen(pen: Pen, angle: number, rect: Rect) {
       pen.calculative!.worldRect!.y =
         pen.calculative!.worldRect!.center.y -
         pen.calculative!.worldRect!.height / 2;
-      pen.x! = (pen.calculative!.worldRect!.x - rect.x) / rect.width;
-      pen.y! = (pen.calculative!.worldRect!.y - rect.y) / rect.height;
+      pen.x = (pen.calculative!.worldRect!.x - rect.x) / rect.width;
+      pen.y = (pen.calculative!.worldRect!.y - rect.y) / rect.height;
     }
   }
 
@@ -3924,10 +3924,10 @@ function initLineRect(pen: Pen) {
   if (!pen.calculative!.worldAnchors?.length) {
     return;
   }
-  if (!isFinite(pen.x!) || !isFinite(pen.x!)) {
+  if (!isFinite(pen.x) || !isFinite(pen.x)) {
     return;
   }
-  if (pen.x! == null || pen.y! == null) {
+  if (pen.x == null || pen.y == null) {
     return;
   }
   const rect = getLineRect(pen);
@@ -4258,7 +4258,7 @@ function dealWithDXF(command: any, pen: any, startX: any, startY: any) {
         }
       };
       if((c.v.x)!==undefined)c.v.x = command.v.x * (width / originWidth) + x;
-      if(c.v.y!==undefined)c.v.y = (command.v.y * (height / originHeight)) + y;
+      if(c.v.y==undefined)c.v.y = (command.v.y * (height / originHeight)) + y;
       return c;
   }
 }
@@ -4337,7 +4337,7 @@ function dealWithCanvas(command: any, pen: any, startX: any, startY: any) {
         }
       };
       if((c.v.x)!==undefined)c.v.x = command.v.x * (width / originWidth) + x;
-      if(c.v.y!==undefined)c.v.y = (command.v.y * (height / originHeight)) + y;
+      if(c.v.y==undefined)c.v.y = (command.v.y * (height / originHeight)) + y;
       return c;
   }
 }

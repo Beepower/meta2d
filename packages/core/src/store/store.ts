@@ -90,12 +90,12 @@ export interface Meta2dData {
 export interface Fit {
   id?:string;
   name?:string;
-  x?:number;
-  y?:number;
+  x:number;
+  y:number;
+  width:number;
+  height:number;
   ex?:number;
   ey?:number;
-  width?:number;
-  height?:number;
   children?:string[];
   active?:boolean;
   left?:boolean;

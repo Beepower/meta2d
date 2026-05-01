@@ -2590,7 +2590,7 @@ export class Meta2d {
 
   closeWebsocket() {
     if (this.websocket) {
-      this.websocket.onclose = undefined;
+      this.websocket.onclose = null;
       this.websocket.close();
       this.websocket = undefined;
     }
@@ -2850,7 +2850,7 @@ export class Meta2d {
       this.connectNetMqtt(net);
     } else if (net.protocol === 'websocket') {
       if(this.websockets && this.websockets[net.index!]){
-        this.websockets[net.index!].onclose = undefined;
+        this.websockets[net.index!].onclose = null;
         this.websockets[net.index!].close();
         delete this.websockets[net.index!];
       }
@@ -3174,7 +3174,7 @@ export class Meta2d {
 
   connectNetWebSocket(net: Network) {
     if (this.websockets[net.index!]) {
-      this.websockets[net.index!].onclose = undefined;
+      this.websockets[net.index!].onclose = null;
       this.websockets[net.index!]?.close();
       delete this.websockets[net.index!];
     }
@@ -3207,7 +3207,7 @@ export class Meta2d {
         net.times++;
         if (net.times >= this.store.options.reconnetTimes) {
           net.times = 0;
-          this.websockets[net.index!].onclose = undefined;
+          this.websockets[net.index!].onclose = null;
           this.websockets[net.index!]?.close();
           delete this.websockets[net.index!];
           return;
@@ -3698,7 +3698,7 @@ export class Meta2d {
     this.websockets &&
       this.websockets.forEach((websocket) => {
         if (websocket) {
-          websocket.onclose = undefined;
+          websocket.onclose = null;
           websocket.close();
           websocket = undefined;
         }

@@ -9386,21 +9386,21 @@ export class Canvas {
     );
 
     this.externalElements.ondragover = (e) => e.preventDefault();
-    this.externalElements.ondrop = undefined;
+    this.externalElements.ondrop = null;
     if(this.store.options.parentTouch){
-      this.parentElement.ontouchstart = undefined;
-      this.parentElement.ontouchmove = undefined;
-      this.parentElement.ontouchend = undefined;
+      this.parentElement.ontouchstart = null;
+      this.parentElement.ontouchmove = null;
+      this.parentElement.ontouchend = null;
     }else{
-      this.externalElements.ontouchstart = undefined;
-      this.externalElements.ontouchmove = undefined;
-      this.externalElements.ontouchend = undefined;
+      this.externalElements.ontouchstart = null;
+      this.externalElements.ontouchmove = null;
+      this.externalElements.ontouchend = null;
     }
-    this.externalElements.onmousedown = undefined;
-    this.externalElements.onmousemove = undefined;
-    this.externalElements.onmouseup = undefined;
-    this.externalElements.onmouseleave = undefined;
-    this.externalElements.ondblclick = undefined;
+    this.externalElements.onmousedown = null;
+    this.externalElements.onmousemove = null;
+    this.externalElements.onmouseup = null;
+    this.externalElements.onmouseleave = null;
+    this.externalElements.ondblclick = null;
     switch (this.store.options.keydown) {
       case KeydownType.Document:
         document.removeEventListener('keydown', this.onkeydown);

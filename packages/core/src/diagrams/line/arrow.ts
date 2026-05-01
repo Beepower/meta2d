@@ -51,11 +51,11 @@ export function drawArrow(
             newP = {
               x:
                 from.x +
-                ((pen.length - (pen.calculative!.animatePos + lastLength)) % d) *
+                ((pen.length! - (pen.calculative!.animatePos + lastLength)) % d) *
                   Math.cos((angle * Math.PI) / 180),
               y:
                 from.y -
-                ((pen.length - (pen.calculative!.animatePos + lastLength)) % d) *
+                ((pen.length! - (pen.calculative!.animatePos + lastLength)) % d) *
                   Math.sin((angle * Math.PI) / 180),
             };
           }

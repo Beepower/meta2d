@@ -2236,7 +2236,7 @@ function renderLineAnimate(
       if (pen.animateReverse) {
         ctx.lineDashOffset = pen.calculative!.animatePos;
       } else {
-        ctx.lineDashOffset = pen.length - pen.calculative!.animatePos;
+        ctx.lineDashOffset = pen.length! - pen.calculative!.animatePos;
       }
       len = pen.calculative!.lineWidth || 5;
       if (len < 5) {
@@ -2251,7 +2251,7 @@ function renderLineAnimate(
       if (pen.animateReverse) {
         ctx.lineDashOffset = pen.calculative!.animatePos;
       } else {
-        ctx.lineDashOffset = pen.length - pen.calculative!.animatePos;
+        ctx.lineDashOffset = pen.length! - pen.calculative!.animatePos;
       }
       len =
         pen.calculative!.animateDotSize || pen.calculative!.lineWidth! * 2 || 6;
@@ -2263,7 +2263,7 @@ function renderLineAnimate(
       }
       ctx.lineWidth =
         (pen.calculative!.animateLineWidth || len) * store.data.scale;
-      ctx.setLineDash([0.1, pen.length]);
+      ctx.setLineDash([0.1, pen.length!]);
       break;
     case LineAnimateType.Arrow:
       ctx.fillStyle = pen.animateColor || store.styles.animateColor;
@@ -2308,13 +2308,13 @@ function renderLineAnimate(
         ctx.lineDashOffset = Number.EPSILON; //防止在执行动画时会绘制多余的远点
         ctx.setLineDash([
           0,
-          pen.length - pen.calculative!.animatePos + 1,
+          pen.length! - pen.calculative!.animatePos + 1,
           pen.calculative!.animatePos,
         ]);
       } else {
         ctx.setLineDash([
           pen.calculative!.animatePos,
-          pen.length + 0.01 - pen.calculative!.animatePos, //避免在缩放时，精度问题绘制多余圆点
+          pen.length! + 0.01 - pen.calculative!.animatePos, //避免在缩放时，精度问题绘制多余圆点
         ]);
       }
       break;
@@ -3750,7 +3750,7 @@ export function setLineAnimate(pen: Pen, now: number) {
     pen.calculative!.animatePos =
       pen.animateSpan * (pen.calculative!.canvas!.store.data.scale || 1);
     pen.calculative!.cycleIndex = 1;
-  } else if (pen.calculative!.animatePos > pen.length || (pen.curveAnimate && elapsed > pen.duration)) {
+  } else if (pen.calculative!.animatePos > pen.length! || (pen.curveAnimate && elapsed > pen.duration)) {
     // 播放到尾了
     ++pen.calculative!.cycleIndex;
 

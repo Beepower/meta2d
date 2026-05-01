@@ -149,31 +149,31 @@ export class Meta2d {
   /**
    * @deprecated 改用 beforeAddPens
    */
-  set beforeAddPen(fn: (pen: Pen) => boolean) {
+  set beforeAddPen(fn: ((pen: Pen) => boolean) | undefined) {
     this.canvas.beforeAddPen = fn;
   }
   get beforeAddPens() {
     return this.canvas.beforeAddPens;
   }
-  set beforeAddPens(fn: (pens: Pen[]) => Promise<boolean>) {
+  set beforeAddPens(fn: ((pens: Pen[]) => Promise<boolean>) | undefined) {
     this.canvas.beforeAddPens = fn;
   }
   get beforeAddAnchor() {
     return this.canvas.beforeAddAnchor;
   }
-  set beforeAddAnchor(fn: (pen: Pen, anchor: Point) => Promise<boolean>) {
+  set beforeAddAnchor(fn: ((pen: Pen, anchor: Point) => Promise<boolean>) | undefined) {
     this.canvas.beforeAddAnchor = fn;
   }
   get beforeRemovePens() {
     return this.canvas.beforeRemovePens;
   }
-  set beforeRemovePens(fn: (pens: Pen[]) => Promise<boolean>) {
+  set beforeRemovePens(fn: ((pens: Pen[]) => Promise<boolean>) | undefined) {
     this.canvas.beforeRemovePens = fn;
   }
   get beforeRemoveAnchor() {
     return this.canvas.beforeRemoveAnchor;
   }
-  set beforeRemoveAnchor(fn: (pen: Pen, anchor: Point) => Promise<boolean>) {
+  set beforeRemoveAnchor(fn: ((pen: Pen, anchor: Point) => Promise<boolean>) | undefined) {
     this.canvas.beforeRemoveAnchor = fn;
   }
 

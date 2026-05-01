@@ -603,7 +603,7 @@ export interface Pen extends Rect {
     frameStart?: number;
     frameEnd?: number;
     frameDuration?: number;
-    animatePos?: number;
+    animatePos: number;
     // 已经循环次数
     cycleIndex?: number;
     // 一个循环动画的开始时间

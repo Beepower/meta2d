@@ -5520,14 +5520,14 @@ export class Canvas {
         ctx.rotate((rotate * Math.PI) / 180);
         ctx.translate(-anchor.x, -anchor.y);
         ctx.rect(
-          anchor.x - (anchor.length * this.store.data.scale) / 2,
-          anchor.y - size,
-          anchor.length * this.store.data.scale,
-          size * 2
+          anchor.x - (anchor.length! * this.store.data.scale) / 2,
+          anchor.y - size!,
+          anchor.length! * this.store.data.scale,
+          size! * 2
         );
         ctx.restore();
       } else {
-        ctx.arc(anchor.x, anchor.y, size, 0, Math.PI * 2);
+        ctx.arc(anchor.x, anchor.y, size!, 0, Math.PI * 2);
       }
       if (pen.type && this.store.hoverAnchor === anchor) {
         ctx.save();
@@ -5535,8 +5535,8 @@ export class Canvas {
         ctx.fillStyle = ctx.strokeStyle;
       } else if (anchor.color || anchor.background) {
         ctx.save();
-        ctx.strokeStyle = anchor.color;
-        ctx.fillStyle = anchor.background;
+        ctx.strokeStyle = anchor.color!;
+        ctx.fillStyle = anchor.background!;
       }
       ctx.fill();
       ctx.stroke();
@@ -5560,7 +5560,7 @@ export class Canvas {
           if ((globalThis as any).pSBC) {
             ctx.strokeStyle = (globalThis as any).pSBC(0.5, hoverAnchorColor);
           }
-          ctx.arc(anchor.x, anchor.y, size + 1.5, 0, Math.PI * 2);
+          ctx.arc(anchor.x, anchor.y, size! + 1.5, 0, Math.PI * 2);
           ctx.stroke();
           ctx.restore();
         }
@@ -5678,8 +5678,8 @@ export class Canvas {
    * @param center 中心点，引用类型，存在副作用，会更改原值
    */
   scale(scale: number, center = { x: 0, y: 0 }) {
-    const minScale = this.store.data.minScale || this.store.options.minScale;
-    const maxScale = this.store.data.maxScale || this.store.options.maxScale;
+    const minScale = this.store.data.minScale || this.store.options.minScale!;
+    const maxScale = this.store.data.maxScale || this.store.options.maxScale!;
     if (!(scale >= minScale && scale <= maxScale)) {
       return;
     }
@@ -5703,7 +5703,7 @@ export class Canvas {
         // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
         const lineScale = 1 / s; //s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect!.center;
+        const lineCenter = pen.calculative!.worldRect!.center!;
         if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
@@ -5732,7 +5732,7 @@ export class Canvas {
 
   templateScale(scale: number, center = { x: 0, y: 0 }) {
     const { minScale, maxScale } = this.store.options;
-    if (!(scale >= minScale && scale <= maxScale)) {
+    if (!(scale >= minScale! && scale <= maxScale!)) {
       return;
     }
     const s = scale / this.store.data.scale;
@@ -5749,7 +5749,7 @@ export class Canvas {
         // 扩大线的比例，若是放大，即不缩小，若是缩小，会放大
         const lineScale = s > 1 ? 1 : 1 / s / s;
         // 中心点即为线的中心
-        const lineCenter = pen.calculative!.worldRect!.center;
+        const lineCenter = pen.calculative!.worldRect!.center!;
         if (!pen.width) {
           // 垂直线
           scalePen(pen, lineScale, lineCenter);
@@ -5790,7 +5790,7 @@ export class Canvas {
       pen.onRotate && pen.onRotate(pen);
       this.updateLines(pen);
     }
-    this.lastRotate = this.activeRect.rotate;
+    this.lastRotate = this.activeRect.rotate!;
     this.getSizeCPs();
     this.initImageCanvas(this.store.active);
     this.initTemplateCanvas(this.store.active);
@@ -5925,9 +5925,9 @@ export class Canvas {
     const scaleY = this.activeRect.height / h;
     this.store.active!.forEach((pen, i) => {
       pen.calculative!.worldRect!.x =
-        this.activeInitPos[i]!.x * this.activeRect!.width + this.activeRect!.x;
+        this.activeInitPos![i]!.x * this.activeRect!.width + this.activeRect!.x;
       pen.calculative!.worldRect!.y =
-        this.activeInitPos[i]!.y * this.activeRect!.height + this.activeRect!.y;
+        this.activeInitPos![i]!.y * this.activeRect!.height + this.activeRect!.y;
       pen.calculative!.worldRect!.width *= scaleX;
       pen.calculative!.iconWidth && (pen.calculative!.iconWidth *= scaleX);
       pen.calculative!.worldRect!.height *= scaleY;
@@ -6130,14 +6130,14 @@ export class Canvas {
       if (
         pen.name!.endsWith('Dom') ||
         isDomShapes.includes(pen.name!) ||
-        this.store.options.domShapes.includes(pen.name!) ||
+        this.store.options.domShapes!.includes(pen.name!) ||
         pen.image || pen.isDom
       ) {
         // 修改名称会执行 onDestroy ，清空它
         value.name = 'rectangle';
         value.onDestroy = undefined;
       }
-      this.updateValue(pen, value);
+      this.updateValue(pen, value as any);
       pen.calculative!.image = undefined;
     });
   }
@@ -6300,25 +6300,25 @@ export class Canvas {
       this.initPens = deepClone(this.store.active, true);
     }
 
-    this.store.activeAnchor.prev.x = e.x;
-    this.store.activeAnchor.prev.y = e.y;
-    if (this.store.activeAnchor.next) {
-      if (!this.store.activeAnchor.prevNextType) {
-        this.store.activeAnchor.next.x = e.x;
-        this.store.activeAnchor.next.y = e.y;
-        rotatePoint(this.store.activeAnchor.next, 180, this.store.activeAnchor);
+    this.store.activeAnchor!.prev!.x = e.x;
+    this.store.activeAnchor!.prev!.y = e.y;
+    if (this.store.activeAnchor!.next) {
+      if (!this.store.activeAnchor!.prevNextType) {
+        this.store.activeAnchor!.next.x = e.x;
+        this.store.activeAnchor!.next.y = e.y;
+        rotatePoint(this.store.activeAnchor!.next, 180, this.store.activeAnchor!);
       } else if (
-        this.store.activeAnchor.prevNextType === PrevNextType.Bilateral &&
+        this.store.activeAnchor!.prevNextType === PrevNextType.Bilateral &&
         this.prevAnchor
       ) {
-        const rotate = calcRotate(e, this.store.activeAnchor);
-        const prevRotate = calcRotate(this.prevAnchor, this.store.activeAnchor);
-        this.store.activeAnchor.next.x = this.nextAnchor.x;
-        this.store.activeAnchor.next.y = this.nextAnchor.y;
+        const rotate = calcRotate(e, this.store.activeAnchor!);
+        const prevRotate = calcRotate(this.prevAnchor, this.store.activeAnchor!);
+        this.store.activeAnchor!.next.x = this.nextAnchor!.x;
+        this.store.activeAnchor!.next.y = this.nextAnchor!.y;
         rotatePoint(
-          this.store.activeAnchor.next,
+          this.store.activeAnchor!.next,
           rotate - prevRotate,
-          this.store.activeAnchor
+          this.store.activeAnchor!
         );
       }
     }

@@ -235,7 +235,7 @@ export function pointToLine(pt: Point, pt1: Point, pt2: Point, r = 4) {
   }
 }
 
-function lineLen(from: Point, cp1?: Point, cp2?: Point, to?: Point): number {
+function lineLen(from: Point, cp1: Point | undefined, cp2: Point | undefined, to: Point): number {
   if (!cp1 && !cp2) {
     return (
       Math.sqrt(
@@ -281,8 +281,8 @@ export function getLineLength(pen: Pen): number {
   });
   if (pen.close) {
     // pen.close ，下一个点即第一个点
-    const to = getFromAnchor(pen);
-    from.lineLength = lineLen(from, from.next, to.prev, to);
+    const to = getFromAnchor(pen)!;
+    from!.lineLength = lineLen(from!, from!.next, to.prev, to);
     len += from.lineLength;
   }
   if (pen.calculative!.animatePos) {

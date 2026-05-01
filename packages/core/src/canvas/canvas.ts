@@ -768,7 +768,7 @@ export class Canvas {
     }
     let x = 10;
     let y = 10;
-    let vRect: Rect = null;
+    let vRect: Rect | null = null;
     if (this.store.options.strictScope) {
       const width = this.store.data.width || this.store.options.width;
       const height = this.store.data.height || this.store.options.height;
@@ -8345,7 +8345,7 @@ export class Canvas {
     let willCalcIconRect = false; // 是否需要重现计算 icon 区域
     let willSetPenRect = false; // 是否重新 setPenRect
     let containIsBottom = false; // 是否包含 isBottom 属性修改
-    let oldRotate: number = undefined;
+    let oldRotate: number | undefined;
     let willRenderImage = false; // 是否需要重新渲染图片
     for (const k in data) {
       // 单属性

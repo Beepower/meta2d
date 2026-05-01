@@ -1082,7 +1082,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
   }
-  let fill: string = undefined;
+  let fill: string | undefined;
   if (pen.calculative!.disabled) {
     fill =
       pen.disabledTextColor ||
@@ -1243,7 +1243,7 @@ function drawFillText(ctx: CanvasRenderingContext2D, pen: Pen, text: string) {
   const store = canvas.store;
   ctx.save();
 
-  let fill: string = undefined;
+  let fill: string | undefined;
   if (pen.calculative!.hover) {
     fill = pen.hoverTextColor || pen.hoverColor || store.styles.hoverColor;
   } else if (pen.calculative!.active) {
@@ -1354,7 +1354,7 @@ export function drawIcon(
   }
 
   const fontWeight = pen.calculative!.iconWeight;
-  let fontSize: number = undefined;
+  let fontSize: number | undefined;
   const fontFamily = pen.calculative!.iconFamily;
   if (pen.calculative!.iconSize > 0) {
     fontSize = pen.calculative!.iconSize;
@@ -2402,7 +2402,7 @@ function lineAnimateIconRender(icon:any) {
     ctx.scale(scale, scale);
 
     const fontWeight = pen.calculative!.iconWeight;
-    let fontSize: number = undefined;
+    let fontSize: number | undefined;
     const fontFamily = pen.calculative!.iconFamily;
     fontSize =
       (pen.calculative!.iconSize || Math.max(pen.lineAnimateElementWidth || 0, pen.lineAnimateElementHeight || 0) || 10);

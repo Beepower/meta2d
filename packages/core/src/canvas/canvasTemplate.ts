@@ -45,24 +45,24 @@ export class CanvasTemplate {
     this.offscreen.height = h;
 
     this.bgOffscreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.bgOffscreen.getContext('2d').textBaseline = 'middle';
+    this.bgOffscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.offscreen.getContext('2d').textBaseline = 'middle';
+    this.offscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.init();
   }
 
   init() {
     this.bgOffscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.patchFlags = true;
     this.bgPatchFlags = true;
@@ -87,13 +87,13 @@ export class CanvasTemplate {
 
   clear() {
     this.bgOffscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.canvas
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.bgPatchFlags = true;
     this.patchFlags = true;
@@ -101,7 +101,7 @@ export class CanvasTemplate {
 
   render() {
     if (this.bgPatchFlags) {
-      const ctx = this.bgOffscreen.getContext('2d');
+      const ctx = this.bgOffscreen.getContext('2d')!;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       const width = this.store.data.width || this.store.options.width;
       const height = this.store.data.height || this.store.options.height;
@@ -182,7 +182,7 @@ export class CanvasTemplate {
     }
 
     if (this.patchFlags || this.bgPatchFlags) {
-      const ctxCanvas = this.canvas.getContext('2d');
+      const ctxCanvas = this.canvas.getContext('2d')!;
       ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctxCanvas.drawImage(
         this.bgOffscreen,

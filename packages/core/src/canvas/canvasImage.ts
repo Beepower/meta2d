@@ -62,24 +62,24 @@ export class CanvasImage {
     this.fitOffscreen.height = h;
 
     this.otherOffsreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.otherOffsreen.getContext('2d').textBaseline = 'middle';
+    this.otherOffsreen.getContext('2d')!.textBaseline = 'middle';
 
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.offscreen.getContext('2d').textBaseline = 'middle';
+    this.offscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.animateOffsScreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.animateOffsScreen.getContext('2d').textBaseline = 'middle';
+    this.animateOffsScreen.getContext('2d')!.textBaseline = 'middle';
 
     this.fitOffscreen
-      .getContext('2d')
+      .getContext('2d')!
       .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.fitOffscreen.getContext('2d').textBaseline = 'middle';
+    this.fitOffscreen.getContext('2d')!.textBaseline = 'middle';
 
     this.init();
   }
@@ -197,18 +197,18 @@ export class CanvasImage {
 
     const patchFlagsTop = this.store.patchFlagsTop;
     if (patchFlagsTop && !this.isBottom) {
-      const ctx = this.otherOffsreen.getContext('2d');
+      const ctx = this.otherOffsreen.getContext('2d')!;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.renderRule(ctx);
     }
     // 从有图片画布层切换到无图片画布
     const patchFlagsLast = this.store.patchFlagsLast;
     if (patchFlagsLast) {
-      const ctx = this.offscreen.getContext('2d');
+      const ctx = this.offscreen.getContext('2d')!;
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     if (patchFlags) {
-      const ctx = this.offscreen.getContext('2d');
+      const ctx = this.offscreen.getContext('2d')!;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.translate(this.store.data.x, this.store.data.y);
@@ -242,7 +242,7 @@ export class CanvasImage {
       ctx.restore();
     }
     if (patchFlagsAnimate) {
-      const ctx = this.animateOffsScreen.getContext('2d');
+      const ctx = this.animateOffsScreen.getContext('2d')!;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.translate(this.store.data.x, this.store.data.y);
@@ -312,7 +312,7 @@ export class CanvasImage {
         this.store.data.origin.y + this.store.data.y ||
         this.store.options.y ||
         0;
-      const ctx = this.fitOffscreen.getContext('2d');
+      const ctx = this.fitOffscreen.getContext('2d')!;
       ctx.save();
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       ctx.fillStyle = '#ffffff66';
@@ -342,7 +342,7 @@ export class CanvasImage {
       // this.isBottom ||
       (patchFlagsTop && !this.isBottom)
     ) {
-      const ctxCanvas = this.canvas.getContext('2d');
+      const ctxCanvas = this.canvas.getContext('2d')!;
       ctxCanvas.clearRect(0, 0, this.canvas.width, this.canvas.height);
       if (this.isBottom) {
       //   ctxCanvas.drawImage(

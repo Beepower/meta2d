@@ -3949,13 +3949,11 @@ export class Canvas {
 
     this.clientRect = this.externalElements.getBoundingClientRect();
 
-    this.canvas
-      .getContext('2d')
-      .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.offscreen
-      .getContext('2d')
-      .scale(this.store.dpiRatio, this.store.dpiRatio);
-    this.offscreen.getContext('2d').textBaseline = 'middle';
+    const canvasCtx = this.canvas.getContext('2d')!;
+    const offscreenCtx = this.offscreen.getContext('2d')!;
+    canvasCtx.scale(this.store.dpiRatio, this.store.dpiRatio);
+    offscreenCtx.scale(this.store.dpiRatio, this.store.dpiRatio);
+    offscreenCtx.textBaseline = 'middle';
 
     // TODO 窗口大小变化没有刷新图纸
     for (const pen of this.store.data.pens) {
@@ -3977,10 +3975,10 @@ export class Canvas {
     this.sizeCPs = undefined;
     this.__loadMap = new Map()
     this.canvas
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.offscreen
-      .getContext('2d')
+      .getContext('2d')!
       .clearRect(0, 0, this.offscreen.width, this.offscreen.height);
     if (!this.store.data.template) {
       this.canvasTemplate.clear();

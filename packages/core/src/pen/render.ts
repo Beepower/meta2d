@@ -3266,8 +3266,8 @@ export function disconnectLine(
   if (!line.lastConnected) {
     line.lastConnected = {};
   }
-  if (!line.lastConnected[pen.id]) {
-    line.lastConnected[pen.id] = deepClone(pen.connectedLines);
+  if (!line.lastConnected[pen.id!]) {
+    line.lastConnected[pen.id!] = deepClone(pen.connectedLines);
   }
   pen.connectedLines.forEach((item, index, arr) => {
     if (

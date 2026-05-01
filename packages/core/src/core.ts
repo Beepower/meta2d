@@ -1211,7 +1211,7 @@ export class Meta2d {
           pen.id = s8();
         }
         !pen.calculative && (pen.calculative = { canvas: this.canvas });
-        this.store.pens[pen.id] = pen;
+        this.store.pens[pen.id!] = pen;
       }
       for (const pen of data.pens) {
         this.canvas.makePen(pen);
@@ -1367,12 +1367,12 @@ export class Meta2d {
     this.store.pens = {};
     this.store.data.pens.forEach((pen) => {
       pen.calculative!.canvas = this.canvas;
-      this.store.pens[pen.id] = pen;
-      globalStore.path2dDraws[pen.name] &&
-        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+      this.store.pens[pen.id!] = pen;
+      globalStore.path2dDraws[pen.name!] &&
+        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
 
       pen.type &&
-        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
 
       if (pen.image) {
         pen.calculative!.imageDrawed = false;
@@ -2810,7 +2810,7 @@ export class Meta2d {
           //     net.times++;
           //     if (net.times >= this.store.options.reconnetTimes) {
           //       net.times = 0;
-          //       this.websockets[net.index]?.close();
+          //       this.websockets[net.index!]?.close();
           //       return;
           //     }
           //   }
@@ -2848,33 +2848,33 @@ export class Meta2d {
   reconnectNetwork(index:number){
     const net = this.store.data.networks[index];
     if (net.protocol === 'mqtt') {
-      this.mqttClients && this.mqttClients[net.index]?.end();
+      this.mqttClients && this.mqttClients[net.index!]?.end();
       this.connectNetMqtt(net);
     } else if (net.protocol === 'websocket') {
-      if(this.websockets && this.websockets[net.index]){
-        this.websockets[net.index].onclose = undefined;
-        this.websockets[net.index].close();
-        this.websockets[net.index] = undefined;
+      if(this.websockets && this.websockets[net.index!]){
+        this.websockets[net.index!].onclose = undefined;
+        this.websockets[net.index!].close();
+        this.websockets[net.index!] = undefined;
       }
       this.connectNetWebSocket(net);
     }else if(net.protocol === 'http'){
       if(this.updateTimerList){
-        clearInterval(this.updateTimerList[net.index]);
-        this.updateTimerList[net.index] = undefined;
+        clearInterval(this.updateTimerList[net.index!]);
+        this.updateTimerList[net.index!] = undefined;
       }
       const http = deepClone(net);
       if (!this.store.data.cancelFirstConnect) {
         this.requestHttp(http);
       }
       if(net.interval !== 0){
-        this.updateTimerList[net.index] = setInterval(async () => {
+        this.updateTimerList[net.index!] = setInterval(async () => {
           this.requestHttp(http);
         }, http.interval || 1000);
       }
     }else if(net.protocol === 'SSE'){
       if(this.eventSources){
-        this.eventSources[net.index]?.close();
-        this.eventSources[net.index] = undefined;
+        this.eventSources[net.index!]?.close();
+        this.eventSources[net.index!] = undefined;
       }
       this.connectSSE(net);
     }
@@ -3040,11 +3040,11 @@ export class Meta2d {
     if(net.enable === false){
       return;
     }
-    this.eventSources[net.index] = new EventSource(net.url,{withCredentials:net.withCredentials});
-    this.eventSources[net.index].onmessage = (e) => {
+    this.eventSources[net.index!] = new EventSource(net.url,{withCredentials:net.withCredentials});
+    this.eventSources[net.index!].onmessage = (e) => {
       this.socketCallback(e.data, { type: 'SSE', url: net.url, name:net.name, net });
     };
-    this.eventSources[net.index].onerror = (error) => {
+    this.eventSources[net.index!].onerror = (error) => {
       this.store.emitter.emit('error', { type: 'SSE', error });
     };
   }
@@ -3113,8 +3113,8 @@ export class Meta2d {
     if(!options.hasOwnProperty("connectTimeout")){
       Object.assign(options,{connectTimeout: 10 * 1000});
     }
-    this.mqttClients[net.index] = mqtt.connect(url, options);
-    this.mqttClients[net.index].on(
+    this.mqttClients[net.index!] = mqtt.connect(url, options);
+    this.mqttClients[net.index!].on(
       'message',
       (topic: string, message: Buffer) => {
         this.socketCallback(message.toString(), {
@@ -3126,27 +3126,27 @@ export class Meta2d {
         });
       }
     );
-    this.mqttClients[net.index].on('error', (error) => {
+    this.mqttClients[net.index!].on('error', (error) => {
       this.store.emitter.emit('error', { type: 'mqtt', error });
     });
     //mqtt 默认重连配置 reconnectPeriod
     // let reconnectDelay = 1000;
-    // this.mqttClients[net.index].on('close', () => {
+    // this.mqttClients[net.index!].on('close', () => {
     //   if (this.store.options.reconnetTimes) {
     //     net.times++;
     //     if (net.times >= this.store.options.reconnetTimes) {
     //       net.times = 0;
-    //       this.mqttClients && this.mqttClients[net.index]?.end();
+    //       this.mqttClients && this.mqttClients[net.index!]?.end();
     //     }
     //     setTimeout(()=>{
     //       if (net.times < this.store.options.reconnetTimes) {
-    //         this.mqttClients[net.index].reconnect(options as any);
+    //         this.mqttClients[net.index!].reconnect(options as any);
     //         reconnectDelay = Math.min(reconnectDelay * 2, 10 * 1000);
     //       }
     //     },reconnectDelay)
     //   }
     // });
-    this.mqttClients[net.index].on('connect', (connack) => {
+    this.mqttClients[net.index!].on('connect', (connack) => {
       // reconnectDelay = 1000;
 
       if (!connack.sessionPresent) {
@@ -3164,7 +3164,7 @@ export class Meta2d {
             }
           }
           // QoS=1 是 MQTT 中最常用的级别，它能在保证大部分消息可靠传递
-          this.mqttClients[net.index].subscribe(topics.split(','),{ qos: 1 },(err)=>{
+          this.mqttClients[net.index!].subscribe(topics.split(','),{ qos: 1 },(err)=>{
             if(err) console.error("订阅失败：",err);
           });
         }
@@ -3175,10 +3175,10 @@ export class Meta2d {
   }
 
   connectNetWebSocket(net: Network) {
-    if (this.websockets[net.index]) {
-      this.websockets[net.index].onclose = undefined;
-      this.websockets[net.index]?.close();
-      this.websockets[net.index] = undefined;
+    if (this.websockets[net.index!]) {
+      this.websockets[net.index!].onclose = undefined;
+      this.websockets[net.index!]?.close();
+      this.websockets[net.index!] = undefined;
     }
     if(net.enable === false ){
       return;
@@ -3194,24 +3194,24 @@ export class Meta2d {
         });
       }
     }
-    this.websockets[net.index] = new WebSocket(
+    this.websockets[net.index!] = new WebSocket(
       url,
       net.protocols || undefined
     );
-    this.websockets[net.index].onmessage = (e) => {
+    this.websockets[net.index!].onmessage = (e) => {
       this.socketCallback(e.data, { type: 'websocket', url: net.url, name:net.name, net });
     };
-    this.websockets[net.index].onerror = (error) => {
+    this.websockets[net.index!].onerror = (error) => {
       this.store.emitter.emit('error', { type: 'websocket', error });
     };
-    this.websockets[net.index].onclose = () => {
+    this.websockets[net.index!].onclose = () => {
       if (this.store.options.reconnetTimes) {
         net.times++;
         if (net.times >= this.store.options.reconnetTimes) {
           net.times = 0;
-          this.websockets[net.index].onclose = undefined;
-          this.websockets[net.index]?.close();
-          this.websockets[net.index] = undefined;
+          this.websockets[net.index!].onclose = undefined;
+          this.websockets[net.index!]?.close();
+          this.websockets[net.index!] = undefined;
           return;
         }
       }
@@ -3526,9 +3526,9 @@ export class Meta2d {
       if (!this.store.pensNetwork) {
         this.store.pensNetwork = {};
       }
-      this.store.pensNetwork[pen.id] = penNetwork;
+      this.store.pensNetwork[pen.id!] = penNetwork;
     } else {
-      delete this.store.pensNetwork[pen.id];
+      delete this.store.pensNetwork[pen.id!];
     }
   }
 
@@ -4378,7 +4378,7 @@ export class Meta2d {
 
       //全局
       let indexArr: number[] = [];
-      this.store.globalTriggers[pen.id]?.forEach((trigger, index) => {
+      this.store.globalTriggers[pen.id!]?.forEach((trigger, index) => {
         let flag = false;
         if (trigger.conditions?.length) {
           if (trigger.conditionType === 'and') {
@@ -4406,7 +4406,7 @@ export class Meta2d {
           indexArr.push(index);
         }
       });
-      this.store.globalTriggers[pen.id]?.forEach((trigger, index) => {
+      this.store.globalTriggers[pen.id!]?.forEach((trigger, index) => {
         if (indexArr.includes(index)) {
           trigger.actions?.forEach((event) => {
             if (event.timeout) {
@@ -4711,7 +4711,7 @@ export class Meta2d {
     const updatePens: Pen[] = [];
     children.forEach((pen) => {
       let oldPen: Pen = deepClone(pen, true);
-      if (!pen.id || !this.store.pens[pen.id]) {
+      if (!pen.id || !this.store.pens[pen.id!]) {
         // 不存在于 store 中
         this.canvas.makePen(pen);
         oldPen = null; // 添加操作

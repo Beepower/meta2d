@@ -1146,7 +1146,7 @@ export class Canvas {
         }
         if (this.movingPens) {
           this.getAllByPens(this.movingPens).forEach((pen) => {
-            this.store.pens[pen.id] = undefined;
+            this.store.pens[pen.id!] = undefined;
           });
           this.movingPens = undefined;
           this.mouseDown = undefined;
@@ -1455,7 +1455,7 @@ export class Canvas {
         pen.id = s8();
       }
       !pen.calculative && (pen.calculative = { canvas: this });
-      this.store.pens[pen.id] = pen;
+      this.store.pens[pen.id!] = pen;
     }
     // // 计算区域
     // for (const pen of pens) {
@@ -1613,7 +1613,7 @@ export class Canvas {
     //     pen.id = s8();
     //   }
     //   !pen.calculative && (pen.calculative = { canvas: this });
-    //   this.store.pens[pen.id] = pen;
+    //   this.store.pens[pen.id!] = pen;
     // }
     for (const pen of pens) {
       if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
@@ -3192,11 +3192,11 @@ export class Canvas {
   private clearDock = () => {
     const xPenId = this.dock?.xDock?.penId;
     const yPenId = this.dock?.yDock?.penId;
-    const xPen = this.store.pens[xPenId];
+    const xPen = xPenId ? this.store.pens[xPenId] : undefined;
     if (xPen) {
       xPen.calculative!.isDock = false;
     }
-    const yPen = this.store.pens[yPenId];
+    const yPen = yPenId ? this.store.pens[yPenId] : undefined;
     if (yPen) {
       yPen.calculative!.isDock = false;
     }
@@ -4959,8 +4959,8 @@ export class Canvas {
     calcIconRect(this.store.pens, pen);
     calcTextRect(pen);
     calcInView(pen);
-    globalStore.path2dDraws[pen.name] &&
-      this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+    globalStore.path2dDraws[pen.name!] &&
+      this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
     pen.calculative!.patchFlags = true;
     this.patchFlags = true;
 
@@ -5459,18 +5459,20 @@ export class Canvas {
       }
       if (anchor.type === PointType.Line) {
         //旋转的情况
-        let _rotate = this.store.pens[anchor.penId].rotate || 0;
-        if (this.store.pens[anchor.penId].calculative.flipX) {
+        const owner = this.store.pens[anchor.penId!]!;
+        const ownerCalc = owner.calculative!;
+        let _rotate = owner.rotate || 0;
+        if (ownerCalc.flipX) {
           _rotate *= -1;
         }
-        if (this.store.pens[anchor.penId].calculative.flipY) {
+        if (ownerCalc.flipY) {
           _rotate *= -1;
         }
-        let rotate = anchor.rotate + _rotate;
-        if (this.store.pens[anchor.penId].calculative.flipX) {
+        let rotate = (anchor.rotate ?? 0) + _rotate;
+        if (ownerCalc.flipX) {
           rotate *= -1;
         }
-        if (this.store.pens[anchor.penId].calculative.flipY) {
+        if (ownerCalc.flipY) {
           rotate *= -1;
         }
         ctx.save();
@@ -6214,13 +6216,13 @@ export class Canvas {
         to!.prev = undefined;
         // 重新自动计算连线
         if (line.lineName !== 'polyline') {
-          (this as any)[line.lineName]?.(this.store, line);
+          (this as any)[line.lineName!]?.(this.store, line);
         }
       }
     }
 
     this.patchFlagsLines.add(line);
-    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name](line));
+    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!](line));
     this.render();
     this.store.active[0].calculative &&
       (this.store.active[0].calculative.gradientAnimatePath = undefined);
@@ -6280,7 +6282,7 @@ export class Canvas {
     }
     const line = this.store.active[0];
     this.patchFlagsLines.add(line);
-    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name](line));
+    this.store.path2dMap.set(line, globalStore.path2dDraws[line.name!](line));
     this.render();
 
     if (this.timer) {
@@ -6478,7 +6480,7 @@ export class Canvas {
         }
         translateLine(pen, x, y);
         this.checkDisconnect(pen, containChildPens);
-        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
         if (!doing) {
           this.initLineRect(pen);
           pen.connectedLines?.forEach((item) => {
@@ -6540,7 +6542,7 @@ export class Canvas {
         }
         translateLine(pen, x, y);
         this.checkDisconnect(pen, containChildPens);
-        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+        this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
       } else {
         translateRect(pen.calculative!.worldRect, x, y);
         this.updatePenRect(pen, { worldRectIsReady: true });
@@ -6581,8 +6583,8 @@ export class Canvas {
       connectLine(pen, newAnchor, line, lineAnchor);
     }
 
-    if ((this as any)[line.lineName]) {
-      (this as any)[line.lineName](this.store, line);
+    if ((this as any)[line.lineName!]) {
+      (this as any)[line.lineName!](this.store, line);
     }
 
     this.store.path2dMap.set(line, globalStore.path2dDraws.line(line));
@@ -7487,7 +7489,7 @@ export class Canvas {
     }
     const i = this.store.data.pens.findIndex((item) => item.id === pen.id);
     if (i > -1) {
-      const delPen = this.store.pens[pen.id];
+      const delPen = this.store.pens[pen.id!];
       if(delPen && delPen.calculative){
         delPen.calculative!.active = undefined;
       }
@@ -7523,8 +7525,8 @@ export class Canvas {
     if (i > -1) {
       this.delConnectedLines(this.store.data.pens[i]);
       this.store.data.pens.splice(i, 1);
-      this.store.pens[pen.id] = undefined;
-      delete this.store.pens[pen.id];
+      this.store.pens[pen.id!] = undefined;
+      delete this.store.pens[pen.id!];
       // 删除svgpath的数据
       if(pen.pathId){
         const hasP = this.store.data.pens.some((p)=>p.pathId === pen.pathId);
@@ -7916,7 +7918,7 @@ export class Canvas {
     this.externalElements.style.zIndex = '5';
     if (this.inputParent.style.display === 'flex') {
       this.inputParent.style.display = 'none';
-      const pen = this.store.pens[this.inputDiv.dataset.penId];
+      const pen = this.store.pens[this.inputDiv.dataset.penId!];
       if (!pen) {
         return;
       }
@@ -8046,7 +8048,7 @@ export class Canvas {
     //   },300)
     // }
     this.inputDiv.oninput = (e: any) => {
-      const pen = this.store.pens[this.inputDiv.dataset.penId];
+      const pen = this.store.pens[this.inputDiv.dataset.penId!];
       if(pen && pen.inputType === 'number'){
         const value = e.target.innerText;
         const numericValue = toNumber(value); // 移除非数字字符
@@ -8083,7 +8085,7 @@ export class Canvas {
     };
     this.inputDiv.onclick = (e) => {
       e.stopPropagation();
-      const pen = this.store.pens[this.inputDiv.dataset.penId];
+      const pen = this.store.pens[this.inputDiv.dataset.penId!];
       if (this.dropdown.style.display === 'block') {
         this.dropdown.style.display = 'none';
         // this.inputRight.style.transform = 'rotate(135deg)';
@@ -8095,13 +8097,13 @@ export class Canvas {
     };
     this.inputDiv.onkeyup = (e: KeyboardEvent) => {
       this.setDropdownList(true);
-      const pen = this.store.pens[this.inputDiv.dataset.penId];
+      const pen = this.store.pens[this.inputDiv.dataset.penId!];
       this.store.emitter.emit('input', { pen, text: e.key });
       e.stopPropagation();
     };
     this.inputDiv.onkeydown = (e: KeyboardEvent) => {
       if(e.key === 'Enter'){
-        const pen = this.store.pens[this.inputDiv.dataset.penId];
+        const pen = this.store.pens[this.inputDiv.dataset.penId!];
         if(pen.input && pen.whiteSpace === 'nowrap'){
           this.hideInput();
         }
@@ -8133,7 +8135,7 @@ export class Canvas {
 
   private setDropdownList = (search?: boolean) => {
     this.clearDropdownList();
-    const pen = this.store.pens[this.inputDiv.dataset.penId];
+    const pen = this.store.pens[this.inputDiv.dataset.penId!];
     if (!this.store.data.locked&&!['tablePlus'].includes(pen.name)) {
       return;
     }
@@ -8201,7 +8203,7 @@ export class Canvas {
     li.dataset.i = index + '';
     li.onclick = this.selectDropdown;
     li.ontouchstart = this.selectDropdown;
-    const pen = this.store.pens[this.inputDiv.dataset.penId];
+    const pen = this.store.pens[this.inputDiv.dataset.penId!];
     li.onmouseenter = () => {
       li.style.background = pen.dropdownHoverBackground||this.store.styles["activeBg"] || '#eee';
       li.style.color = pen.dropdownHoverColor || '#bdc7db';
@@ -8216,7 +8218,7 @@ export class Canvas {
   private selectDropdown = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
     const li = e.target as HTMLElement;
-    const pen = this.store.pens[this.inputDiv.dataset.penId];
+    const pen = this.store.pens[this.inputDiv.dataset.penId!];
     if (!li || !pen || !pen.dropdownList) {
       return;
     }
@@ -8402,8 +8404,8 @@ export class Canvas {
       !pen.hiddenText && willCalcTextRect && calcTextRect(pen);
       willCalcIconRect && calcIconRect(this.store.pens, pen);
       if (willUpdatePath) {
-        globalStore.path2dDraws[pen.name] &&
-          this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen));
+        globalStore.path2dDraws[pen.name!] &&
+          this.store.path2dMap.set(pen, globalStore.path2dDraws[pen.name!](pen));
       }
     }
     // 若同时设置 x,y,width,height 与 rotate ，先 setPenRect ，再计算 rotate

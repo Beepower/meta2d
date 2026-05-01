@@ -17,7 +17,7 @@ export function video(pen: Pen) {
     pen.onChangeId = changeId;
   }
 
-  if (!videos[pen.id]) {
+  if (!videos[pen.id!]) {
     const player = document.createElement('div');
 
     const progress = document.createElement('div');
@@ -101,7 +101,7 @@ export function video(pen: Pen) {
     media.style.height = '100%';
     media.style.objectFit = (pen as any).objectFit || 'contain';
     player.appendChild(media);
-    videos[pen.id] = player;
+    videos[pen.id!] = player;
     pen.calculative!.canvas!.externalElements?.parentElement.appendChild(player);
     setElemPosition(pen, player);
     if (pen.autoPlay) {
@@ -135,21 +135,21 @@ export function video(pen: Pen) {
     pen.calculative!.audio = pen.audio;
   }
   if (pen.calculative!.patchFlags) {
-    setElemPosition(pen, videos[pen.id]);
+    setElemPosition(pen, videos[pen.id!]);
   }
   return new Path2D();
 }
 
 function destory(pen: Pen) {
-  videos[pen.id].onclick = null;
-  videos[pen.id].remove();
-  videos[pen.id] = undefined;
+  videos[pen.id!].onclick = null;
+  videos[pen.id!].remove();
+  videos[pen.id!] = undefined;
 }
 
 function move(pen: Pen) {
-  setElemPosition(pen, videos[pen.id]);
-  const progress = videos[pen.id].children[0];
-  const media = videos[pen.id].children[1];
+  setElemPosition(pen, videos[pen.id!]);
+  const progress = videos[pen.id!].children[0];
+  const media = videos[pen.id!].children[1];
   resizeProcessWidth(
     progress as HTMLDivElement,
     media as HTMLMediaElement,
@@ -186,7 +186,7 @@ function changeId(pen: Pen, oldId: string, newId: string) {
 }
 
 function value(pen: Pen) {
-  const video = videos[pen.id];
+  const video = videos[pen.id!];
   if (!video) {
     return;
   }

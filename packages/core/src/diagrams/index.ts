@@ -1,5 +1,6 @@
 export * from './rectangle';
 export * from './circle';
+export * from './ellipse';
 export * from './svgPath';
 export * from './diamond';
 export * from './triangle';
@@ -20,6 +21,7 @@ export * from './sceneContainer';
 
 import { rectangle, square } from './rectangle';
 import { circle } from './circle';
+import { ellipse } from './ellipse';
 import { svgPath } from './svgPath';
 import { diamond } from './diamond';
 import { triangle, triangleAnchors } from './triangle';
@@ -46,6 +48,7 @@ export function commonPens() {
     rectangle,
     square,
     circle,
+    ellipse,
     svgPath,
     diamond,
     triangle,

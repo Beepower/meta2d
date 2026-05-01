@@ -18,7 +18,7 @@ export function line(
   }
   const worldAnchors = pen.calculative!.worldAnchors!;
   if (worldAnchors.length > 1) {
-    let from: Point; // 上一个点
+    let from: Point | undefined; // 上一个点
     worldAnchors.forEach((pt: Point) => {
       if (from) {
         draw(path, from, pt);
@@ -95,7 +95,7 @@ export function getLineRect(pen: Pen) {
  */
 export function getLinePoints(pen: Pen) {
   const pts: Point[] = [];
-  let from: Point; // 上一个点
+  let from: Point | undefined; // 上一个点
   pen.calculative!.worldAnchors!.forEach((pt: Point) => {
     if (!from) {
       pts.push(pt);
@@ -156,7 +156,7 @@ export function pointInLine(pt: Point, pen: Pen) {
   const r = getLineR(pen);
 
   let i = 0;
-  let from: Point; // 上一个点
+  let from: Point | undefined; // 上一个点
   let point: Point;
   for (const anchor of pen.calculative!.worldAnchors) {
     if (from) {
@@ -271,7 +271,7 @@ export function getLineLength(pen: Pen): number {
   }
 
   let len = 0;
-  let from: Point; // 上一个点
+  let from: Point | undefined; // 上一个点
   pen.calculative!.worldAnchors!.forEach((pt: Point) => {
     if (from) {
       from.lineLength = lineLen(from, from.next, pt.prev, pt);
@@ -294,8 +294,8 @@ export function getLineLength(pen: Pen): number {
 }
 
 export function createLineSvgPath(line:Pen) {
-  let path:SVGGeometryElement
-  let from:Point = null
+  let path: SVGGeometryElement | undefined;
+  let from: Point | null = null;
   line.calculative!.worldAnchors.forEach(pt=>{
     if (from) {
       path = createSvgPath(path,from,from.next,pt.prev,pt)

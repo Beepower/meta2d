@@ -1421,7 +1421,7 @@ export class Meta2d {
     this.store.bindDatas = {};
     this.store.data.pens.forEach((pen) => {
       pen.form?.forEach((formItem) => {
-        let dataIds: BindId[];
+        let dataIds: BindId[] | undefined;
         if (formItem.dataIds) {
           if (Array.isArray(formItem.dataIds)) {
             dataIds = formItem.dataIds;
@@ -2517,7 +2517,7 @@ export class Meta2d {
 
   listenSocket() {
     try {
-      let socketFn: (
+      let socketFn: ((
         e: string,
         context?: {
           meta2d?: Meta2d;
@@ -2525,7 +2525,7 @@ export class Meta2d {
           topic?: string;
           url?: string;
         }
-      ) => boolean;
+      ) => boolean) | undefined;
       const socketCbJs = this.store.data.socketCbJs;
       if (socketCbJs) {
         socketFn = new Function('e', 'context', socketCbJs) as (
@@ -3881,11 +3881,8 @@ export class Meta2d {
     });
 
     this.store.data.locked && this.doDataEvent(datas);
-    let initPens: Pen[];
-    let pens: Pen[];
-    if (history) {
-      initPens = [];
-    }
+    const initPens: Pen[] = [];
+    const pens: Pen[] = [];
     penValues.forEach((value, pen) => {
       this.setValue(value, { render: false, doEvent, history: false });
       if (history) {
@@ -3978,7 +3975,7 @@ export class Meta2d {
     }
 
     history = history && !this.store.data.locked;
-    let initPens: Pen[];
+    let initPens: Pen[] = [];
     if (history) {
       initPens = deepClone(pens);
     }
@@ -6675,14 +6672,14 @@ export class Meta2d {
       fromAnchor = nearestAnchor(from, {
         x: _worldRect.x + _worldRect.width / 2,
         y: _worldRect.y + _worldRect.height / 2,
-      });
+      })!;
     }
     if (!toAnchor) {
       const _worldRect = from.calculative!.worldRect!;
       toAnchor = nearestAnchor(to, {
         x: _worldRect.x + _worldRect.width / 2,
         y: _worldRect.y + _worldRect.height / 2,
-      });
+      })!;
     }
     const absWidth = Math.abs(fromAnchor.x - toAnchor.x);
     const absHeight = Math.abs(fromAnchor.y - toAnchor.y);

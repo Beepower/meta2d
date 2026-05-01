@@ -16,8 +16,8 @@ export function calcAnchorDock(
   e: Point,
   curAnchor?: Point
 ) {
-  let xDock: Point;
-  let yDock: Point;
+  let xDock: Point | undefined;
+  let yDock: Point | undefined;
   let x = Infinity;
   let y = Infinity;
   const size = 8;
@@ -135,8 +135,8 @@ function calcDockByPoints(
   rect: Rect,
   calcActive = false
 ): { xDock: Point; yDock: Point } {
-  let xDock: Point;
-  let yDock: Point;
+  let xDock: Point | undefined;
+  let yDock: Point | undefined;
   let minCloseX = Infinity;
   let minCloseY = Infinity;
 

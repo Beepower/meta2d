@@ -28,7 +28,7 @@ export function polyline(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
   }
 
   // 拖拽起点
-  let dragFrom: boolean;
+  let dragFrom = false;
   if (pen.anchors?.length && from === pen.calculative!.activeAnchor) {
     dragFrom = true;
     from = to;

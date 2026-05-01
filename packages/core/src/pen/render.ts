@@ -1262,7 +1262,7 @@ function drawFillText(ctx: CanvasRenderingContext2D, pen: Pen, text: string) {
   const w = ctx.measureText(text).width;
   let t: string;
 
-  let prev: Point;
+  let prev: Point | undefined;
   for (const anchor of pen.calculative!.worldAnchors) {
     if (!prev) {
       prev = anchor;
@@ -1565,7 +1565,7 @@ export function renderPen(
     ctx.strokeStyle = _stroke || ctx.createPattern(strokeImg, REPEAT);
     // fill = true;
   } else {
-    let stroke: string | CanvasGradient | CanvasPattern;
+    let stroke: string | CanvasGradient | CanvasPattern | undefined;
     // TODO: 线只有线性渐变
     if (pen.calculative!.strokeType) {
       if (pen.calculative!.lineGradientColors) {
@@ -1794,7 +1794,7 @@ export function renderPenRaw(
         fill = true;
       }
     } else {
-      let stroke: string | CanvasGradient | CanvasPattern;
+      let stroke: string | CanvasGradient | CanvasPattern | undefined;
       if (
         pen.calculative!.strokeType &&
         pen.calculative!.lineGradientColors &&
@@ -2464,7 +2464,7 @@ function renderLoopElementsOnLine(
   const worldAnchors = line.calculative!.worldAnchors!
 
   if (worldAnchors.length > 1) {
-    let from: Point
+    let from: Point | undefined;
     let lastLength = 0  // 累积的路径长度
 
     for (let i = 0; i < worldAnchors.length; i++) {
@@ -2607,8 +2607,8 @@ function computeLineDashSegments(lineLength: number, dashArray: number[], offset
 }
 
 function calculateLineFrameStates(line:Pen,offsetInstance:number = 0) {
-  let path:SVGGeometryElement
-  let from:Point = null
+  let path: SVGGeometryElement | undefined;
+  let from: Point | null = null;
   line.calculative!.worldAnchors!.forEach(pt=>{
     if (from) {
       path = createSvgPath(path,from,from.next,pt.prev,pt)
@@ -3103,7 +3103,7 @@ export function facePen(pt: Point, pen?: Pen) {
 
 export function nearestAnchor(pen: Pen, pt: Point) {
   let dis = Infinity;
-  let anchor: Point;
+  let anchor: Point | undefined;
   pen.calculative!.worldAnchors!.forEach((a: Point) => {
     const d = distance(pt, a);
     if (dis > d) {

@@ -25,7 +25,7 @@ export function drawArrow(
     size = -size;
   }
   if (worldAnchors.length > 1) {
-    let from: Point; // 上一个点
+    let from: Point | undefined; // 上一个点
     let lastLength = 0;
     if(pen.close){
       worldAnchors = deepClone(worldAnchors);
@@ -87,7 +87,7 @@ export function drawArrow(
         from = pt;
       }
     }else{
-      let from: Point; // 上一个点
+      let from: Point | undefined; // 上一个点
       let pos = (pen.calculative!.animatePos % d) / d;
       if(pos>1){
         pos = 1

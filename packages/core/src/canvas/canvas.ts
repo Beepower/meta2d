@@ -195,7 +195,7 @@ export class Canvas {
 
   movingPens?: Pen[];
 
-  patchFlagsLines?: Set<Pen> = new Set();
+  patchFlagsLines: Set<Pen> = new Set();
   dock?: { xDock: Point; yDock: Point };
 
   prevAnchor?: Point;
@@ -1762,7 +1762,20 @@ export class Canvas {
         altKey: event.altKey,
         buttons: 1,
       });
-    } else if (len === 2 && this.startTouches?.length === 2) {
+    } else if (
+      len === 2 && this.startTouches?.length === 2 &&
+      this.startDistance !== undefined &&
+      this.currentCenter && this.touchCenter &&
+      this.initTouchDis !== undefined && this.initScale !== undefined &&
+      touches[0] && touches[1]
+    ) {
+      const startDistance = this.startDistance;
+      const currentCenter = this.currentCenter;
+      const touchCenter = this.touchCenter;
+      const initTouchDis = this.initTouchDis;
+      const initScale = this.initScale;
+      const touch0 = touches[0];
+      const touch1 = touches[1];
       this.mouseDown = undefined;
       if (!this.touchMoving && !this.touchScaling) {
         // const x1 = this.startTouches[0].pageX - touches[0].pageX;
@@ -1778,15 +1791,15 @@ export class Canvas {
         //   this.touchMoving = true;
         // }
         // 当前距离和中心点
-        const currentDistance = this.getDistance(touches[0], touches[1]);
-        const newCenter = this.getCenter(touches[0], touches[1]);
+        const currentDistance = this.getDistance(touch0, touch1);
+        const newCenter = this.getCenter(touch0, touch1);
 
         // 计算变化
-        const distanceDiff = currentDistance - this.startDistance;
-        const centerDiffX = newCenter.x - this.currentCenter.x;
-        const centerDiffY = newCenter.y - this.currentCenter.y;
+        const distanceDiff = currentDistance - startDistance;
+        const centerDiffX = newCenter.x - currentCenter.x;
+        const centerDiffY = newCenter.y - currentCenter.y;
         const centerMoveDistance = Math.sqrt(centerDiffX * centerDiffX + centerDiffY * centerDiffY);
-        const scaleRatio = Math.abs(distanceDiff) / this.startDistance;
+        const scaleRatio = Math.abs(distanceDiff) / startDistance;
 
         if (scaleRatio > centerMoveDistance / 100) {
           this.touchScaling = true;
@@ -1801,10 +1814,10 @@ export class Canvas {
         }
         const scale =
           Math.hypot(
-            touches[0].pageX - touches[1].pageX,
-            touches[0].pageY - touches[1].pageY
-          ) / this.initTouchDis;
-        this.scale(this.initScale * scale, deepClone(this.touchCenter));
+            touch0.pageX - touch1.pageX,
+            touch0.pageY - touch1.pageY
+          ) / initTouchDis;
+        this.scale(initScale * scale, deepClone(touchCenter));
       }
 
       if (this.touchMoving) {

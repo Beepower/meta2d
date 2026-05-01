@@ -2712,6 +2712,8 @@ export function calcWorldRects(pen: Pen) {
   let rect: Rect = {
     x: pen.x!,
     y: pen.y!,
+    width: 0,
+    height: 0,
   };
 
   if (!pen.parentId || (pen.parentId && !store.pens[pen.parentId])) {
@@ -3444,7 +3446,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
         pen.calculative!.rotate = pen.calculative!.initRect.rotate || 0;
       }
       if (frameIndex > 0) {
-        pen.prevFrame = {};
+        pen.prevFrame = {} as Pen;
         const prevFrame = pen.frames[frameIndex - 1];
         for (const k in prevFrame) {
           (pen.prevFrame as any)[k] = (prevFrame as any)[k];
@@ -3487,7 +3489,7 @@ export function setNodeAnimate(pen: Pen, now: number) {
 
 // 把前一个动画帧初始化为播放前状态
 export function initPrevFrame(pen: Pen) {
-  pen.prevFrame = {};
+  pen.prevFrame = {} as Pen;
   for (const k in pen) {
     if (typeof (pen as any)[k] !== 'object' || k === 'lineDash') {
       (pen.prevFrame as any)[k] = (pen as any)[k];

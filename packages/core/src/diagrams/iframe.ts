@@ -121,11 +121,11 @@ function beforeValue(pen: Pen, value: any) {
     value['operationalRect.height'] !== undefined
   ) {
     if (!pen.operationalRect) {
-      pen.operationalRect = {};
+      pen.operationalRect = { x: 0, y: 0, width: 0, height: 0 };
     }
     let _value = deepClone(value);
     if (!_value.operationalRect) {
-      _value.operationalRect = {};
+      _value.operationalRect = { x: 0, y: 0, width: 0, height: 0 };
     }
     if (_value['operationalRect.x'] !== undefined) {
       _value.operationalRect.x = _value['operationalRect.x'];

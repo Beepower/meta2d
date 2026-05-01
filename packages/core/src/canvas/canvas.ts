@@ -1884,6 +1884,8 @@ export class Canvas {
       name: 'line',
       x: pt.x,
       y: pt.y,
+      width: 0,
+      height: 0,
       type: PenType.Line,
       calculative: {
         canvas: this,
@@ -6073,7 +6075,7 @@ export class Canvas {
       this.changeIdsByMoving(pen, copyContainChildPens);
       this.store.pens[pen.id!] = pen; // updatePenRect 时需要计算
       pen.calculative!.canvas = this;
-      const value: Pen = {
+      const value: Partial<Pen> = {
         globalAlpha: 0.5,
       };
       // 线宽为 0 ，看不到外边框，拖动过程中给个外边框

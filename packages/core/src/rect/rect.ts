@@ -3,12 +3,12 @@ import { Point, rotatePoint, scalePoint } from '../point';
 import { formatPadding, Padding } from '../utils';
 
 export interface Rect {
-  x?: number;
-  y?: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
   ex?: number;
   ey?: number;
-  width?: number;
-  height?: number;
   rotate?: number;
   center?: Point;
   pivot?: Point; //旋转中心

@@ -31,9 +31,17 @@ export interface Point {
   background?: string;
   id?: string;
   penId?: string;
-  // line连接的pen.id
+  /**
+   * @quirk ch11.5 #2 — connectedLines reverse-index 由 line 端写入,
+   * line.anchors[i].connectTo = node pen.id 指向连接对端;同时 node
+   * pen.connectedLines[].lineId 反指本 line。删除 line 时需反向清理。
+   */
   connectTo?: string;
-  // line连接的pen的anchor.id
+  /**
+   * @quirk ch11.5 #1 — anchorId = anchor.id,即语义 port 名称(无 aux- 前缀)。
+   * line.anchors[i].anchorId 指向连接对端 pen 的 anchor.id;V2 IEC 元件直接
+   * 用 port name(如 "out"/"in0")作为 anchor.id,不加额外前缀。
+   */
   anchorId?: string;
   twoWay?: TwoWay;
   prev?: Point;

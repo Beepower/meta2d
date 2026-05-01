@@ -192,6 +192,14 @@ export class Canvas {
   pencil?: boolean;
   pencilLine?: Pen;
 
+  /**
+   * @quirk ch11.7 #4 — drag 期间的 pen clones。movingPens 元素在 store.pens
+   * (record by id) 但不在 store.data.pens (数组)。这是为了 drag 视觉反馈
+   * 与 store SoT 解耦:render() 时单独渲染 movingPens(见 renderPens 末尾),
+   * mouseup 后 ReverseSyncBridge 把 cloned 位移回填到原 pen 并 syncFullModel
+   * 重建。Phase D4 quirk 11.3 #3 dirty-pen fast path 在 movingPens != null
+   * 时强制走 full path,与本字段语义解耦。
+   */
   movingPens?: Pen[];
 
   patchFlagsLines: Set<Pen> = new Set();
@@ -3260,6 +3268,15 @@ export class Canvas {
     this.dock = undefined;
   };
 
+  /**
+   * @quirk ch11.6 #2 — `drawing` 参数控制是否 emit 'inactive' event:
+   *   - drawing=undefined / false → emit('inactive', activePens) (订阅方可观察)
+   *   - drawing=true → 静默,不 emit
+   * 为兼容 Phase D3 quirk 11.6 #3 修复(active() 切换前先 inactive() 统一发
+   * event),emit=false 路径 (active(pens, false)) 走 inactive(true) 静默。
+   * V2 端 selection 状态自维护,不强依赖 inactive event;但若 V2 走 active(pens,
+   * false) 路径需自行同步 selection 清空。
+   */
   inactive(drawing?: boolean) {
     if (!this.store.active!.length) {
       return;
@@ -6736,6 +6753,14 @@ export class Canvas {
    * @param x 偏移 x
    * @param y 偏移 y
    * @param doing 是否持续移动
+   *
+   * @quirk ch11.7 #1 + #2 — Event timing 二分:
+   *   - `'translatePens'`(无 -ing) emit ONCE on mouseup (doing=false 路径,行末)
+   *     —— 订阅方应在此处做高代价的同步:history push / 后端持久化 / 重建索引
+   *   - `'translatingPens'`(进行时) emit EACH FRAME during drag (无条件,行末)
+   *     —— 仅用于 Overlay 跟随渲染等廉价 UI 反馈
+   * V2 ReverseSyncBridge 监听 translatePens 触发 applyPatch + syncFullModel;
+   * OverlayLayer 监听 translatingPens 跟随 selection 框。
    */
   translatePens(
     pens = this.store.active,

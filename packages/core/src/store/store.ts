@@ -216,14 +216,35 @@ export interface EditAction {
 export interface Meta2dStore {
   id: string;
   data: Meta2dData;
+  /**
+   * @quirk ch11.2 #3 — DUAL DATA STORE: `store.pens` (record by id, O(1) lookup)
+   * MUST be kept in sync with `store.data.pens` (Pen[] array, render order).
+   * canvas.addPen / delForce 内部双写;直接 mutate `store.data.pens` 不更新
+   * record 会破坏 hit-test / selection / serialize。V2 端用 meta2d 提供的
+   * addPen/delete 公共方法,不 mutate 数组本身。
+   */
   pens: { [key: string]: Pen };
 
   histories: EditAction[];
   historyIndex?: number;
+  /**
+   * @quirk ch11.3 #4 — Path2D 缓存(WeakMap key=Pen)。Invalidate 时机:
+   * pen 几何变(updatePenRect / drawline / pencilLine push anchor / translate)
+   * 调用方需 store.path2dMap.set(pen, globalStore.path2dDraws[pen.name](pen))
+   * 重建。Phase D6.1 后 viewport zoom 通过 ctx.scale 应用,Path2D 不需在
+   * scale 改变时重建(原 quirk 未细化的 perf 隐患已自然解决)。
+   */
   path2dMap: WeakMap<Pen, Path2D>;
   animateMap: WeakMap<Pen, Pen>;
   bindDatas: { [key: string]: { id: string; formItem: FormItem }[] };
   bind: { [key: string]: { id: string; key: string }[] };
+  /**
+   * @quirk ch11.6 #1 — store.active 是 SHALLOW reference,元素是 store.data.pens
+   * 内对应 Pen 对象的同一引用。改 active[i].xxx = 改 data.pens[k].xxx 同步生效;
+   * 这是设计而非 bug,但订阅方需注意:不要为"读 selection"而克隆 active(性能浪费),
+   * 也不要把 active 元素当独立 model 改字段(会绕过 mutation pipeline)。
+   * V2 端 selection 状态由 Engine 持权威,不通过 active 反向改 pen。
+   */
   active: Pen[];
   hover?: Pen;
   lastHover?: Pen;

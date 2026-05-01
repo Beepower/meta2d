@@ -1087,8 +1087,13 @@ export class Meta2d {
   }
 
   /**
-   *
    * @param emit 是否发送消息
+   *
+   * @quirk ch11.2 #2 — async API 实际同步:addPen / addPens / setBackgroundImage
+   * 等签名虽 `async`,内部 await 的 canvas 方法本质同步完成(无真 I/O 等待,
+   * `await` 只产生一个 microtask 延迟)。返回的 Promise 会立即 resolve。
+   * V2 端调用时不要依赖 await 后能观察到下一帧 render 已发生 —— 需手动
+   * `await` + 等 rAF。`addPenSync` 是显式同步 escape,可避开 microtask 延迟。
    */
   async addPen(pen: Pen, history?: boolean, emit = true, abs = false, activate = true) {
     return await this.canvas.addPen(pen, history, emit, abs, activate);

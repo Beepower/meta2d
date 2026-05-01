@@ -82,6 +82,13 @@ export const needCalcIconRectProps = ['iconLeft', 'iconTop', 'iconRotate'];
 
 export const needImgCanvasPatchFlagsProps =  ['globalAlpha', 'flipY', 'flipX', 'x', 'y', 'width', 'height','iconWidth', 'iconHeight', 'imageRatio', 'iconLeft','iconTop', 'iconAlign', 'rotate', 'visible'];
 
+/**
+ * @quirk ch11.5 #2 — Pen.connectedLines 反向索引项。
+ * line 端 connectLine() 时双向写入:line.anchors[i].connectTo = node pen.id +
+ * line.anchors[i].anchorId = anchor.id;同时在 node pen.connectedLines 推
+ * { lineId, lineAnchor: anchor.id, anchor: connected node anchor.id }。
+ * 删 line 时反向清 node.connectedLines(canvas.delConnectedLines)。
+ */
 export interface ConnectLine {
   lineId: string;
   lineAnchor: string;
@@ -313,6 +320,12 @@ export interface Pen extends Rect {
   autoFrom?: boolean;
   autoTo?: boolean;
 
+  /**
+   * @quirk ch11.5 #2 — 反向索引,由 line 端 connectLine() 在 mouseup 时
+   * push;由 canvas.delConnectedLines() 在 line delete 时清。Node pen 不主动
+   * 维护;读时 trust line endpoint 是 SoT。translatePens 内部依赖此 list 跟
+   * 端点更新(updateLines)。
+   */
   connectedLines?: ConnectLine[];
 
   // Cycle count. Infinite if == 0.
@@ -403,6 +416,16 @@ export interface Pen extends Rect {
    * @deprecated 改用 canvasLayer
    */
   isBottom?: boolean; // 是否是底部图片
+  /**
+   * @quirk ch11.2 #4 — 决定 pen 渲染到哪个 offscreen DOM canvas:
+   *   - CanvasMain (default) → main offscreen (本 layer 是唯一支持 dirty-pen
+   *     fast path 的 layer,见 ch11.3 #3 + Options.dirtyPenRender)
+   *   - CanvasTemplate → canvasTemplate.canvas (背景层,patchFlags=false 时
+   *     整 render() early-return,天然 lazy)
+   *   - CanvasImage / CanvasImageBottom → canvasImage(Bottom).canvas (图片+DOM
+   *     层,per-pen `imageDrawed` 跟踪,亦 lazy)
+   * V2 默认全用 CanvasMain。
+   */
   canvasLayer?: CanvasLayer; //图元所在画布层
   form?: FormItem[]; // 业务表单
   lockedOnCombine?: LockState; // 组合成 combine ，该节点的 locked 值

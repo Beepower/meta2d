@@ -3151,6 +3151,15 @@ export function deleteTempAnchor(pen: Pen) {
 /**
  * 添加line到pen的connectedLines中，并关联相关属性
  * 不添加连线到画布中，请确保画布中已经有该连线。
+ *
+ * @quirk ch11.5 #3 — 双向 vs 单向 connectLine 由 anchor.twoWay 控制(非 pen.type):
+ *   - twoWay = TwoWay.In → 仅允许 line "to" 端连入(非 from),用于"流入"端口
+ *   - twoWay = TwoWay.Out → 仅允许 line "from" 端连出
+ *   - twoWay = TwoWay.DisableConnected → pen 完全禁止被连(early-return)
+ *   - twoWay = TwoWay.DisableConnectTo → line anchor 不能连其他 anchor
+ *   - twoWay = TwoWay.Disable → 双向禁
+ *   - twoWay = TwoWay.Default(默认)→ 双向允许
+ * V2 IEC 元件 anchor 默认 TwoWay.Default(单向 / 双向都可,语义在 routing 层)。
  * */
 export function connectLine(
   pen: Pen,

@@ -1316,7 +1316,7 @@ export function drawIcon(
       ctx.textBaseline = 'top';
       break;
     case 'bottom':
-      y = iconRect.ey;
+      y = iconRect.ey!;
       ctx.textBaseline = 'bottom';
       break;
     case 'left':
@@ -1324,7 +1324,7 @@ export function drawIcon(
       ctx.textAlign = 'left';
       break;
     case 'right':
-      x = iconRect.ex;
+      x = iconRect.ex!;
       ctx.textAlign = 'right';
       break;
     case 'left-top':
@@ -1334,20 +1334,20 @@ export function drawIcon(
       ctx.textBaseline = 'top';
       break;
     case 'right-top':
-      x = iconRect.ex;
+      x = iconRect.ex!;
       y = iconRect.y;
       ctx.textAlign = 'right';
       ctx.textBaseline = 'top';
       break;
     case 'left-bottom':
       x = iconRect.x;
-      y = iconRect.ey;
+      y = iconRect.ey!;
       ctx.textAlign = 'left';
       ctx.textBaseline = 'bottom';
       break;
     case 'right-bottom':
-      x = iconRect.ex;
-      y = iconRect.ey;
+      x = iconRect.ex!;
+      y = iconRect.ey!;
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
       break;
@@ -1356,7 +1356,7 @@ export function drawIcon(
   const fontWeight = pen.calculative!.iconWeight;
   let fontSize: number | undefined;
   const fontFamily = pen.calculative!.iconFamily;
-  if (pen.calculative!.iconSize > 0) {
+  if (pen.calculative!.iconSize! > 0) {
     fontSize = pen.calculative!.iconSize;
   } else if (iconRect.width > iconRect.height) {
     fontSize = iconRect.height;
@@ -1377,7 +1377,7 @@ export function drawIcon(
   }
 
   ctx.beginPath();
-  ctx.fillText(pen.calculative!.icon, x, y);
+  ctx.fillText(pen.calculative!.icon!, x, y);
   ctx.restore();
 }
 
@@ -1433,13 +1433,13 @@ export function ctxFlip(
   pen: Pen
 ) {
   // worldRect 可能为 undefined
-  const { x, ex, y, ey } = pen.calculative!.worldRect || {};
+  const { x, ex, y, ey } = pen.calculative!.worldRect || ({} as { x: number; y: number; ex?: number; ey?: number });
   if (pen.calculative!.flipX) {
-    ctx.translate(x + ex, 0);
+    ctx.translate(x + ex!, 0);
     ctx.scale(-1, 1);
   }
   if (pen.calculative!.flipY) {
-    ctx.translate(0, y + ey);
+    ctx.translate(0, y + ey!);
     ctx.scale(1, -1);
   }
 }
@@ -1454,9 +1454,9 @@ export function ctxRotate(
     if (rootParent) {
       const { x, y } =
         rootParent.calculative!.worldRect!.pivot ||
-        rootParent.calculative!.worldRect!.center;
+        rootParent.calculative!.worldRect!.center!;
       ctx.translate(x, y);
-      let rotate = (rootParent.calculative!.rotate * Math.PI) / 180;
+      let rotate = (rootParent.calculative!.rotate! * Math.PI) / 180;
       // 目前只有水平和垂直翻转，都需要 * -1
       if (!noFlip) {
         if (rootParent.calculative!.flipX) {
@@ -1471,9 +1471,9 @@ export function ctxRotate(
     }
   } else {
     const { x, y } =
-      pen.calculative!.worldRect!.pivot || pen.calculative!.worldRect!.center;
+      pen.calculative!.worldRect!.pivot || pen.calculative!.worldRect!.center!;
     ctx.translate(x, y);
-    let rotate = (pen.calculative!.rotate * Math.PI) / 180;
+    let rotate = (pen.calculative!.rotate! * Math.PI) / 180;
     // 目前只有水平和垂直翻转，都需要 * -1
     if (!noFlip) {
       if (pen.calculative!.flipX) {
@@ -1594,7 +1594,7 @@ export function renderPen(
     ctx.fillStyle = fill || ctx.createPattern(backgroundImg, REPEAT);
     fill = true;
   } else {
-    let back: string | CanvasGradient | CanvasPattern;
+    let back: string | CanvasGradient | CanvasPattern | undefined;
     if (pen.calculative!.bkType === Gradient.Linear) {
       if (pen.calculative!.gradientColors) {
         // if (!pen.type) {
@@ -1647,9 +1647,9 @@ export function renderPen(
 
   if (pen.calculative!.shadowColor) {
     ctx.shadowColor = pen.calculative!.shadowColor;
-    ctx.shadowOffsetX = pen.calculative!.shadowOffsetX;
-    ctx.shadowOffsetY = pen.calculative!.shadowOffsetY;
-    ctx.shadowBlur = pen.calculative!.shadowBlur;
+    ctx.shadowOffsetX = pen.calculative!.shadowOffsetX ?? 0;
+    ctx.shadowOffsetY = pen.calculative!.shadowOffsetY ?? 0;
+    ctx.shadowBlur = pen.calculative!.shadowBlur ?? 0;
   }
   if (lineGradientFlag) {
     ctxDrawLinearGradientPath(ctx, pen);
@@ -1680,7 +1680,7 @@ export function renderPen(
   }
 
   drawText(ctx, pen);
-  if (pen.type === PenType.Line && pen.fillTexts?.length > 0) {
+  if (pen.type === PenType.Line && pen.fillTexts && pen.fillTexts.length > 0) {
     for (const text of pen.fillTexts) {
       drawFillText(ctx, pen, text);
     }
@@ -1743,12 +1743,12 @@ export function renderPenRaw(
   if (pen.calculative!.flipX) {
     if (rect) {
       ctx.translate(
-        pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex,
+        pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex!,
         0
       );
     } else {
       ctx.translate(
-        pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex,
+        pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex!,
         0
       );
     }
@@ -1758,12 +1758,12 @@ export function renderPenRaw(
     if (rect) {
       ctx.translate(
         0,
-        pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey
+        pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey!
       );
     } else {
       ctx.translate(
         0,
-        pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey
+        pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey!
       );
     }
     ctx.scale(1, -1);
@@ -1790,7 +1790,7 @@ export function renderPenRaw(
         ctx.strokeStyle = ctx.createPattern(
           pen.calculative!.strokeImg,
           REPEAT
-        );
+        )!;
         fill = true;
       }
     } else {
@@ -1804,7 +1804,7 @@ export function renderPenRaw(
       } else {
         stroke = pen.calculative!.color || store.styles.color; //getGlobalColor(store);
       }
-      ctx.strokeStyle = stroke;
+      if (stroke) ctx.strokeStyle = stroke;
     }
 
     if (pen.backgroundImage) {
@@ -1812,11 +1812,11 @@ export function renderPenRaw(
         ctx.fillStyle = ctx.createPattern(
           pen.calculative!.backgroundImg,
           REPEAT
-        );
+        )!;
         fill = true;
       }
     } else {
-      ctx.fillStyle = pen.background;
+      ctx.fillStyle = pen.background || '';
       fill = !!pen.background;
     }
   }
@@ -1835,9 +1835,9 @@ export function renderPenRaw(
 
   if (pen.calculative!.shadowColor) {
     ctx.shadowColor = pen.calculative!.shadowColor;
-    ctx.shadowOffsetX = pen.calculative!.shadowOffsetX;
-    ctx.shadowOffsetY = pen.calculative!.shadowOffsetY;
-    ctx.shadowBlur = pen.calculative!.shadowBlur;
+    ctx.shadowOffsetX = pen.calculative!.shadowOffsetX ?? 0;
+    ctx.shadowOffsetY = pen.calculative!.shadowOffsetY ?? 0;
+    ctx.shadowBlur = pen.calculative!.shadowBlur ?? 0;
   }
 
   if (lineGradientFlag) {
@@ -1874,12 +1874,12 @@ export function renderPenRaw(
     if (pen.calculative!.flipX) {
       if (rect) {
         ctx.translate(
-          pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex,
+          pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex!,
           0
         );
       } else {
         ctx.translate(
-          pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex,
+          pen.calculative!.worldRect!.x + pen.calculative!.worldRect!.ex!,
           0
         );
       }
@@ -1889,12 +1889,12 @@ export function renderPenRaw(
       if (rect) {
         ctx.translate(
           0,
-          pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey
+          pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey!
         );
       } else {
         ctx.translate(
           0,
-          pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey
+          pen.calculative!.worldRect!.y + pen.calculative!.worldRect!.ey!
         );
       }
       ctx.scale(1, -1);
@@ -1907,7 +1907,7 @@ export function renderPenRaw(
   }
   drawText(ctx, pen);
 
-  if (pen.type === PenType.Line && pen.fillTexts?.length > 0) {
+  if (pen.type === PenType.Line && pen.fillTexts && pen.fillTexts.length > 0) {
     for (const text of pen.fillTexts) {
       drawFillText(ctx, pen, text);
     }

@@ -2899,7 +2899,7 @@ export class Meta2d {
       console.warn('iot Request address error')
       return;
     }
-    const {token, room, data} = await this.getIotToken(iot.devices!,iot.protocol==='websocket'?1:undefined,iot.room);
+    const {token, room, data} = await this.getIotToken(iot.devices!,(iot.protocol==='websocket'?1:undefined) as any,iot.room);
     if(data){
       // 初始数据
       this.socketCallback( JSON.stringify(data), {
@@ -2966,7 +2966,7 @@ export class Meta2d {
 
   iotAggregateBuild(item:any){
     let data = {
-      token: this.store.data.iot.token,
+      token: this.store.data.iot!.token,
       deviceId:item.deviceId,
       key:item.key,
       name: item.key+'_'+item.compute_name//item.id
@@ -3282,12 +3282,12 @@ export class Meta2d {
       // _sql+= ` LIMIT ${sql.pageSize||20}`+(sql.current>1?(' OFFSET '+(sql.current-1)*sql.pageSize):'');
       if(sql.pageSize !== -1){
         if(sql.dbType==="oracle"){
-          if(!_sql.includes('OFFSET')){
+          if(!_sql!.includes('OFFSET')){
             _sql+= ` OFFSET ${((sql.current||1)-1)*(sql.pageSize||20)} ROWS FETCH NEXT ${sql.pageSize||20} ROWS ONLY`
           }
         }else{
-          if(!_sql.includes('LIMIT')){
-            _sql+= ` LIMIT ${sql.pageSize||20}`+(sql.current>1?(' OFFSET '+(sql.current-1)*(sql.pageSize||20)):'');
+          if(!_sql!.includes('LIMIT')){
+            _sql+= ` LIMIT ${sql.pageSize||20}`+((sql.current||0)>1?(' OFFSET '+((sql.current||0)-1)*(sql.pageSize||20)):'');
           }
         }
       }
@@ -3552,11 +3552,11 @@ export class Meta2d {
 
   //获取动态参数
   getDynamicParam(key: string) {
-    let lsValue = localStorage.getItem(key);
+    let lsValue: string | null = localStorage.getItem(key);
     if(globalThis.le5leTokenD){
       let tokenkeys = [globalThis.le5leSSOTokenName ?? 'ssotoken',globalThis.le5leTokenName ?? 'token'];
       if(tokenkeys.includes(key)){
-        lsValue = d(lsValue)
+        lsValue = d(lsValue!)
       }
     }
     let params = queryURLParams();
@@ -3608,7 +3608,7 @@ export class Meta2d {
             this.requestHttp(_item);
             if (this.store.options.reconnetTimes) {
               // _item.times++;
-              if (_item.times >= this.store.options.reconnetTimes) {
+              if (_item.times! >= this.store.options.reconnetTimes) {
                 _item.times = 0;
                 clearInterval(this.updateTimerList[index]);
                 this.updateTimerList[index] = undefined;
@@ -3627,7 +3627,7 @@ export class Meta2d {
         let keys = req.url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
           if (keys) {
             keys.forEach((key) => {
-              req.url = req.url.replace(
+              req.url = req.url!.replace(
                 `\${${key}}`,this.getDynamicParam(key)
               );
             });
@@ -3689,7 +3689,7 @@ export class Meta2d {
       });
       if (res.ok) {
         const data = await res.text();
-        const httpNetworks = this.store.data.networks.filter(item=>item.protocol==='http');
+        const httpNetworks = this.store.data.networks!.filter(item=>item.protocol==='http');
         const net = req.index !== undefined ? httpNetworks[req.index] : undefined;
         this.socketCallback(data, { type: 'http', method: req.method, url: req.url, name: req.name, net});
       } else {
@@ -3709,7 +3709,7 @@ export class Meta2d {
         if (websocket) {
           websocket.onclose = null;
           websocket.close();
-          websocket = undefined;
+          websocket = undefined as any;
         }
       });
     this.mqttClients = [];
@@ -3844,18 +3844,18 @@ export class Meta2d {
             if (penValue) {
               return;
             }
-            penValues.set(pen, pen.onBinds(pen, datas, p.formItem));
+            penValues.set(pen, pen.onBinds(pen, datas as any, p.formItem));
             return;
           }
 
           if (penValue) {
-            penValue[p.formItem.key] = v.value;
+            penValue[p.formItem.key!] = v.value;
           } else {
             penValue = {
-              id: p.id,
-              [p.formItem.key]: v.value,
-            };
-            penValues.set(pen, penValue);
+              id: p.id!,
+              [p.formItem.key!]: v.value,
+            } as any;
+            penValues.set(pen, penValue!);
           }
         }
       );
@@ -3882,8 +3882,8 @@ export class Meta2d {
             penValue = {
               id: p.id,
               [p.key]: v.value,
-            };
-            penValues.set(pen, penValue);
+            } as any;
+            penValues.set(pen, penValue!);
           }
         }
       );
@@ -4000,7 +4000,7 @@ export class Meta2d {
         this.stopAnimate([pen]);
         if (!data.showDuration) {
           data.showDuration = data.frames.reduce((total, item) => {
-            return total + item.duration;
+            return total + item.duration!;
           }, 0);
         }
       }
@@ -4317,7 +4317,7 @@ export class Meta2d {
               return;
             }
           }
-          event.actions.forEach((action) => {
+          event.actions!.forEach((action) => {
             if (action.timeout) {
               let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (this.events[action.action]) {
@@ -4497,7 +4497,7 @@ export class Meta2d {
           flag = true;
         }
         if (flag) {
-          item.event.actions.forEach((action) => {
+          item.event.actions!.forEach((action) => {
             this.events[action.action](item.pen, action, data);
           });
         }
@@ -4520,11 +4520,11 @@ export class Meta2d {
       if (event.conditions && event.conditions.length) {
         if (event.conditionType === 'and') {
           flag = event.conditions.every((condition) => {
-            return this.dataJudegeCondition(data, condition.key, condition);
+            return this.dataJudegeCondition(data, condition.key!, condition);
           });
         } else if (event.conditionType === 'or') {
           flag = event.conditions.some((condition) => {
-            return this.dataJudegeCondition(data, condition.key, condition);
+            return this.dataJudegeCondition(data, condition.key!, condition);
           });
         }
       } else {
@@ -4538,7 +4538,7 @@ export class Meta2d {
     this.store.data.dataEvents?.forEach((event, index) => {
       if (indexArr.includes(index)) {
         event.actions?.forEach((action) => {
-          this.events[action.action](data, action);
+          this.events[action.action](data as any, action);
         });
       }
     });
@@ -4547,7 +4547,7 @@ export class Meta2d {
   initGlobalTriggers() {
     this.store.globalTriggers = {};
     this.store.data.triggers?.forEach((trigger) => {
-      trigger.conditions.forEach((condition) => {
+      trigger.conditions!.forEach((condition) => {
         if (condition.source) {
           if (!this.store.globalTriggers[condition.source]) {
             this.store.globalTriggers[condition.source] = [];
@@ -4721,29 +4721,29 @@ export class Meta2d {
     }
     const updatePens: Pen[] = [];
     children.forEach((pen) => {
-      let oldPen: Pen = deepClone(pen, true);
+      let oldPen: Pen | null = deepClone(pen, true);
       if (!pen.id || !this.store.pens[pen.id!]) {
         // 不存在于 store 中
         this.canvas.makePen(pen);
         oldPen = null; // 添加操作
       }
       if (pen.parentId) {
-        const oldParent = this.store.pens[pen.parentId];
-        const i = oldParent.children.findIndex((id) => id === pen.id);
+        const oldParent = this.store.pens[pen.parentId]!;
+        const i = oldParent.children!.findIndex((id) => id === pen.id);
         initUpdatePens.push(deepClone(oldParent, true));
-        oldParent.children.splice(i, 1);
+        oldParent.children!.splice(i, 1);
         updatePens.push(deepClone(oldParent, true));
       }
-      parent.children!.push(pen.id);
+      parent.children!.push(pen.id!);
       pen.parentId = parent.id;
       const childRect = calcRelativeRect(
-        pen.calculative!.worldRect,
-        parent.calculative!.worldRect
+        pen.calculative!.worldRect!,
+        parent.calculative!.worldRect!
       );
       Object.assign(pen, childRect);
       pen.locked = pen.lockedOnCombine ?? LockState.DisableMove;
       pen.locked =
-        pen.interaction || isInteraction.includes(pen.name) ? 0 : pen.locked;
+        pen.interaction || isInteraction.includes(pen.name!) ? 0 : pen.locked;
       if (!oldPen) {
         addPens.push(deepClone(pen, true));
       } else {
@@ -4810,7 +4810,7 @@ export class Meta2d {
         'download',
         (name || this.store.data.name || 'le5le.meta2d') + '.png'
       );
-      a.setAttribute('href', this.toPng(padding, undefined, true, maxWidth));
+      a.setAttribute('href', this.toPng(padding, undefined, true, maxWidth) || '');
       const evt = document.createEvent('MouseEvents');
       evt.initEvent('click', true, true);
       a.dispatchEvent(evt);

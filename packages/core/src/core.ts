@@ -4310,10 +4310,10 @@ export class Meta2d {
           }
           event.actions.forEach((action) => {
             if (action.timeout) {
-              let timer = setTimeout(() => {
+              let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (this.events[action.action]) {
                   this.events[action.action](pen, action);
-                  clearTimeout(timer);
+                  clearTimeout(timer!);
                   timer = null;
                 }
               }, action.timeout);
@@ -4359,10 +4359,10 @@ export class Meta2d {
           if (indexArr.includes(index)) {
             trigger.actions?.forEach((event) => {
               if (event.timeout) {
-                let timer = setTimeout(() => {
+                let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                   if (this.events[event.action]) {
                     this.events[event.action](pen, event);
-                    clearTimeout(timer);
+                    clearTimeout(timer!);
                     timer = null;
                   }
                 }, event.timeout);
@@ -4408,10 +4408,10 @@ export class Meta2d {
         if (indexArr.includes(index)) {
           trigger.actions?.forEach((event) => {
             if (event.timeout) {
-              let timer = setTimeout(() => {
+              let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                 if (this.events[event.action]) {
                   this.events[event.action](pen, event);
-                  clearTimeout(timer);
+                  clearTimeout(timer!);
                   timer = null;
                 }
               }, event.timeout);
@@ -4445,10 +4445,10 @@ export class Meta2d {
               if (flag) {
                 state.actions?.forEach((event) => {
                   if (event.timeout) {
-                    let timer = setTimeout(() => {
+                    let timer: ReturnType<typeof setTimeout> | null = setTimeout(() => {
                       if (this.events[event.action]) {
                         this.events[event.action](pen, event);
-                        clearTimeout(timer);
+                        clearTimeout(timer!);
                         timer = null;
                       }
                     }, event.timeout);

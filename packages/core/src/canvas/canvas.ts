@@ -220,6 +220,29 @@ export class Canvas {
    * Only consulted when `store.options.dirtyPenRender === true`. Default off.
    */
   dirtyPens: Set<Pen> | null = new Set();
+
+  /**
+   * Phase D4 quirk 11.3 #3 followup² — mass-mutation batch depth counter.
+   *
+   * When > 0, `markDirty()` is a zero-cost no-op (skipping Set.add /
+   * threshold / sentinel logic). On `endBatch()` returning depth to 0,
+   * `markAllDirty()` is invoked unconditionally — the safest worst-case
+   * assumption that the entire scene needs a redraw on the next frame.
+   *
+   * Use cases:
+   *   - `open()` / `addPens()` mass-mutation paths(meta2d core 自带,本节实施)
+   *   - V2 adapter `syncFullModel` / `applyPatch` 等大批量写入(用户层调用)
+   *
+   * Day 52 task 2(2026-05-01)— Day 52 task 1 real-browser instrumentation
+   * 实测 `dirtyPenRender=true` + loadModel(2000 pens)= 8.4x slowdown
+   * (default-on 5407ms vs default-off 647ms,per-render +0.34ms × ~13978
+   * calls)。RC = dirty-pen 算法本身(clip-rect compute + Set ops + threshold)
+   * 在 mass-mutation 场景下的累积开销远大于节约的 redraw 成本。Batch flag
+   * 让 mass-mutation 期间不付 dirty-pen 成本,end 时一次性 markAllDirty 走
+   * full path,与 default-off 等价。
+   */
+  private batchDepth = 0;
+
   dock?: { xDock?: Point; yDock?: Point };
 
   prevAnchor?: Point;
@@ -1650,21 +1673,22 @@ export class Canvas {
       return [];
     }
     const list: Pen[] = [];
-    // for (const pen of pens) {
-    //   if (!pen.id) {
-    //     pen.id = s8();
-    //   }
-    //   !pen.calculative && (pen.calculative = { canvas: this, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 });
-    //   this.store.pens[pen.id!] = pen;
-    // }
-    for (const pen of pens) {
-      if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
-        continue;
+    // Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — batch fence wraps
+    // mass mutation 期间 N 次 markDirty 全 no-op。endBatch markAllDirty 让
+    // 后续 render() 走 full path(与 dirtyPenRender=false 等价的稳定路径)。
+    this.beginBatch();
+    try {
+      for (const pen of pens) {
+        if (this.beforeAddPen && this.beforeAddPen(pen) != true) {
+          continue;
+        }
+        // Phase D6 quirk 11.1 #1 后:pens 在 world-space,abs=true 下的 *scale 转换是 no-op,
+        // 删除整个 if-block(原来把 world coords 烘焙成 screen-space 存储)。
+        this.makePen(pen);
+        list.push(pen);
       }
-      // Phase D6 quirk 11.1 #1 后:pens 在 world-space,abs=true 下的 *scale 转换是 no-op,
-      // 删除整个 if-block(原来把 world coords 烘焙成 screen-space 存储)。
-      this.makePen(pen);
-      list.push(pen);
+    } finally {
+      this.endBatch();
     }
     this.render();
     this.store.emitter.emit('add', list);
@@ -5225,6 +5249,11 @@ export class Canvas {
     // markDirty thousands of times). When dirtyPenRender=false, skip all
     // tracking work — Set.add + threshold check + sentinel state.
     if (!this.store.options.dirtyPenRender) return;
+    // Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — batch fence:
+    // 在 beginBatch/endBatch 包裹的 mass-mutation 期间,markDirty 完全 no-op,
+    // endBatch 时一次性 markAllDirty。real-browser 实测 default-on 在 2000-pen
+    // loadModel 下 8.4x 慢化,RC 是 per-pen markDirty 累积算法开销。
+    if (this.batchDepth > 0) return;
     if (this.dirtyPens === null) return;
     if (!pen) {
       this.markAllDirty();
@@ -5249,6 +5278,52 @@ export class Canvas {
    */
   markAllDirty = () => {
     this.dirtyPens = null;
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — open a batch fence.
+   *
+   * While `batchDepth > 0`, `markDirty()` is a zero-cost no-op. Pair every
+   * `beginBatch()` with `endBatch()`. Re-entrant (nested begin/end pairs are
+   * counted; only the outermost `endBatch()` triggers `markAllDirty()`).
+   *
+   * Typical use:
+   * ```ts
+   *   canvas.beginBatch();
+   *   try {
+   *     for (const pen of pens) canvas.makePen(pen); // markDirty no-op
+   *   } finally {
+   *     canvas.endBatch(); // markAllDirty + render path 与 default-off 等价
+   *   }
+   * ```
+   *
+   * 安全性:
+   * - dirtyPenRender=false 时 beginBatch/endBatch 也安全(markDirty 本身已 no-op)
+   * - markAllDirty 只在 endBatch 还原 depth 到 0 时一次性发起,不会重复 setNull
+   * - 嵌套不影响:N 层 begin / N 层 end → 最后 1 次 end 才 markAllDirty
+   */
+  beginBatch = () => {
+    this.batchDepth++;
+  };
+
+  /**
+   * Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — close a batch fence.
+   *
+   * Decrements `batchDepth`. When returned to 0, calls `markAllDirty()`
+   * unconditionally so the next render frame falls back to full path
+   * (worst-case correct: 大批量 mutation 后任意 pen 都可能 dirty)。
+   *
+   * 不与 `beginBatch` 配对(`endBatch` 多调)→ depth 钳到 0,无 markAllDirty 副作用。
+   */
+  endBatch = () => {
+    if (this.batchDepth <= 0) {
+      this.batchDepth = 0;
+      return;
+    }
+    this.batchDepth--;
+    if (this.batchDepth === 0) {
+      this.markAllDirty();
+    }
   };
 
   /**

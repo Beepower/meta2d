@@ -1209,21 +1209,31 @@ export class Meta2d {
       this.setBackgroundImage(data.bkImage!, data);
       Object.assign(this.store.data, data);
       this.store.data.pens = [];
-      // 第一遍赋初值
-      for (const pen of data.pens) {
-        if (!pen.id) {
-          pen.id = s8();
+      // Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — batch fence wraps
+      // mass mutation。real-browser instrumentation(2000 pens / dirtyPenRender
+      // =true)实测 8.4x 慢化(5407ms vs 647ms);RC = N 次 markDirty 累积算法
+      // 开销。batch 期间 markDirty 全 no-op,endBatch 触发 markAllDirty,后续
+      // render() 走 full path 与 default-off 等价。
+      this.canvas.beginBatch();
+      try {
+        // 第一遍赋初值
+        for (const pen of data.pens) {
+          if (!pen.id) {
+            pen.id = s8();
+          }
+          !pen.calculative && (pen.calculative = { canvas: this.canvas, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 });
+          this.store.pens[pen.id!] = pen;
         }
-        !pen.calculative && (pen.calculative = { canvas: this.canvas, worldRect: { x: 0, y: 0, width: 0, height: 0 }, worldAnchors: [], animatePos: 0, rotate: 0, lineWidth: 1, x: 0, y: 0, width: 0, height: 0, fontSize: 12, lineHeight: 1, globalAlpha: 1 });
-        this.store.pens[pen.id!] = pen;
+        for (const pen of data.pens) {
+          this.canvas.makePen(pen);
+        }
+        //首次计算连线bug
+        // for (const pen of data.pens) {
+        //   this.canvas.updateLines(pen);
+        // }
+      } finally {
+        this.canvas.endBatch();
       }
-      for (const pen of data.pens) {
-        this.canvas.makePen(pen);
-      }
-      //首次计算连线bug
-      // for (const pen of data.pens) {
-      //   this.canvas.updateLines(pen);
-      // }
     }
 
     this.canvas.patchFlagsLines?.forEach((pen) => {
@@ -2491,6 +2501,27 @@ export class Meta2d {
    */
   setScale(zoom: number, pivot?: { x: number; y: number }) {
     this.canvas.setScale(zoom, pivot);
+  }
+
+  /**
+   * Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — open a batch fence.
+   *
+   * 在 mass-mutation(loadModel / applyPatch / 批量 add/remove)期间使
+   * `markDirty()` 完全 no-op,end 时一次性 markAllDirty。real-browser 实测
+   * 在 dirtyPenRender=on + 2000-pen loadModel 下 8.4x 慢化(5407ms vs 647ms),
+   * batch fence 让 mass-mutation 期与 default-off 等价。Pair every
+   * `beginBatch()` with `endBatch()`。re-entrant(嵌套 begin/end 计数)。
+   */
+  beginBatch() {
+    this.canvas.beginBatch();
+  }
+
+  /**
+   * Phase D4 quirk 11.3 #3 followup² (Day 52 task 2) — close a batch fence.
+   * @see beginBatch
+   */
+  endBatch() {
+    this.canvas.endBatch();
   }
 
   translatePens(pens: Pen[], x: number, y: number) {

@@ -191,7 +191,7 @@ export async function sendJetLinksData(meta2d:Meta2d, list:any[]){
 //   });
 // }
 
-export async function playMp3(meta2d:any,alarmConfigId:string){
+export async function playMp3(meta2d: Meta2d, alarmConfigId: string){
   const res:any = await fetch(`/api/alarm/config/${alarmConfigId}`, {
     headers: {'X-Access-Token':localStorage.getItem('X-Access-Token') ||new URLSearchParams(location.search).get('X-Access-Token') ||''
     ,'Content-Type': 'application/json'},
@@ -205,26 +205,25 @@ export async function playMp3(meta2d:any,alarmConfigId:string){
   }
 }
 
-// Phase A DEBT: meta2d 用 any 因 Meta2dStore 未声明 globalAudio 字段(TS2339)
-// Phase B 后:在 Meta2dStore 加 globalAudio?: HTMLAudioElement 字段,然后改 meta2d: Meta2d
-function createAudio(meta2d: any, media: string, playTimes: number){
+function createAudio(meta2d: Meta2d, media: string, playTimes: number){
   if(!meta2d.store.globalAudio){
     meta2d.store.globalAudio = document.createElement('audio');
   }
-  meta2d.store.globalAudio.src = media;
-  meta2d.store.globalAudio.play();
+  const audio = meta2d.store.globalAudio;
+  audio.src = media;
+  audio.play();
   if(playTimes===-1){
-    meta2d.store.globalAudio.loop = true;
+    audio.loop = true;
   }else{
-    meta2d.store.globalAudio.loop = false;
+    audio.loop = false;
     let time = 0;
-    meta2d.store.globalAudio.onended = () => {
+    audio.onended = () => {
       time++;
       if (time < playTimes) {
-        meta2d.store.globalAudio.play();
+        audio.play();
       }
     };
   }
 }
 
-globalThis.createAudio =createAudio
+globalThis.createAudio = createAudio as any

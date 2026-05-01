@@ -1,5 +1,6 @@
 import pkg from '../../package.json';
 import { Pen } from '../pen';
+import type { Meta2dStore } from './store';
 
 export const globalStore: {
   version: string;
@@ -22,6 +23,11 @@ export const globalStore: {
   lineAnimateDraws:{},
   htmlElements: {},
 };
+
+// Phase A DEBT 真修 (Phase C): meta2dStores 与 globalStore 拆分
+// 此前 globalStore 被双用 (注册表 + Meta2dStore-by-id map),通过 `as unknown as Record` cast 实现
+// 现在拆为两个独立 map,各司其职
+export const meta2dStores: Record<string, Meta2dStore> = {};
 
 export function register(path2dFns: {
   [key: string]: (pen: Pen, ctx?: CanvasRenderingContext2D) => Path2D;

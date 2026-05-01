@@ -1,40 +1,56 @@
 // pSBC - Shade Blend Convert - Version 4.0 - 02/18/2019
 // https://github.com/PimpTrizkit/PJs/edit/master/pSBC.js
 
-// Phase A DEBT: d 参数被多次重赋值为 string / string[] / number(变量重用反模式)
-// 短期 d: any 守 noImplicitAny 边界;Phase B 阶段拆为独立变量(decoded/parts/numeric)
-export function pSBCr(d: any) {
-  const i = parseInt,
-    m = Math.round;
-  let n = d.length,
-    x: any = {};
+interface ColorParts {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
+}
+
+// 拆分原 d:any 变量重用反模式 (Phase A DEBT 真修):
+// - input: 原始字符串 (rgb(...) / #hex)
+// - parts: 字符串拆分后的分量数组
+// - hex: 转 number 后的 hex 整数
+export function pSBCr(input: string): ColorParts | null {
+  const i = parseInt;
+  const m = Math.round;
+  let n = input.length;
+  const x: ColorParts = { r: 0, g: 0, b: 0, a: -1 };
   if (n > 9) {
-    const [r, g, b, a] = (d = d.split(','));
-    n = d.length;
+    const parts = input.split(',');
+    const [r, g, b, a] = parts;
+    n = parts.length;
     if (n < 3 || n > 4) return null;
-    (x.r = i(r[3] == 'a' ? r.slice(5) : r.slice(4))),
-      (x.g = i(g)),
-      (x.b = i(b)),
-      (x.a = a ? parseFloat(a) : -1);
+    x.r = i(r![3] == 'a' ? r!.slice(5) : r!.slice(4));
+    x.g = i(g!);
+    x.b = i(b!);
+    x.a = a ? parseFloat(a) : -1;
   } else {
     if (n == 8 || n == 6 || n < 4) return null;
+    let expanded = input;
     if (n < 6)
-      d =
+      expanded =
         '#' +
-        d[1] +
-        d[1] +
-        d[2] +
-        d[2] +
-        d[3] +
-        d[3] +
-        (n > 4 ? d[4] + d[4] : '');
-    d = i(d.slice(1), 16);
-    if (n == 9 || n == 5)
-      (x.r = (d >> 24) & 255),
-        (x.g = (d >> 16) & 255),
-        (x.b = (d >> 8) & 255),
-        (x.a = m((d & 255) / 0.255) / 1000);
-    else (x.r = d >> 16), (x.g = (d >> 8) & 255), (x.b = d & 255), (x.a = -1);
+        input[1] +
+        input[1] +
+        input[2] +
+        input[2] +
+        input[3] +
+        input[3] +
+        (n > 4 ? input[4]! + input[4]! : '');
+    const hex = i(expanded.slice(1), 16);
+    if (n == 9 || n == 5) {
+      x.r = (hex >> 24) & 255;
+      x.g = (hex >> 16) & 255;
+      x.b = (hex >> 8) & 255;
+      x.a = m((hex & 255) / 0.255) / 1000;
+    } else {
+      x.r = hex >> 16;
+      x.g = (hex >> 8) & 255;
+      x.b = hex & 255;
+      x.a = -1;
+    }
   }
   return x;
 }
@@ -119,7 +135,7 @@ export function pSBC(p: number, c0: string, c1?: string, l?: boolean) {
 globalThis.pSBC = pSBC;
 
 export function rgba(c: string, p: number) {
-  const f = pSBCr(c) || { r: 0, g: 0, b: 0 };
+  const f: ColorParts = pSBCr(c) || { r: 0, g: 0, b: 0, a: -1 };
   if (f.a < 0) {
     return `rgba(${f.r},${f.g},${f.b},${p})`;
   }

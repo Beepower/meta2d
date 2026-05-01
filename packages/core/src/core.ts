@@ -45,6 +45,7 @@ import {
   EditAction,
   EditType,
   globalStore,
+  meta2dStores,
   register,
   registerAnchors,
   registerCanvasDraw,
@@ -6937,11 +6938,8 @@ export class Meta2d {
     this.store.emitter.all.clear(); // 内存释放
     this.canvas.destroy();
     this.canvas = undefined as any;
-    (globalStore as any)[this.store.id] = undefined;
+    delete meta2dStores[this.store.id];
     if (!onlyData) {
-      for (const k in globalStore) {
-        delete (globalStore as any)[k];
-      }
       globalStore.path2dDraws = {};
       globalStore.canvasDraws = {};
       globalStore.anchors = {};

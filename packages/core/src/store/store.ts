@@ -5,7 +5,7 @@ import { defaultOptions, Options } from '../options';
 import { defaultTheme, Theme } from '../theme';
 
 import { Point } from '../point';
-import { globalStore } from './global';
+import { globalStore, meta2dStores } from './global';
 import { Rect } from '../rect';
 import { Event, Trigger } from '../event';
 
@@ -257,6 +257,7 @@ export interface Meta2dStore {
   };
   globalTriggers:{[key:string]:Trigger[]};
   styles?: any;
+  globalAudio?: HTMLAudioElement;
 }
 
 export interface Meta2dClipboard {
@@ -304,16 +305,13 @@ export const createStore = () => {
 };
 
 // Return a data store, if not exists will create a store.
-// Phase A DEBT: globalStore 兼作 (a) 注册表(version/path2dDraws/...) (b) Meta2dStore 实例 map by id;
-// 两种用途混用同一对象,Phase B 阶段拆为两个独立 map 后此 cast 删除
 export const useStore = (id = 'default'): Meta2dStore => {
-  const stores = globalStore as unknown as Record<string, Meta2dStore>;
-  if (!stores[id]) {
-    stores[id] = createStore();
-    stores[id].id = id;
+  if (!meta2dStores[id]) {
+    meta2dStores[id] = createStore();
+    meta2dStores[id]!.id = id;
   }
 
-  return stores[id];
+  return meta2dStores[id]!;
 };
 
 export const clearStore = (store: Meta2dStore, template?: string) => {

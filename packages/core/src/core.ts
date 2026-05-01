@@ -4990,8 +4990,10 @@ export class Meta2d {
   }
 
   /**
-   * 放大到屏幕尺寸，并居中
-   * @param fit true，填满但完整展示；false，填满，但长边可能截取（即显示不完整）
+   * 缩放至适配视口并居中。
+   * @param fit true=contain(完整展示,可能 letterbox);false=cover(填满,长边可能截取)。
+   *   建议改用 fitContain / fitCover 命名更清晰 (Phase D2 quirk 11.1 #4)。
+   * @deprecated 用 fitContain() / fitCover() 替代,布尔参数语义不直观
    */
   fitView(fit: boolean = true, viewPadding: Padding = 10, fill: boolean = true) {
     // 默认垂直填充，两边留白
@@ -5027,6 +5029,16 @@ export class Meta2d {
     if (fill && this.store.data.fits?.length) {
       this.fillView();
     }
+  }
+
+  /** Phase D2 quirk 11.1 #4: contain 语义 — 完整展示画布,可能 letterbox。 */
+  fitContain(viewPadding: Padding = 10, fill: boolean = true) {
+    return this.fitView(true, viewPadding, fill);
+  }
+
+  /** Phase D2 quirk 11.1 #4: cover 语义 — 填满视口,长边可能截取。 */
+  fitCover(viewPadding: Padding = 10, fill: boolean = true) {
+    return this.fitView(false, viewPadding, fill);
   }
 
   fillView() {

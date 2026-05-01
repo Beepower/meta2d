@@ -6477,7 +6477,7 @@ export class Canvas {
         if (!pen || pen.type) {
           return;
         }
-        disconnectLine(pen, getAnchor(pen, anchor.anchorId), line, anchor);
+        disconnectLine(pen, getAnchor(pen, anchor.anchorId!)!, line, anchor);
       }
     });
   }
@@ -6499,7 +6499,7 @@ export class Canvas {
       return;
     }
     let hasLocked = pens.some((item: Pen) => {
-      if (item.locked >= LockState.DisableMove) return true;
+      if ((item.locked ?? 0) >= LockState.DisableMove) return true;
     });
     if (hasLocked) {
       return;
@@ -6509,7 +6509,7 @@ export class Canvas {
 
     const containChildPens = this.getAllByPens(pens);
     pens.forEach((pen) => {
-      if (pen.locked >= LockState.DisableMove) {
+      if ((pen.locked ?? 0) >= LockState.DisableMove) {
         return;
       }
 
@@ -6556,7 +6556,7 @@ export class Canvas {
       this.pushHistory({
         type: EditType.Update,
         pens: deepClone(pens, true),
-        initPens,
+        initPens: initPens || undefined,
       });
       this.initImageCanvas(pens);
       this.initTemplateCanvas(pens);
@@ -6620,7 +6620,7 @@ export class Canvas {
     lineAnchor.prev = undefined;
     lineAnchor.next = undefined;
     if (penConnection) {
-      penConnection.anchor = newAnchor.id;
+      penConnection.anchor = newAnchor.id!;
     } else {
       connectLine(pen, newAnchor, line, lineAnchor);
     }
@@ -6657,7 +6657,7 @@ export class Canvas {
           }
         }
       } else {
-        const rotate = pen.calculative!.initRect!.rotate - pen.calculative!.rotate;
+        const rotate = pen.calculative!.initRect!.rotate! - pen.calculative!.rotate!;
         for (const k in pen) {
           if (
             k !== 'x' &&
@@ -6673,10 +6673,10 @@ export class Canvas {
         }
         if (pen.children?.length) {
           if (rotate) {
-            rotatePen(pen, rotate, pen.calculative!.worldRect);
+            rotatePen(pen, rotate, pen.calculative!.worldRect!);
           }
         } else {
-          pen.calculative!.rotate = pen.rotate;
+          pen.calculative!.rotate = pen.rotate!;
         }
         //其他回到最初始状态
         const originStatus = deepClone(this.store.animateMap.get(pen));
@@ -6731,7 +6731,7 @@ export class Canvas {
       }
       if(!lineAnchor.connectTo){
         // 如果pen有连接关系但连线中没有连接关系，删除pen的连接关系
-        pen.connectedLines.splice(index,1);
+        pen.connectedLines!.splice(index,1);
         return;
       }
 
@@ -6911,7 +6911,7 @@ export class Canvas {
         pen.calculative!.frameEnd! += d;
       } else {
         if (pen.name === 'video') {
-          pen.calculative!.media.currentTime = 0;
+          pen.calculative!.media!.currentTime = 0;
           pen.calculative!.media?.play();
           pen.onStartVideo?.(pen);
         } else if (
@@ -6942,11 +6942,11 @@ export class Canvas {
                 }
               );
             }
-            this.store.animateMap.set(pen, this.getFrameProps(pen));
+            this.store.animateMap.set(pen, this.getFrameProps(pen) as Pen);
           } else {
             if (pen.animations?.length) {
               //默认执行line的第一个动画
-              const animate = deepClone(pen.animations[0]);
+              const animate = deepClone(pen.animations![0]);
               delete animate.name;
               animate.currentAnimation = 0;
               this.parent.setValue(
@@ -6994,7 +6994,7 @@ export class Canvas {
     requestAnimationFrame(() => {
       const now = Date.now();
 
-      if (now - this.lastAnimateRender < this.store.options.animateInterval) {
+      if (now - this.lastAnimateRender < this.store.options.animateInterval!) {
         if (this.store.animates.size > 0) {
           this.animate();
         }
@@ -7419,8 +7419,8 @@ export class Canvas {
         if (node) {
           node.connectedLines?.forEach((cl) => {
             if (cl.lineId === oldId) {
-              cl.lineId = line.id;
-              cl.lineAnchor = anchor.id;
+              cl.lineId = line.id!;
+              cl.lineAnchor = anchor.id!;
             }
           });
         } else {
@@ -7513,9 +7513,9 @@ export class Canvas {
           console.warn('父节点锁定');
           return;
         } else {
-          const parentPen = getParent(pen);
-          const _index = parentPen.children.indexOf(pen.id);
-          parentPen.children.splice(_index, 1);
+          const parentPen = getParent(pen)!;
+          const _index = parentPen.children!.indexOf(pen.id!);
+          parentPen.children!.splice(_index, 1);
           if (delPens) {
             this.getDelPens(pen, delPens);
           }
@@ -7536,7 +7536,7 @@ export class Canvas {
         delPen.calculative!.active = undefined;
       }
       if(delPen.pathId){
-        delPen.path = this.store.data.paths[pen.pathId];
+        delPen.path = this.store.data.paths![pen.pathId!];
       }
       delPens.push(delPen);
     }
@@ -7567,14 +7567,14 @@ export class Canvas {
     if (i > -1) {
       this.delConnectedLines(this.store.data.pens[i]);
       this.store.data.pens.splice(i, 1);
-      this.store.pens[pen.id!] = undefined;
+      this.store.pens[pen.id!] = undefined as any;
       delete this.store.pens[pen.id!];
       // 删除svgpath的数据
       if(pen.pathId){
         const hasP = this.store.data.pens.some((p)=>p.pathId === pen.pathId);
         if(!hasP){
           // 删除path
-          delete this.store.data.paths[pen.pathId];
+          delete this.store.data.paths![pen.pathId];
         }
       }
     }
@@ -7761,8 +7761,8 @@ export class Canvas {
     this.inputDiv.contentEditable = pen.readonly ? 'false' : 'true';
     this.inputDiv.focus();
     const range = window.getSelection(); //创建range
-    range.selectAllChildren(this.inputDiv); //range 选择obj下所有子内容
-    range.collapseToEnd(); //光标移至最后
+    range!.selectAllChildren(this.inputDiv); //range 选择obj下所有子内容
+    range!.collapseToEnd(); //光标移至最后
     this.inputDiv.scrollTop = this.inputDiv.scrollHeight;
     this.inputDiv.scrollLeft = this.inputDiv.scrollWidth;
     pen.calculative!.text = undefined;

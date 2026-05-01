@@ -3062,10 +3062,12 @@ export class Meta2d {
     if(net.enable === false){
       return;
     }
-    if (net.options.clientId && !net.options.customClientId) {
-      net.options.clientId = s8();
+    if (!net.options) net.options = {};
+    const netOptions = net.options;
+    if (netOptions.clientId && !netOptions.customClientId) {
+      netOptions.clientId = s8();
     }
-    let url = net.url;
+    let url = net.url || '';
     if(url.indexOf('${') > -1){
       let keys = url.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {
@@ -3077,7 +3079,7 @@ export class Meta2d {
       }
     }
     net.times = 0;
-    let options = deepClone(net.options);
+    let options: any = deepClone(netOptions) || {};
     if(options?.username&&options.username.includes('${')){
       let keys = options.username.match(/\$\{([^}]+)\}/g)?.map((m: string) => m.slice(2, -1));
       if (keys) {

@@ -522,7 +522,8 @@ export class Canvas {
     // 是否粘贴图片
     let hasImages = false;
     if (navigator.clipboard && event.clipboardData) {
-      const items = event.clipboardData.items;
+      if (!event.clipboardData) return;
+    const items = event.clipboardData.items;
       if (items) {
         for (let i = 0; i < items.length; i++) {
           if (items[i].type.indexOf('image') !== -1 && items[i].getAsFile()) {
@@ -534,7 +535,8 @@ export class Canvas {
     }
 
     if (hasImages) {
-      const items = event.clipboardData.items;
+      if (!event.clipboardData) return;
+    const items = event.clipboardData.items;
       if (items) {
         for (let i = 0; i < items.length; i++) {
           if (items[i].type.indexOf('image') !== -1 && items[i].getAsFile()) {
@@ -1363,9 +1365,11 @@ export class Canvas {
     event.preventDefault();
     event.stopPropagation();
 
+    if (!event.dataTransfer) return;
+    const dt = event.dataTransfer;
     const json =
-      event.dataTransfer.getData('Meta2d') ||
-      event.dataTransfer.getData('Text');
+      dt.getData('Meta2d') ||
+      dt.getData('Text');
 
     let obj = null;
     try {
@@ -1374,7 +1378,7 @@ export class Canvas {
       }
     } catch (e) {}
     if (!obj) {
-      const { files } = event.dataTransfer;
+      const { files } = dt;
       if (
         files.length &&
         files[0].type.match('image.*') &&

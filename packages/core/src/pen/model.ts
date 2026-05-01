@@ -120,6 +120,26 @@ export interface ColorStop {
   color: string;
 }
 
+/**
+ * A drawable pen (node, line, image, etc.).
+ *
+ * Geometry SoT (Phase D6 ch11.4 #1-3):
+ *   - Inherits `x, y, width, height` from Rect — these are the **author-set
+ *     world-space** coordinates (pre-rotation, pre-parent-transform). After
+ *     D6.1 keystone they are no longer mutated by viewport zoom; viewport
+ *     zoom is applied at render-time via `ctx.scale`.
+ *   - For child pens (`parentId` set), `x, y, width, height` are normalized
+ *     [0, 1] coordinates relative to the parent's worldRect — see
+ *     `calcChildRect` in `rect.ts`. This is why an IEC-style flat scene
+ *     (no parents) lets V2 read `pen.x` as world-space directly.
+ *   - **For rendering, read `calculative.worldRect` — never `pen.x`** unless
+ *     you are writing to set the author position. `pen.x` and
+ *     `calculative.worldRect.x` can differ when the pen has a parent or
+ *     when an animation is in flight.
+ *   - `calculative.x / y / width / height` exist for legacy reasons and
+ *     are NOT canonical — do not read them; they are kept in sync with
+ *     `calculative.worldRect` only on certain paths.
+ */
 export interface Pen extends Rect {
   id?: string;
   tags?: string[];
@@ -445,6 +465,23 @@ export interface Pen extends Rect {
 
   //业务
   roles?: string[];
+  /**
+   * Runtime calculation cache (re-computed by `calcWorldRect` etc).
+   *
+   * Geometry SoT (ch11.4 #1-2):
+   *   - `worldRect` is the **canonical** rendering rectangle — it accounts
+   *     for parent transforms, animations, and pivot rotation. All drawFns
+   *     and hit-tests must read `worldRect`, not `pen.x` or `calculative.x`.
+   *   - `calculative.x / y / width / height` are legacy fields kept for a
+   *     handful of older code paths. They are NOT a substitute for
+   *     `worldRect.x` etc — pre-D6.1 they sometimes carried screen-space
+   *     post-zoom values; post-D6.1 they are world-space but still trail
+   *     `worldRect` on transform / animation paths. Treat as deprecated
+   *     for read access; only mutate if you are mirroring a write to
+   *     `pen.x` (rare).
+   *   - `initRect` / `prevFrameRect` are animation snapshots in the same
+   *     coordinate space as `worldRect`.
+   */
   calculative?: {
     x: number;
     y: number;
@@ -458,6 +495,11 @@ export interface Pen extends Rect {
     progressColor?: string;
     progressGradientColors?: string;
     verticalProgress?: boolean;
+    /**
+     * Canonical world-space rendering rectangle. Read this (not `pen.x`,
+     * not `calculative.x`) for hit-tests, drawFn output, and overlay
+     * positioning.
+     */
     worldRect: Rect;
     worldAnchors: Point[];
     worldIconRect?: Rect;

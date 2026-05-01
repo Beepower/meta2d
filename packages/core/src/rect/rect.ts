@@ -2,6 +2,26 @@ import { isEqual, Pen } from '../pen';
 import { Point, rotatePoint, scalePoint } from '../point';
 import { formatPadding, Padding } from '../utils';
 
+/**
+ * Axis-aligned rectangle (with optional rotation about a pivot).
+ *
+ * Coordinate system (Phase D6.1+ ch11.4 #1-3 SoT):
+ *   - All Rect coordinates are **world-space** unless explicitly documented
+ *     otherwise. Pre-D6.1 Pen extends Rect carried screen-space (post-zoom)
+ *     values; D6.1 keystone made pens world-space and applies viewport zoom
+ *     at render-time via `ctx.scale`.
+ *   - `x, y` is the top-left corner; `width, height` is the size.
+ *   - `ex, ey` are derived (right, bottom) — recomputed by `calcRightBottom`.
+ *   - `center` is derived; `pivot` is the rotation pivot (defaults to center).
+ *   - `rotate` is in degrees (not radians); 0 / multiples of 360 are treated
+ *     as the un-rotated fast path in `pointInRect`.
+ *
+ * Mutation discipline:
+ *   - Treat `x, y, width, height` as primary; derived fields (`ex, ey, center`)
+ *     are stale until the next `calcRightBottom`/`calcCenter` call.
+ *   - Don't mutate Rect from a render callback — Phase D6 keystone enforces
+ *     this by routing all viewport zoom through `ctx.scale`, not pen mutation.
+ */
 export interface Rect {
   x: number;
   y: number;

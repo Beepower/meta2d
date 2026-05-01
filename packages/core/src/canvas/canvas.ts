@@ -5201,9 +5201,13 @@ export class Canvas {
     this.canvasImageBottom.render();
     this.canvasImage.render();
     this.patchFlags = false;
-    // Phase D4 quirk 11.3 #3 — reset dirty set for next frame.
-    // patchFlagsLines 在 inactive() / mouseup 等处已自维护清理。
-    this.dirtyPens = new Set();
+    // Phase D4 quirk 11.3 #3 — reset dirty set for next frame (only when
+    // feature enabled, avoids GC churn from per-frame Set instantiation
+    // when option is off).patchFlagsLines 在 inactive() / mouseup 等处
+    // 已自维护清理。
+    if (this.store.options.dirtyPenRender) {
+      this.dirtyPens = new Set();
+    }
   };
 
   /**
@@ -5215,10 +5219,24 @@ export class Canvas {
    * pen is identifiable. Non-identifiable mutations call `markAllDirty()` instead.
    */
   markDirty = (pen?: Pen) => {
+    // Phase D4 quirk 11.3 #3 — option-gate first to make markDirty zero-cost
+    // when feature disabled. Embedded at ~16 sites; each call is a hot path
+    // during loadModel / applyPatch (mass mutation: 2000-pen scenarios call
+    // markDirty thousands of times). When dirtyPenRender=false, skip all
+    // tracking work — Set.add + threshold check + sentinel state.
+    if (!this.store.options.dirtyPenRender) return;
     if (this.dirtyPens === null) return;
-    if (pen) {
-      this.dirtyPens.add(pen);
-    } else {
+    if (!pen) {
+      this.markAllDirty();
+      return;
+    }
+    this.dirtyPens.add(pen);
+    // Mass-mutation short-circuit:once dirty 集合 ≥ 80% of total pens,
+    // fast path 也不会触发(同 shouldUseFastPath 阈值)。继续 add 是浪费
+    // Set growth + GC churn(典型场景:loadModel / applyPatch 大批量 mutation,
+    // 每 addPen 都 markDirty 累积到 size===length 已知必走 full path)。
+    // 早 bail 到 sentinel 让后续 markDirty 全 O(1) no-op。
+    if (this.dirtyPens.size >= this.store.data.pens.length * 0.8) {
       this.markAllDirty();
     }
   };

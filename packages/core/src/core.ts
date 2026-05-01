@@ -1561,9 +1561,9 @@ export class Meta2d {
                 });
               }
             }
-          }else if(realTime.bind.class === 'sql'){
-            let bind = realTime.bind.id.split('#');
-            const sql = this.store.data.sqls.find((item) => item.bindId === bind[0]);
+          }else if(realTime.bind!.class === 'sql'){
+            let bind = realTime.bind!.id.split('#');
+            const sql = this.store.data.sqls!.find((item) => item.bindId === bind[0]);
             if(sql){
               if(!sql.keys){
                 sql.keys = [];
@@ -1636,7 +1636,7 @@ export class Meta2d {
           meta2d: Meta2d;
         }) => void;
         fn({ meta2d: this });
-        fn = null;
+        fn = null as any;
       } catch (e) {
         console.warn('initJs error', e);
       }
@@ -1794,7 +1794,7 @@ export class Meta2d {
     }
     this.store.patchFlagsBackground = true;
     this.store.patchFlagsTop = true;
-    this.setBackgroundImage(undefined);
+    this.setBackgroundImage(undefined as any);
     render && this.render();
   }
 
@@ -1825,6 +1825,7 @@ export class Meta2d {
   registerAnchors = registerAnchors;
 
   registerLineAnimateDraws = (name: string, drawFunc: string)=>{
+    if (!this.store.data.lineAnimateDraws) this.store.data.lineAnimateDraws = {};
     this.store.data.lineAnimateDraws[name] = drawFunc;
     // 同步到store
     // @ts-ignore
@@ -1833,7 +1834,7 @@ export class Meta2d {
   updateLineAnimateDraws(name: string, option: any){// option: {name:'xxx',code:'xxx'}
     if(!option)return
 
-    delete this.store.data.lineAnimateDraws[name];
+    delete this.store.data.lineAnimateDraws![name];
     delete globalStore.lineAnimateDraws[name];
 
     if(option === -1) { // -1 表示删除
@@ -1936,8 +1937,8 @@ export class Meta2d {
       if (pen.calculative!.pause) {
         const d = Date.now() - pen.calculative!.pause;
         pen.calculative!.pause = undefined;
-        pen.calculative!.frameStart += d;
-        pen.calculative!.frameEnd += d;
+        (pen.calculative!.frameStart as number) += d;
+        (pen.calculative!.frameEnd as number) += d;
       } else {
         let index = -1;
         if (params !== undefined && pen.animations) {
@@ -1956,14 +1957,14 @@ export class Meta2d {
             }
           }
         } else if (params === undefined) {
-          index = pen.animations?.findIndex((i) => i.autoPlay);
+          index = pen.animations?.findIndex((i) => i.autoPlay) ?? -1;
           if (index === -1 && pen.animations?.length) {
             //默认执行第0个动画
             index = 0;
           }
         }
         if (index !== -1 && index !== undefined) {
-          const animate = deepClone(pen.animations[index]);
+          const animate = deepClone(pen.animations![index]);
           animate.animateName = animate.name;
           delete animate.name;
           animate.currentAnimation = index;
@@ -1986,7 +1987,7 @@ export class Meta2d {
         if (!pen.type) {
           this.store.animateMap.set(
             pen,
-            pen.calculative!.canvas!.getFrameProps(pen)
+            pen.calculative!.canvas!.getFrameProps(pen) as Pen
           );
         }
       }
@@ -2104,7 +2105,7 @@ export class Meta2d {
   }
 
   calcAnimateDuration(pen: Pen) {
-    return pen.frames.reduce((prev, frame) => prev + frame.duration, 0);
+    return pen.frames!.reduce((prev, frame) => prev + frame.duration!, 0);
   }
 
   /**
@@ -2172,13 +2173,13 @@ export class Meta2d {
         return;
       }
       // pen 来自于 store.active ，不存在有 parentId 的情况
-      parent.children!.push(pen.id);
+      parent.children!.push(pen.id!);
       pen.parentId = parent.id;
-      const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
+      const childRect = calcRelativeRect(pen.calculative!.worldRect!, rect);
       Object.assign(pen, childRect);
       pen.locked = pen.lockedOnCombine ?? LockState.None;
       pen.locked =
-        pen.interaction || isInteraction.includes(pen.name) ? 0 : pen.locked;
+        pen.interaction || isInteraction.includes(pen.name!) ? 0 : pen.locked;
     });
     //将组合后的父节点置底
     this.store.data.pens.splice(minIndex, 0, parent);
@@ -2329,13 +2330,13 @@ export class Meta2d {
       });
       pens.forEach((pen) => {
         if (pen.id !== parent.id) {
-          parent.children!.push(pen.id);
+          parent.children!.push(pen.id!);
           pen.parentId = parent.id;
-          const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
+          const childRect = calcRelativeRect(pen.calculative!.worldRect!, rect);
           Object.assign(pen, childRect);
           pen.locked = pen.lockedOnCombine ?? LockState.DisableMove;
           pen.locked =
-            pen.interaction || isInteraction.includes(pen.name)
+            pen.interaction || isInteraction.includes(pen.name!)
               ? 0
               : pen.locked;
           calcInView(pen, true);
@@ -2359,14 +2360,14 @@ export class Meta2d {
     calcCenter(rect);
     child.calculative!.worldRect = rect;
     if (parent.container && rectInRect(rect, parent.calculative!.worldRect, true)) {//取所有图元的范围
-      const childRect = calcRelativeRect(rect, parent.calculative!.worldRect);
+      const childRect = calcRelativeRect(rect, parent.calculative!.worldRect!);
       Object.assign(child, childRect);
     } else {
       if(parent.container) {//容器模式取操作过程中最大范围
         let x = Math.min(rect.x, parent.calculative!.worldRect!.x);
         let y = Math.min(rect.y, parent.calculative!.worldRect!.y);
-        let ex = Math.max(rect.ex, parent.calculative!.worldRect!.ex);
-        let ey = Math.max(rect.ey, parent.calculative!.worldRect!.ey);
+        let ex = Math.max(rect.ex!, parent.calculative!.worldRect!.ex!);
+        let ey = Math.max(rect.ey!, parent.calculative!.worldRect!.ey!);
         parent.calculative!.worldRect = {
           x: x,
           y: y,
@@ -2540,7 +2541,7 @@ export class Meta2d {
         ) => boolean;
       }
       if (!socketFn) {
-        this.socketFn = null;
+        this.socketFn = undefined;
         return false;
       }
       this.socketFn = socketFn;
@@ -2616,10 +2617,10 @@ export class Meta2d {
     }
     if (this.store.data.mqtt) {
       if (
-        this.store.data.mqttOptions.clientId &&
-        !this.store.data.mqttOptions.customClientId
+        this.store.data.mqttOptions!.clientId &&
+        !(this.store.data.mqttOptions as any).customClientId
       ) {
-        this.store.data.mqttOptions.clientId = s8();
+        this.store.data.mqttOptions!.clientId = s8();
       }
       const mqttOptions = { ...this.store.data.mqttOptions };
       // 如果没有username/password或为空字符串则删除username/password
@@ -2688,7 +2689,7 @@ export class Meta2d {
             this.oldRequestHttp(item);
             if (this.store.options.reconnetTimes) {
               // item.times++;
-              if (item.times >= this.store.options.reconnetTimes) {
+              if (item.times! >= this.store.options.reconnetTimes) {
                 item.times = 0;
                 clearInterval(this.httpTimerList[index]);
                 this.httpTimerList[index] = undefined;
@@ -2726,7 +2727,7 @@ export class Meta2d {
         const data = await res.text();
         this.socketCallback(data, { type: 'http', url: req.http });
       } else {
-        _req.times++;
+        (_req.times as number)++;
         this.store.emitter.emit('error', { type: 'http', error: res });
       }
     }
@@ -3689,7 +3690,7 @@ export class Meta2d {
         const net = req.index !== undefined ? httpNetworks[req.index] : undefined;
         this.socketCallback(data, { type: 'http', method: req.method, url: req.url, name: req.name, net});
       } else {
-        _req.times++;
+        (_req.times as number)++;
         this.store.emitter.emit('error', { type: 'http', error: res });
       }
     }

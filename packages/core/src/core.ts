@@ -336,21 +336,17 @@ export class Meta2d {
   }
 
   private init(parent: string | HTMLElement) {
-    if (typeof parent === 'string') {
-      this.canvas = new Canvas(
-        this,
-        document.getElementById(parent),
-        this.store
-      );
-    } else {
-      this.canvas = new Canvas(this, parent, this.store);
+    const parentEl = typeof parent === 'string' ? document.getElementById(parent) : parent;
+    if (!parentEl) {
+      throw new Error(`[meta2d] init: parent element not found`);
     }
+    this.canvas = new Canvas(this, parentEl, this.store);
     this.canvas.initGlobalStyle();
     this.resize();
     this.canvas.listen();
     // 创建主题样式表
     // if(this.store.data.theme){
-      le5leTheme.createThemeSheet(this.store.data.theme, this.store.id);
+      le5leTheme.createThemeSheet(this.store.data.theme, this.store.id!);
     // }
   }
   initEventFns() {
@@ -531,7 +527,7 @@ export class Meta2d {
     this.events[EventAction.SendPropData] = (pen: Pen, e: Event) => {
       const value = deepClone(e.value);
       if (value && typeof value === 'object') {
-        const _pen = e.params ? this.findOne(e.params) : pen;
+        const _pen = (e.params ? this.findOne(e.params) : pen)!;
         for (let key in value) {
           if (value[key] === undefined || value[key] === '') {
             value[key] = (_pen as any)[key];
@@ -546,7 +542,7 @@ export class Meta2d {
     this.events[EventAction.SendVarData] = (pen: Pen, e: Event) => {
       const value = deepClone(e.value);
       if (value && typeof value === 'object') {
-        const _pen = e.params ? this.findOne(e.params) : pen;
+        const _pen = (e.params ? this.findOne(e.params) : pen)!;
         let array = [];
         for (let key in value) {
           let obj = {
@@ -636,7 +632,7 @@ export class Meta2d {
       const value = deepClone(e.value);
       if (value && typeof value === 'object') {
         if (e.targetType === 'id') {
-          const _pen = e.params ? this.findOne(e.params) : pen;
+          const _pen = (e.params ? this.findOne(e.params) : pen)!;
           for (let key in value) {
             if (value[key] === undefined || value[key] === '') {
               value[key] = getter(_pen,key);
@@ -664,7 +660,7 @@ export class Meta2d {
         console.warn('[meta2d] Emit value must be a string');
         return;
       }
-      const _pen = e.params ? this.findOne(e.params) : pen;
+      const _pen = (e.params ? this.findOne(e.params) : pen)!;
       if (_pen.name !== 'iframe' || !_pen.iframe) {
         console.warn('不是嵌入页面');
         return;
@@ -779,7 +775,7 @@ export class Meta2d {
     const value: any = {};
     if (list?.length) {
       list.forEach((item: any) => {
-        const _pen = item.params ? this.findOne(item.params) : pen;
+        const _pen = (item.params ? this.findOne(item.params) : pen)!;
         for (let key in item.value) {
           if (item.value[key] === undefined || item.value[key] === '') {
             value[key] = (_pen as any)[key];
@@ -1284,7 +1280,7 @@ export class Meta2d {
         if(pen.x>10 || pen.y>10 || pen.width>10 || pen.height>10){
           // 子图元坐标值很大
           dirtyPens.push(pen);
-        }else if(!parent.children||!parent.children.includes(pen.id)){
+        }else if(!parent.children||!parent.children!.includes(pen.id)){
           //已经解组但子图元还有父图元id
           dirtyPens.push(pen);
         }
@@ -2174,7 +2170,7 @@ export class Meta2d {
         return;
       }
       // pen 来自于 store.active ，不存在有 parentId 的情况
-      parent.children.push(pen.id);
+      parent.children!.push(pen.id);
       pen.parentId = parent.id;
       const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
       Object.assign(pen, childRect);
@@ -2324,14 +2320,14 @@ export class Meta2d {
       Object.assign(parent, rect);
       Object.assign(parent.calculative!.worldRect, rect);
       calcWorldAnchors(parent);
-      parent.children.forEach((penId) => {
+      parent.children!.forEach((penId) => {
         const pen = this.store.pens[penId];
         const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
         Object.assign(pen, childRect);
       });
       pens.forEach((pen) => {
         if (pen.id !== parent.id) {
-          parent.children.push(pen.id);
+          parent.children!.push(pen.id);
           pen.parentId = parent.id;
           const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
           Object.assign(pen, childRect);
@@ -2379,13 +2375,13 @@ export class Meta2d {
         };
         calcCenter(parent.calculative!.worldRect);
       } else {//取所有图元的范围
-        const pens = parent.children.map((cid) => this.store.pens[cid]);
+        const pens = parent.children!.map((cid) => this.store.pens[cid]);
         parent.calculative!.worldRect = getRect(pens);
       }
       if (!parent.parentId) {
         Object.assign(parent, parent.calculative!.worldRect);
       }
-      parent.children.forEach((cid) => {
+      parent.children!.forEach((cid) => {
         const cPen = this.store.pens[cid];
         const childRect = calcRelativeRect(
           cPen.calculative!.worldRect,
@@ -3728,6 +3724,7 @@ export class Meta2d {
   ) {
     this.store.emitter.emit('socket', { message, context });
     let _message: any = message;
+    if (!context) return;
     if(context.net?.socketCbJs){
       if(!context.net?.socketFn){
         context.net.socketFn = new Function('e', 'context', context.net.socketCbJs) as (
@@ -4248,16 +4245,16 @@ export class Meta2d {
               }
               switch (comparison) {
                 case '>':
-                  can = pValue > +value;
+                  can = pValue > +value!;
                   break;
                 case '>=':
-                  can = pValue >= +value;
+                  can = pValue >= +value!;
                   break;
                 case '<':
-                  can = pValue < +value;
+                  can = pValue < +value!;
                   break;
                 case '<=':
-                  can = pValue <= +value;
+                  can = pValue <= +value!;
                   break;
                 case '=':
                 case '==':
@@ -4598,16 +4595,16 @@ export class Meta2d {
       let compareValue = data[key];
       switch (operator) {
         case '>':
-          can = compareValue > +value;
+          can = compareValue > +value!;
           break;
         case '>=':
-          can = compareValue >= +value;
+          can = compareValue >= +value!;
           break;
         case '<':
-          can = compareValue < +value;
+          can = compareValue < +value!;
           break;
         case '<=':
-          can = compareValue <= +value;
+          can = compareValue <= +value!;
           break;
         case '=':
         case '==':
@@ -4667,16 +4664,16 @@ export class Meta2d {
       }
       switch (operator) {
         case '>':
-          can = compareValue > +value;
+          can = compareValue > +value!;
           break;
         case '>=':
-          can = compareValue >= +value;
+          can = compareValue >= +value!;
           break;
         case '<':
-          can = compareValue < +value;
+          can = compareValue < +value!;
           break;
         case '<=':
-          can = compareValue <= +value;
+          can = compareValue <= +value!;
           break;
         case '=':
         case '==':
@@ -4723,7 +4720,7 @@ export class Meta2d {
         oldParent.children.splice(i, 1);
         updatePens.push(deepClone(oldParent, true));
       }
-      parent.children.push(pen.id);
+      parent.children!.push(pen.id);
       pen.parentId = parent.id;
       const childRect = calcRelativeRect(
         pen.calculative!.worldRect,
@@ -6801,7 +6798,7 @@ export class Meta2d {
         // 已经是其它节点的子节点，x,y,w,h 已经是百分比了
         return;
       }
-      parent.children.push(pen.id);
+      parent.children!.push(pen.id);
       pen.parentId = parent.id;
       const childRect = calcRelativeRect(pen.calculative!.worldRect, rect);
       Object.assign(pen, childRect);

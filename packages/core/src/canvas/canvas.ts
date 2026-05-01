@@ -770,8 +770,8 @@ export class Canvas {
     let y = 10;
     let vRect: Rect | null = null;
     if (this.store.options.strictScope) {
-      const width = this.store.data.width || this.store.options.width;
-      const height = this.store.data.height || this.store.options.height;
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
       if (width && height) {
         vRect = {
           x: this.store.data.origin.x,
@@ -5556,8 +5556,8 @@ export class Canvas {
     this.store.data.y = Math.round(this.store.data.y);
     if (this.store.options.padding) {
       let p = formatPadding(this.store.options.padding);
-      const width = this.store.data.width || this.store.options.width;
-      const height = this.store.data.height || this.store.options.height;
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
       if (this.width < (width + p[1] + p[3]) * this.store.data.scale) {
         if (
           this.store.data.x + this.store.data.origin.x >
@@ -5854,8 +5854,8 @@ export class Canvas {
     resizeRect(this.activeRect, offsetX, offsetY, this.resizeIndex);
     //大屏区域
     if (this.store.options.strictScope) {
-      const width = this.store.data.width || this.store.options.width;
-      const height = this.store.data.height || this.store.options.height;
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
       if (width && height) {
         let vRect: Rect = {
           x: this.store.data.origin.x,
@@ -5982,8 +5982,8 @@ export class Canvas {
     translateRect(rect, x, y);
     let vFlag = false;
     if (this.store.options.strictScope) {
-      const width = this.store.data.width || this.store.options.width;
-      const height = this.store.data.height || this.store.options.height;
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
       if (width && height) {
         let vRect: Rect = {
           x: this.store.data.origin.x,

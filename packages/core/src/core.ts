@@ -836,8 +836,8 @@ export class Meta2d {
       this.canvas.opening = true;
       this.open(data);
       this.lock(1);
-      const width = this.store.data.width || this.store.options.width;
-      const height = this.store.data.height || this.store.options.height;
+      const width = this.store.data.width || this.store.options.width || 0;
+      const height = this.store.data.height || this.store.options.height || 0;
       if (width && height ){
         this.fitSizeView(true,0);
       }else{
@@ -1271,8 +1271,8 @@ export class Meta2d {
   dirtyData(active?:boolean){
     //获取画布脏数据
     const pens = this.store.data.pens;
-    const width = this.store.data.width || this.store.options.width;
-    const height = this.store.data.height || this.store.options.height;
+    const width = this.store.data.width || this.store.options.width || 0;
+    const height = this.store.data.height || this.store.options.height || 0;
     const dirtyPens: Pen[] = [];
     for (let i = pens.length - 1; i >= 0; i--) {
       let pen = pens[i];
@@ -4817,8 +4817,8 @@ export class Meta2d {
       throw new Error('请先加载乐吾乐官网下的canvas2svg.js');
     }
     let isV = false;
-    const width = this.store.data.width || this.store.options.width;
-    const height = this.store.data.height || this.store.options.height;
+    const width = this.store.data.width || this.store.options.width || 0;
+    const height = this.store.data.height || this.store.options.height || 0;
     if (width && height && !this.store.data.component) {
       isV = true;
     }
@@ -5388,10 +5388,10 @@ export class Meta2d {
     const padding = formatPadding(viewPadding);
 
     const _width =
-      (this.store.data.width || this.store.options.width) *
+      ((this.store.data.width || this.store.options.width || 0)) *
       this.store.data.scale;
     const _height =
-      (this.store.data.height || this.store.options.height) *
+      ((this.store.data.height || this.store.options.height || 0)) *
       this.store.data.scale;
     // 4. 计算缩放比例
     const w = (width - padding[1] - padding[3]) / _width;
@@ -5426,8 +5426,8 @@ export class Meta2d {
     // if (!this.hasView()) return;
     const viewCenter = this.getViewCenter();
     //根据画布尺寸居中对齐
-    const _width = this.store.data.width || this.store.options.width;
-    const _height = this.store.data.height || this.store.options.height;
+    const _width = this.store.data.width || this.store.options.width || 0;
+    const _height = this.store.data.height || this.store.options.height || 0;
     const pensRect: any = {
       x: 0,
       y: 0,
@@ -5462,8 +5462,8 @@ export class Meta2d {
     this.resize(width, height);
     const padding = formatPadding(viewPadding);
     let rect = null;
-    const w = this.store.data.width || this.store.options.width;
-    const h = this.store.data.height || this.store.options.height;
+    const w = this.store.data.width || this.store.options.width || 0;
+    const h = this.store.data.height || this.store.options.height || 0;
     if (w && h) {
       rect = {
         width: w * this.store.data.scale,
@@ -5502,8 +5502,8 @@ export class Meta2d {
     if (!this.hasView()) return;
     const rect = this.getRect();
     const viewCenter = this.getViewCenter();
-    const w = this.store.data.width || this.store.options.width;
-    const h = this.store.data.height || this.store.options.height;
+    const w = this.store.data.width || this.store.options.width || 0;
+    const h = this.store.data.height || this.store.options.height || 0;
     let pensRect: any = null;
     if (w && h) {
       pensRect = {
@@ -5790,8 +5790,8 @@ export class Meta2d {
     pens: Pen[] = this.store.data.pens,
     whole: boolean = false
   ) {
-    const width = this.store.data.width || this.store.options.width;
-    const height = this.store.data.height || this.store.options.height;
+    const width = this.store.data.width || this.store.options.width || 0;
+    const height = this.store.data.height || this.store.options.height || 0;
     let rect = {
       x: 0,
       y: 0,

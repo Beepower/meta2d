@@ -3517,10 +3517,10 @@ export function initPrevFrame(pen: Pen) {
       (pen.prevFrame as any)[k] = (pen as any)[k];
     }
   }
-  pen.prevFrame.rotate = 0;
-  pen.prevFrame.x = 0;
-  pen.prevFrame.y = 0;
-  pen.prevFrame.scale = 1;
+  pen.prevFrame!.rotate = 0;
+  pen.prevFrame!.x = 0;
+  pen.prevFrame!.y = 0;
+  pen.prevFrame!.scale = 1;
 }
 
 // 根据process进度值（纯小数），计算节点动画属性
@@ -3542,14 +3542,14 @@ export function setNodeAnimateProcess(pen: Pen, process: number) {
       pen.calculative!.worldRect = deepClone(pen.calculative!.prevFrameRect);
       scaleRect(
         pen.calculative!.worldRect,
-        pen.prevFrame.scale,
+        pen.prevFrame!.scale,
         pen.calculative!.worldRect!.center
       );
       const newScale =
-        pen.prevFrame.scale + (frame[k] - pen.prevFrame.scale) * process;
+        pen.prevFrame!.scale + (frame[k] - pen.prevFrame!.scale) * process;
       scaleRect(
         pen.calculative!.worldRect,
-        newScale / pen.prevFrame.scale,
+        newScale / pen.prevFrame!.scale,
         pen.calculative!.worldRect!.center
       );
       pen.calculative!.patchFlags = true;

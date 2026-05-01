@@ -5687,7 +5687,7 @@ export class Meta2d {
     });
   }
   setFormatPainter() {
-    const pens = this.store.active;
+    const pens = this.store.active!;
     const attrs: Record<string, any> = {};
     if (pens.length > 0) {
       const firstPen = pens[0];
@@ -5714,7 +5714,7 @@ export class Meta2d {
   }
 
   formatPainter() {
-    const pens = this.store.active;
+    const pens = this.store.active!;
     const initPens = deepClone(pens);
     const attrs = JSON.parse(localStorage.getItem('meta2d-formatPainter'));
     for (let i = 0; i < pens.length; i++) {
@@ -5734,7 +5734,7 @@ export class Meta2d {
   }
 
   clearFormatPainter() {
-    const pens = this.store.active;
+    const pens = this.store.active!;
     const initPens = deepClone(pens);
     formatAttrs.forEach((attr) => {
       for (let i = 0; i < pens.length; i++) {
@@ -6596,10 +6596,10 @@ export class Meta2d {
           pen.calculative!.worldRect!.height * anchor.y,
       };
       if (pen.calculative!.worldRect) {
-        if (pen.rotate % 360) {
+        if (pen.rotate! % 360) {
           rotatePoint(
             _worldAnchor,
-            pen.rotate,
+            pen.rotate!,
             pen.calculative!.worldRect!.center
           );
         }
@@ -6619,8 +6619,8 @@ export class Meta2d {
         y: anchor.y,
       };
       if (pen.calculative!.worldRect) {
-        if (pen.rotate % 360) {
-          rotatePoint(anchor, -pen.rotate, pen.calculative!.worldRect!.center);
+        if (pen.rotate! % 360) {
+          rotatePoint(anchor, -pen.rotate!, pen.calculative!.worldRect!.center);
         }
         _anchor = {
           id: _worldAnchor.id,

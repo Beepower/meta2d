@@ -1930,7 +1930,7 @@ export function ctxDrawPath(
   if(pen.name === 'drawCommand')return;
   const path = canUsePath
     ? store.path2dMap.get(pen)
-    : globalStore.path2dDraws[pen.name];
+    : globalStore.path2dDraws[pen.name!];
 
   let path_from = null;
   let path_to = null;
@@ -2020,10 +2020,10 @@ export function ctxDrawPath(
       if (!pen.calculative!.verticalProgress) {
         grd = !pen.reverseProgress
           ? ctx.createLinearGradient(x, y, x + width * progress, y)
-          : ctx.createLinearGradient(ex, y, x + width * (1 - progress), y);
+          : ctx.createLinearGradient(ex!, y, x + width * (1 - progress), y);
       } else {
         grd = !pen.reverseProgress
-          ? ctx.createLinearGradient(x, ey, x, y + height * (1 - progress))
+          ? ctx.createLinearGradient(x, ey!, x, y + height * (1 - progress))
           : ctx.createLinearGradient(x, y, x, y + height * progress);
       }
 
@@ -2032,7 +2032,7 @@ export function ctxDrawPath(
           pen.calculative!.progressGradientColors
         );
         colors.forEach((stop) => {
-          grd.addColorStop(stop.i, stop.color);
+          grd!.addColorStop(stop.i!, stop.color!);
         });
       } else {
         const color =
@@ -2040,8 +2040,8 @@ export function ctxDrawPath(
           pen.calculative!.color ||
           store.options.activeColor ||
           store.data.color;
-        grd.addColorStop(0, color);
-        grd.addColorStop(1, color);
+        grd.addColorStop(0, color || '');
+        grd.addColorStop(1, color || '');
       }
       grd.addColorStop(1, 'transparent');
 
@@ -2103,7 +2103,7 @@ export function ctxDrawPath(
               ctx.stroke(path_from);
               ctx.restore();
             }
-            ctx.lineCap = pen.lineCap;
+            ctx.lineCap = pen.lineCap as CanvasLineCap;
             ctx.stroke(path);
           } else {
             path(pen, ctx);
@@ -2140,7 +2140,7 @@ export function ctxDrawLinePath(
 ) {
   const path = canUsePath
     ? store.path2dMap.get(pen)
-    : globalStore.path2dDraws[pen.name];
+    : globalStore.path2dDraws[pen.name!];
   if (path) {
     if (pen.type) {
       if (pen.calculative!.animatePos) {
@@ -2222,7 +2222,7 @@ export function setCtxLineAnimate(
       renderLineAnimate(pen,store,type,ctx)
     })
   }else {
-    renderLineAnimate(pen,store,pen.lineAnimateType,ctx)
+    renderLineAnimate(pen,store,pen.lineAnimateType!,ctx)
   }
 }
 
@@ -2324,7 +2324,7 @@ function renderLineAnimate(
 }
 
 function setElementAnimateOnLine(ctx:CanvasRenderingContext2D,line:Pen,type:string,element:any) {
-  let draw:Function = null
+  let draw: Function | null = null
   switch (type){
     case 'image':
       draw = lineAnimateImageRender(element)
@@ -2432,7 +2432,7 @@ function renderElementOnLine(ctx: CanvasRenderingContext2D, line:Pen, draw:Funct
   } else {
     // 原有的间隔重复模式
     const dash = Array.isArray(line.lineAnimateDash)? line.lineAnimateDash : (line.lineAnimateDash?.split(',').map(i=>Number(i)) || [10,20])
-    const elesPos = computeLineDashSegments(len,dash,line.lineAnimateDashOffset,line.lineAnimateElementCount)
+    const elesPos = computeLineDashSegments(len,dash,line.lineAnimateDashOffset!,line.lineAnimateElementCount)
     elesPos.forEach((i,index)=>{
       const pos:any = calculateLineFrameStates(line,i.start)
       if(!pos)return
@@ -2474,7 +2474,7 @@ function renderLoopElementsOnLine(
 
       if (from) {
         // 计算线段的实际像素距离（世界坐标）
-        const segmentPixelLength = line.length
+        const segmentPixelLength = line.length!
 
         // 计算当前线段上第一个元素的偏移
         let firstOffset = (animatePos - lastLength) % spacing
@@ -2618,18 +2618,18 @@ function calculateLineFrameStates(line:Pen,offsetInstance:number = 0) {
     from = pt;
   })
   if(line.close){
-    let pt = line.calculative!.worldAnchors![0]
-    path = createSvgPath(path,from,from.next,pt.prev,pt)
+    let pt = line.calculative!.worldAnchors![0]!
+    path = createSvgPath(path,from!,from!.next,pt.prev,pt)
   }
 
   let instance = 0
   if(line.animateReverse){
     // TODO 延迟有问题 出现卡顿瞬间移动
-    instance = line.length - line.calculative!.animatePos - (offsetInstance * line.calculative!.canvas.store.data.scale)
+    instance = line.length! - line.calculative!.animatePos - (offsetInstance * line.calculative!.canvas!.store.data.scale)
   }else {
-    instance = line.calculative!.animatePos - offsetInstance * line.calculative!.canvas.store.data.scale
+    instance = line.calculative!.animatePos - offsetInstance * line.calculative!.canvas!.store.data.scale
   }
-  const pos = getLinePointPosAndAngle(path,instance)
+  const pos = getLinePointPosAndAngle(path!,instance)
   return pos
 }
 /**
@@ -2774,7 +2774,7 @@ export function calcWorldRects(pen: Pen) {
 
     calcRightBottom(rect);
 
-    rect.rotate = parentRect.rotate + pen.rotate;
+    rect.rotate = parentRect.rotate! + pen.rotate!;
     calcCenter(rect);
     if (pen.pivot) {
       calcPivot(rect, pen.pivot);
@@ -2794,14 +2794,14 @@ export function calcPadding(pen: Pen, rect: Rect) {
   !pen.paddingLeft && (pen.calculative!.paddingLeft = 0);
   !pen.paddingRight && (pen.calculative!.paddingRight = 0);
 
-  Math.abs(pen.calculative!.paddingTop) < 1 &&
-    (pen.calculative!.paddingTop *= rect.height);
-  Math.abs(pen.calculative!.paddingBottom) < 1 &&
-    (pen.calculative!.paddingBottom *= rect.height);
-  Math.abs(pen.calculative!.paddingLeft) < 1 &&
-    (pen.calculative!.paddingLeft *= rect.width);
-  Math.abs(pen.calculative!.paddingRight) < 1 &&
-    (pen.calculative!.paddingRight *= rect.width);
+  Math.abs(pen.calculative!.paddingTop!) < 1 &&
+    ((pen.calculative!.paddingTop as number) *= rect.height);
+  Math.abs(pen.calculative!.paddingBottom!) < 1 &&
+    ((pen.calculative!.paddingBottom as number) *= rect.height);
+  Math.abs(pen.calculative!.paddingLeft!) < 1 &&
+    ((pen.calculative!.paddingLeft as number) *= rect.width);
+  Math.abs(pen.calculative!.paddingRight!) < 1 &&
+    ((pen.calculative!.paddingRight as number) *= rect.width);
 }
 
 export function calcPenRect(pen: Pen) {
@@ -2812,7 +2812,7 @@ export function calcPenRect(pen: Pen) {
     return;
   }
   const store = pen.calculative!.canvas!.store;
-  const parentRect = store.pens[pen.parentId].calculative.worldRect;
+  const parentRect = store.pens[pen.parentId]!.calculative!.worldRect;
   Object.assign(pen, calcRelativeRect(worldRect, parentRect));
 }
 
@@ -2843,8 +2843,8 @@ if (pen.flipY && pen.name !== 'line') {
     !pen.calculative!.canvas!.parent.isCombine(pen)
   ) {
     const { x, y, width, height } = pen.calculative!.worldRect!;
-    for (let index = 0; index < store.options.defaultAnchors.length; index++) {
-      const anchor = store.options.defaultAnchors[index];
+    for (let index = 0; index < store.options.defaultAnchors!.length; index++) {
+      const anchor = store.options.defaultAnchors![index]!;
       anchors.push({
         id: `${index}`,
         penId: pen.id,
@@ -2866,8 +2866,8 @@ if (pen.flipY && pen.name !== 'line') {
     anchors.forEach((anchor) => {
       rotatePoint(
         anchor,
-        pen.calculative!.rotate,
-        pen.calculative!.worldRect!.pivot || pen.calculative!.worldRect!.center
+        pen.calculative!.rotate!,
+        (pen.calculative!.worldRect!.pivot || pen.calculative!.worldRect!.center)!
       );
     });
   }
@@ -2878,7 +2878,7 @@ if (pen.flipY && pen.name !== 'line') {
 
   if (pen.calculative!.activeAnchor && anchors.length) {
     pen.calculative!.activeAnchor = anchors.find((a) => {
-      a.id === pen.calculative!.activeAnchor.id;
+      a.id === pen.calculative!.activeAnchor!.id;
     });
   }
 
@@ -2943,10 +2943,10 @@ export function calcIconRect(pens: { [key: string]: Pen }, pen: Pen) {
   }
   const { paddingTop, paddingBottom, paddingLeft, paddingRight } =
     pen.calculative!;
-  let x = paddingLeft;
-  let y = paddingTop;
-  let width = pen.calculative!.worldRect!.width - paddingLeft - paddingRight;
-  let height = pen.calculative!.worldRect!.height - paddingTop - paddingBottom;
+  let x = paddingLeft!;
+  let y = paddingTop!;
+  let width = pen.calculative!.worldRect!.width - paddingLeft! - paddingRight!;
+  let height = pen.calculative!.worldRect!.height - paddingTop! - paddingBottom!;
   let iconLeft = pen.calculative!.iconLeft||0;
   let iconTop = pen.calculative!.iconTop||0;
 

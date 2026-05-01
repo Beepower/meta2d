@@ -19,8 +19,8 @@ export function form(pen: Pen, ctx?: CanvasRenderingContext2D): Path2D {
   pen.formId = pen.id;
   let wr = pen.calculative!.borderRadius || 0,
     hr = wr;
-  const { x, y, width, height, ex, ey } = pen.calculative!.worldRect;
-  const { x: textX } = pen.calculative!.worldTextRect;
+  const { x, y, width, height, ex, ey } = pen.calculative!.worldRect!;
+  const { x: textX } = pen.calculative!.worldTextRect!;
   if (wr < 1) {
     wr = width * wr;
     hr = height * hr;

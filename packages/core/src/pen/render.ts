@@ -181,7 +181,7 @@ function getLinearGradientPoints(
 }
 
 function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { worldRect, gradientColors, gradientRadius } = pen.calculative;
+  const { worldRect, gradientColors, gradientRadius } = pen.calculative!;
   if (!gradientColors) {
     return;
   }
@@ -213,7 +213,7 @@ function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 }
 
 function getBkGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { x, y, ex, width, height, center } = pen.calculative!.worldRect;
+  const { x, y, ex, width, height, center } = pen.calculative!.worldRect!;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
@@ -231,7 +231,7 @@ function getBkGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 }
 
 function getTextRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { worldRect, textGradientColors } = pen.calculative;
+  const { worldRect, textGradientColors } = pen.calculative!;
   if (!textGradientColors) {
     return;
   }
@@ -262,7 +262,7 @@ function getTextRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 function getTextGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   !pen.calculative!.textDrawRect && calcTextDrawRect(ctx, pen);
   calcCenter(pen.calculative!.textDrawRect);
-  const { x, y, ex, width, height, center } = pen.calculative!.textDrawRect;
+  const { x, y, ex, width, height, center } = pen.calculative!.textDrawRect!;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
@@ -379,7 +379,7 @@ function rgbaToHex(value: string) {
 }
 
 function getLineGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { x, y, ex, width, height, center } = pen.calculative!.worldRect;
+  const { x, y, ex, width, height, center } = pen.calculative!.worldRect!;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
@@ -785,7 +785,7 @@ function strokeLinearGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
     lineGradientFromColor,
     lineGradientToColor,
     lineGradientAngle,
-  } = pen.calculative;
+  } = pen.calculative!;
   return linearGradient(
     ctx,
     worldRect,
@@ -855,7 +855,7 @@ function getImagePosition(pen: Pen) {
     imgNaturalWidth,
     imgNaturalHeight,
     worldRect
-  } = pen.calculative;
+  } = pen.calculative!;
   if(!rect) {
     return {
       x: worldRect.x,
@@ -932,7 +932,7 @@ export function drawImage(
   pen: Pen
 ) {
   const { x, y, width, height } = getImagePosition(pen);
-  const { worldIconRect, iconRotate, img } = pen.calculative;
+  const { worldIconRect, iconRotate, img } = pen.calculative!;
   ctx.filter = pen.filter
   if (iconRotate) {
     const { x: centerX, y: centerY } = worldIconRect.center;
@@ -951,7 +951,7 @@ export function drawImage(
       height: h,
       ex,
       ey,
-    } = pen.calculative!.worldRect;
+    } = pen.calculative!.worldRect!;
     if (wr < 1) {
       wr = w * wr;
       hr = h * hr;
@@ -994,7 +994,7 @@ export function drawImage(
  * 获取文字颜色， textColor 优先其次 color
  */
 export function getTextColor(pen: Pen, store: Meta2dStore) {
-  const { textColor, color } = pen.calculative;
+  const { textColor, color } = pen.calculative!;
   const { styles } = store;
   return (
     textColor ||
@@ -1017,7 +1017,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     textHasShadow,
     textBackground,
     textType,
-  } = pen.calculative;
+  } = pen.calculative!;
 
   if (
     pen.input &&
@@ -1095,7 +1095,7 @@ function drawText(ctx: CanvasRenderingContext2D, pen: Pen) {
     y: drawRectY,
     width,
     height,
-  } = pen.calculative!.textDrawRect;
+  } = pen.calculative!.textDrawRect!;
   if (textBackground) {
     ctx.save();
     ctx.fillStyle = textBackground;
@@ -1371,7 +1371,7 @@ export function drawDropdown(
   }
   const scale = pen.calculative!.canvas!.store.data.scale;
   const inputPenId = pen.calculative!.canvas!.inputDiv.dataset.penId;
-  const { x, y, width, height } = pen.calculative!.worldRect;
+  const { x, y, width, height } = pen.calculative!.worldRect!;
   ctx.save();
   ctx.beginPath();
   if(pen.id === inputPenId){
@@ -1996,7 +1996,7 @@ export function ctxDrawPath(
       // 从下往上 x, y, x, y + height * progress
       // 从上往下 x, ey, x, y + height * (1 - progress)
       ctx.save();
-      const { ex, x, y, width, height, ey } = pen.calculative!.worldRect;
+      const { ex, x, y, width, height, ey } = pen.calculative!.worldRect!;
       let grd = null;
       if (!pen.calculative!.verticalProgress) {
         grd = !pen.reverseProgress
@@ -2821,7 +2821,7 @@ if (pen.flipY && pen.name !== 'line') {
     !pen.type &&
     !pen.calculative!.canvas!.parent.isCombine(pen)
   ) {
-    const { x, y, width, height } = pen.calculative!.worldRect;
+    const { x, y, width, height } = pen.calculative!.worldRect!;
     for (let index = 0; index < store.options.defaultAnchors.length; index++) {
       const anchor = store.options.defaultAnchors[index];
       anchors.push({
@@ -2867,7 +2867,7 @@ if (pen.flipY && pen.name !== 'line') {
 export function calcChildrenInitRect(pen: Pen) {
   // 重新计算子节点初始化坐标
   if (pen.children?.length) {
-    let parentRect = pen.calculative!.worldRect;
+    let parentRect = pen.calculative!.worldRect!;
     pen.children.forEach((id) => {
       const child = pen.calculative!.canvas!.store.pens[id];
       if (child.calculative!.initRect && child.calculative!.initRelativeRect) {
@@ -2893,7 +2893,7 @@ export function calcChildrenInitRect(pen: Pen) {
 
 export function calcWorldPointOfPen(pen: Pen, pt: Point) {
   const p: Point = { ...pt };
-  const { x, y, width, height } = pen.calculative!.worldRect;
+  const { x, y, width, height } = pen.calculative!.worldRect!;
   p.x = x + width * pt.x;
   p.y = y + height * pt.y;
   if (pt.prev) {
@@ -4033,7 +4033,7 @@ export function calcInView(pen: Pen, calcChild = false) {
     }
   }
   if(pen.calculative!.inView){
-    const { x, y, width, height, rotate } = pen.calculative!.worldRect;
+    const { x, y, width, height, rotate } = pen.calculative!.worldRect!;
     const penRect: Rect = {
       x: x + store.data.x,
       y: y + store.data.y,
@@ -4182,7 +4182,7 @@ function commandTransfer(command: any, pen: any, startX: any, startY: any){
 }
 
 function dealWithDXF(command: any, pen: any, startX: any, startY: any) {
-  const { x, y, width, height } = pen.calculative!.worldRect;
+  const { x, y, width, height } = pen.calculative!.worldRect!;
   const {originWidth,originHeight} = pen.dxfOrigin;
   switch (command.c) {
     case "beginPath":
@@ -4268,7 +4268,7 @@ function dealWithDXF(command: any, pen: any, startX: any, startY: any) {
 
 function dealWithCanvas(command: any, pen: any, startX: any, startY: any) {
 
-  const { x, y, width, height } = pen.calculative!.worldRect;
+  const { x, y, width, height } = pen.calculative!.worldRect!;
   const {originWidth,originHeight} = pen.origin;
   switch (command.c) {
     case "beginPath":
@@ -4345,7 +4345,7 @@ function dealWithCanvas(command: any, pen: any, startX: any, startY: any) {
   }
 }
 function dealWithVisio(command: any, pen: any, startX: any, startY: any) {
-  const { x, y, width, height } = pen.calculative!.worldRect;
+  const { x, y, width, height } = pen.calculative!.worldRect!;
   const { width: originWidth, height: originHeight } = pen.origin;
   switch (command.c) {
     case 'MoveTo':

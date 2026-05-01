@@ -168,7 +168,7 @@ export class Canvas {
 
   hoverType = HoverType.None;
   resizeIndex = 0;
-  mouseDown: { x: number; y: number; restore?: boolean };
+  mouseDown?: { x: number; y: number; restore?: boolean };
   hotkeyType: HotkeyType;
   mouseRight: MouseRight;
   addCaches: Pen[];

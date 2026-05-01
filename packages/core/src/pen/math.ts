@@ -144,7 +144,7 @@ function calcDockByPoints(
   const closeSize = 10;
   const paddingRect = expandRect(rect, closeSize);
   store.data.pens.forEach((pen) => {
-    const { inView, worldRect, active } = pen.calculative;
+    const { inView, worldRect, active } = pen.calculative!;
     if (
       inView === false ||
       (!calcActive && active) || // 如果不计算活动层，则过滤掉活动层

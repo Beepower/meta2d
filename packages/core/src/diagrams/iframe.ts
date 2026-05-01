@@ -47,7 +47,7 @@ export function iframe(pen: Pen) {
   if (!pen.calculative!.singleton) {
     pen.calculative!.singleton = {};
   }
-  const worldRect = pen.calculative!.worldRect;
+  const worldRect = pen.calculative!.worldRect!;
 
   if (!pen.calculative!.singleton.div) {
     if(matchIframe(pen)){

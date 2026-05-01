@@ -9,7 +9,7 @@ export function drawArrow(
   ctx?: CanvasRenderingContext2D | Path2D
 ): Path2D {
   const path = !ctx ? new Path2D() : ctx;
-  let worldAnchors = pen.calculative!.worldAnchors;
+  let worldAnchors = pen.calculative!.worldAnchors!;
   let scale = pen.calculative!.canvas!.store.data.scale;
   let size = (pen.calculative!.animateLineWidth || 6) * scale; // 箭头大小
   let arrowLength = (pen.animateLineWidth*2 || 12) * scale; // 箭头长度

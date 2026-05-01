@@ -5124,7 +5124,7 @@ export class Meta2d {
         (pen) => pen.name === 'iframe'
       );
       iframePens?.forEach((pen) => {
-        const worldRect = pen.calculative!.worldRect;
+        const worldRect = pen.calculative!.worldRect!;
         if (worldRect.width / this.store.data.scale > rect.width * 0.8) {
           let bfW = worldRect.width;
           pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
@@ -5147,7 +5147,7 @@ export class Meta2d {
         (pen) => pen.name === 'video'
       );
       videoPens?.forEach((pen) => {
-        const worldRect = pen.calculative!.worldRect;
+        const worldRect = pen.calculative!.worldRect!;
         if (worldRect.width / this.store.data.scale > rect.width * 0.8) {
           //作为背景的video
           pen.calculative!.worldRect!.x = worldRect.x - wGap / 2;
@@ -5241,7 +5241,7 @@ export class Meta2d {
         (pen) => pen.name === 'iframe'
       );
       iframePens?.forEach((pen) => {
-        const worldRect = pen.calculative!.worldRect;
+        const worldRect = pen.calculative!.worldRect!;
         if (worldRect.height / this.store.data.scale > rect.height * 0.8) {
           let bfH = worldRect.height;
           pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
@@ -5263,7 +5263,7 @@ export class Meta2d {
         (pen) => pen.name === 'video'
       );
       videoPens?.forEach((pen) => {
-        const worldRect = pen.calculative!.worldRect;
+        const worldRect = pen.calculative!.worldRect!;
         if (worldRect.height / this.store.data.scale > rect.height * 0.8) {
           //作为背景的video
           pen.calculative!.worldRect!.y = worldRect.y - hGap / 2;
@@ -6665,14 +6665,14 @@ export class Meta2d {
     render: boolean = true
   ): Pen {
     if (!fromAnchor) {
-      const _worldRect = to.calculative!.worldRect;
+      const _worldRect = to.calculative!.worldRect!;
       fromAnchor = nearestAnchor(from, {
         x: _worldRect.x + _worldRect.width / 2,
         y: _worldRect.y + _worldRect.height / 2,
       });
     }
     if (!toAnchor) {
-      const _worldRect = from.calculative!.worldRect;
+      const _worldRect = from.calculative!.worldRect!;
       toAnchor = nearestAnchor(to, {
         x: _worldRect.x + _worldRect.width / 2,
         y: _worldRect.y + _worldRect.height / 2,

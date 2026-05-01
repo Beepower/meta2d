@@ -16,7 +16,7 @@ export function line(
       if (path instanceof Path2D) return path;
     }
   }
-  const worldAnchors = pen.calculative!.worldAnchors;
+  const worldAnchors = pen.calculative!.worldAnchors!;
   if (worldAnchors.length > 1) {
     let from: Point; // 上一个点
     worldAnchors.forEach((pt: Point) => {
@@ -313,7 +313,7 @@ export function createLineSvgPath(line:Pen) {
  */
 export function lineInRect(line: Pen, rect: Rect) {
   // 判断是直线还是贝塞尔
-  const worldAnchors = line.calculative.worldAnchors;
+  const worldAnchors = line.calculative.worldAnchors!;
   for (let index = 0; index < worldAnchors.length - 1; index++) {
     const current = worldAnchors[index];
     const next = worldAnchors[index + 1];

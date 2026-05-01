@@ -1225,7 +1225,7 @@ export class Canvas {
    * @param anchor 锚点，连线的某个锚点，引用相同
    */
   splitLine(line: Pen, anchor: Point): void {
-    const worldAnchors = line.calculative!.worldAnchors;
+    const worldAnchors = line.calculative!.worldAnchors!;
     const index = worldAnchors.findIndex((a) => a === anchor);
     if ([-1, 0, worldAnchors.length - 1].includes(index)) {
       // 没找到，起终点不处理

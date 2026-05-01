@@ -2439,7 +2439,7 @@ function renderLoopElementsOnLine(
   const spacing = (dash[0] || 30) * scale  // 缩放后的间距
 
   const animatePos = line.calculative!.animatePos  // 这是路径长度单位
-  const worldAnchors = line.calculative!.worldAnchors
+  const worldAnchors = line.calculative!.worldAnchors!
 
   if (worldAnchors.length > 1) {
     let from: Point
@@ -3788,7 +3788,7 @@ export function setElemPosition(pen: Pen, elem: HTMLElement) {
     return;
   }
   const store = pen.calculative!.canvas!.store;
-  const worldRect = pen.calculative!.worldRect;
+  const worldRect = pen.calculative!.worldRect!;
   elem.style.opacity = pen.globalAlpha + '';
   elem.style.position = 'absolute';
   elem.style.outline = 'none';

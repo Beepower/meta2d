@@ -70,7 +70,7 @@ export class CanvasTemplate {
     // for (const pen of this.store.data.pens) {
     //   if (this.hasImage(pen)) {
     //     // 只影响本层的
-    //     pen.calculative.imageDrawed = false;
+    //     pen.calculative!.imageDrawed = false;
     //   }
     // }
     // this.store.patchFlagsBackground = true;
@@ -158,17 +158,17 @@ export class CanvasTemplate {
         if (
           // pen.template
           pen.canvasLayer===CanvasLayer.CanvasTemplate
-          && pen.calculative.inView) {
+          && pen.calculative!.inView) {
           // if (pen.name === 'combine' && !pen.draw){
           //   continue;
           // }
           //非图片
           renderPen(ctx, pen);
           //图片
-          if (pen.image && pen.name !== 'gif' && pen.calculative.img) {
+          if (pen.image && pen.name !== 'gif' && pen.calculative!.img) {
             ctx.save();
             ctxFlip(ctx, pen);
-            if (pen.rotateByRoot || pen.calculative.rotate) {
+            if (pen.rotateByRoot || pen.calculative!.rotate) {
               ctxRotate(ctx, pen);
             }
 

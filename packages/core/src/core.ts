@@ -2388,7 +2388,7 @@ export class Meta2d {
       parent.children.forEach((cid) => {
         const cPen = this.store.pens[cid];
         const childRect = calcRelativeRect(
-          cPen.calculative.worldRect,
+          cPen.calculative!.worldRect,
           parent.calculative!.worldRect
         );
         Object.assign(cPen, childRect);

@@ -254,7 +254,7 @@ export function isEqual(source: number, target: number): boolean {
 
 // 获取偏移量比较大的图元（认为是脏数据）
 export function findOutliersByZScore(pens: Pen[], threshold = 4) {
-  let points = pens.map((item) => item.calculative.worldRect);
+  let points = pens.map((item) => item.calculative!.worldRect);
   // 计算x和y的平均值和标准差
   const xValues = points.map((p) => p.x);
   const yValues = points.map((p) => p.y);

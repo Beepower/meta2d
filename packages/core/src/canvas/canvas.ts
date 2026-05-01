@@ -1423,9 +1423,10 @@ export class Canvas {
       const regex = new RegExp(`(${keys})`, "g");
       for (const pen of pens) {
         if (pen.type) {
-          pen.anchors[0].connectTo = this.randomIdObj[pen.anchors[0].connectTo];
-          pen.anchors[pen.anchors!.length - 1].connectTo =
-            this.randomIdObj[pen.anchors[pen.anchors!.length - 1].connectTo];
+          const a0 = pen.anchors[0]!;
+          const aN = pen.anchors[pen.anchors.length - 1]!;
+          if (a0.connectTo) a0.connectTo = this.randomIdObj[a0.connectTo];
+          if (aN.connectTo) aN.connectTo = this.randomIdObj[aN.connectTo];
         } else {
           pen.connectedLines?.forEach((item) => {
             item.lineAnchor = this.randomIdObj[item.lineAnchor];
@@ -1577,14 +1578,14 @@ export class Canvas {
       }
     }
     randomId(pen);
-    if(pens.length>1){
+    if(pens.length>1 && beforeIds){
     // if (beforeIds) {
       if (beforeIds.length === 1) {
-        this.randomIdObj[beforeIds[0]] = pen.id;
+        this.randomIdObj[beforeIds[0]!] = pen.id!;
       } else {
-        this.randomIdObj[beforeIds[0]] = pen.id;
-        this.randomIdObj[beforeIds[1]] = pen.anchors[0].id;
-        this.randomIdObj[beforeIds[2]] = pen.anchors[pen.anchors!.length - 1].id;
+        this.randomIdObj[beforeIds[0]!] = pen.id!;
+        this.randomIdObj[beforeIds[1]!] = pen.anchors[0]!.id!;
+        this.randomIdObj[beforeIds[2]!] = pen.anchors[pen.anchors.length - 1]!.id!;
       }
     }
     //处理链接关系

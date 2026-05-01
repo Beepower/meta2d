@@ -5,17 +5,18 @@ import { getFont } from './render';
 import { isEmptyText } from '../utils/tool';
 
 export function calcTextRect(pen: Pen) {
+  const calc = pen.calculative!;
   const {
-    paddingTop,
-    paddingBottom,
-    paddingLeft,
-    paddingRight,
-    worldRect,
+    paddingTop = 0,
+    paddingBottom = 0,
+    paddingLeft = 0,
+    paddingRight = 0,
     canvas,
     text
-  } = pen.calculative;
+  } = calc;
+  const worldRect = calc.worldRect!;
   // if(!text) return;
-  let { textLeft, textTop, textWidth, textHeight } = pen.calculative;
+  let { textLeft, textTop, textWidth, textHeight } = calc;
   let x = paddingLeft;
   let y = paddingTop;
   // if (textLeft && Math.abs(textLeft) < 1) {
@@ -39,14 +40,14 @@ export function calcTextRect(pen: Pen) {
   if (textHeight && textHeight < 1) {
     textHeight *= worldRect.height;
   }
-  if (textWidth < pen.calculative!.fontSize) {
+  if (textWidth! < pen.calculative!.fontSize!) {
     textWidth = pen.calculative!.fontSize;
   }
   // 默认居左，居上
   x += (textLeft || 0) + worldRect.x;
   y += (textTop || 0) + worldRect.y;
-  const textAlign = pen.textAlign || canvas.store.options.textAlign;
-  const textBaseline = pen.textBaseline || canvas.store.options.textBaseline;
+  const textAlign = pen.textAlign || canvas!.store.options.textAlign;
+  const textBaseline = pen.textBaseline || canvas!.store.options.textBaseline;
 
   switch (textAlign) {
     case 'center':
@@ -81,12 +82,15 @@ export function calcTextRect(pen: Pen) {
 
 export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
   // By default, the text is center aligned.
-  const calc = pen.calculative;
+  const calc = pen.calculative!;
   if(isEmptyText(calc.text)) return;
   if (!calc.textLines) {
     calcTextLines(pen);
   }
-  const { worldTextRect:rect,textLines,fontSize,lineHeight,canvas } = calc;
+  const rect = calc.worldTextRect!;
+  const { textLines, canvas } = calc;
+  const fontSize = calc.fontSize!;
+  const lineHeight = calc.lineHeight!;
   if (!textLines) return;
 
   const lineHeightValue = fontSize * lineHeight;
@@ -133,7 +137,7 @@ export function calcTextDrawRect(ctx: CanvasRenderingContext2D, pen: Pen) {
 }
 
 export function calcTextLines(pen: Pen, text = pen.calculative!.text) {
-  const calc = pen.calculative;
+  const calc = pen.calculative!;
   if (isEmptyText(text)) {
     calc.textLines = undefined;
     return;
@@ -251,10 +255,10 @@ export function getWords(txt: string = '') {
 }
 
 export function wrapLines(words: string[], pen: Pen) {
-  const canvas: Canvas = pen.calculative!.canvas;
+  const canvas = pen.calculative!.canvas!;
   const ctx = canvas.offscreen.getContext('2d') as CanvasRenderingContext2D;
   const { fontStyle, fontWeight, fontSize, fontFamily, lineHeight } =
-    pen.calculative;
+    pen.calculative!;
   ctx.save();
   const lines: string[] = [];
   let currentLine = words[0] || '';

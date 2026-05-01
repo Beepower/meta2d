@@ -86,7 +86,7 @@ function mouseEnter(pen: Pen) {
   // const activePens = pen.calculative!.canvas!.store.active;
   // if(activePens&&activePens.length){
   //   activePens.forEach((activePen:Pen)=>{
-  //     if(rectInRect(activePen.calculative.worldRect,pen.calculative!.worldRect,true)){
+  //     if(rectInRect(activePen.calculative!.worldRect,pen.calculative!.worldRect,true)){
   //       if(!pen.followers){
   //         pen.followers =[];
   //       }
@@ -102,7 +102,7 @@ function mouseLeave(pen: Pen) {
   const activePens = pen.calculative!.canvas!.store.active;
   if (activePens && activePens.length) {
     activePens.forEach((activePen: Pen) => {
-      // if(!rectInRect(activePen.calculative.worldRect,pen.calculative!.worldRect,true)){
+      // if(!rectInRect(activePen.calculative!.worldRect,pen.calculative!.worldRect,true)){
       //   if(!pen.followers){
       //     pen.followers =[];
       //   }
@@ -117,7 +117,7 @@ function mouseLeave(pen: Pen) {
             pen.calculative!.canvas!.store.pens[activePen.id + movingSuffix];
           if (movingPen && movingPen.calculative) {
             let isIn = rectInRect(
-              movingPen.calculative.worldRect,
+              movingPen.calculative!.worldRect,
               pen.calculative!.worldRect,
               true
             );
@@ -150,7 +150,7 @@ function mouseUp(pen: Pen) {
         inRect.y -= 1;
         inRect.width += 2;
         inRect.height += 2;
-        if (rectInRect(movingPen.calculative.worldRect, inRect, true)) {
+        if (rectInRect(movingPen.calculative!.worldRect, inRect, true)) {
           if (!pen.followers) {
             pen.followers = [];
           }

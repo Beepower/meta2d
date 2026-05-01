@@ -296,14 +296,14 @@ export function getLineLength(pen: Pen): number {
 export function createLineSvgPath(line:Pen) {
   let path:SVGGeometryElement
   let from:Point = null
-  line.calculative.worldAnchors.forEach(pt=>{
+  line.calculative!.worldAnchors.forEach(pt=>{
     if (from) {
       path = createSvgPath(path,from,from.next,pt.prev,pt)
     }
     from = pt;
   })
   if(line.close){
-    let pt = line.calculative.worldAnchors[0]
+    let pt = line.calculative!.worldAnchors[0]
     path = createSvgPath(path,from,from.next,pt.prev,pt)
   }
   return path
@@ -313,7 +313,7 @@ export function createLineSvgPath(line:Pen) {
  */
 export function lineInRect(line: Pen, rect: Rect) {
   // 判断是直线还是贝塞尔
-  const worldAnchors = line.calculative.worldAnchors!;
+  const worldAnchors = line.calculative!.worldAnchors!;
   for (let index = 0; index < worldAnchors.length - 1; index++) {
     const current = worldAnchors[index];
     const next = worldAnchors[index + 1];

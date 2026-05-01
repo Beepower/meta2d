@@ -270,7 +270,8 @@ export interface Pen extends Rect {
   children?: string[];
   followers?: string[];
 
-  anchors?: Point[];
+  // 不再为 optional——pen load 时统一 normalize 为 []，construction sites 也提供默认值
+  anchors: Point[];
   anchorVisible?: boolean;
   anchorRadius?: number;
   anchorBackground?: string;

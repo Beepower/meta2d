@@ -21,7 +21,7 @@ export function renderFromArrow(
   if (!arrows[pen.fromArrow]) {
     return;
   }
-  const from = getFromAnchor(pen);
+  const from = getFromAnchor(pen)!;
   const { x, y } = from;
   const pt: Point = { x, y };
   pt.step = (pen.fromArrowSize || 10) * store.data.scale;

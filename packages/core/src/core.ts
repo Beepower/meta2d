@@ -1712,8 +1712,8 @@ export class Meta2d {
     }
 
     pen.lineName = lineName;
-    const from = getFromAnchor(pen);
-    const to = getToAnchor(pen);
+    const from = getFromAnchor(pen)!;
+    const to = getToAnchor(pen)!;
     from.prev = undefined;
     from.next = undefined;
     to.prev = undefined;
@@ -2138,6 +2138,7 @@ export class Meta2d {
       id: s8(),
       name: 'combine',
       ...rect,
+      anchors: [],
       children: [],
       showChild,
     };
@@ -6741,6 +6742,7 @@ export class Meta2d {
       id: s8(),
       name: 'combine',
       ...rect,
+      anchors: [],
       children: [],
       showChild,
     };

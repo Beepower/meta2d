@@ -812,7 +812,7 @@ export class Canvas {
         break;
       case 'Alt':
         if (!e.ctrlKey && !e.shiftKey && this.drawingLine) {
-          const to = getToAnchor(this.drawingLine);
+          const to = getToAnchor(this.drawingLine)!;
           if (to !== this.drawingLine.calculative!.activeAnchor) {
             deleteTempAnchor(this.drawingLine);
             this.drawingLine.calculative!.worldAnchors.push(to);
@@ -1886,6 +1886,7 @@ export class Canvas {
       y: pt.y,
       width: 0,
       height: 0,
+      anchors: [],
       type: PenType.Line,
       calculative: {
         canvas: this,
@@ -2015,7 +2016,7 @@ export class Canvas {
     if (this.drawingLine) {
       // 单击在锚点上，完成绘画
       if (this.store.hoverAnchor) {
-        const to = getToAnchor(this.drawingLine);
+        const to = getToAnchor(this.drawingLine)!;
         if (this.store.hoverAnchor.type === PointType.Line) {
           getDistance(to!, this.store.hoverAnchor, this.store);
         } else {
@@ -2037,7 +2038,7 @@ export class Canvas {
       if (!this.store.options.autoAnchor) {
         if (e.shiftKey && e.altKey && e.ctrlKey) {
           this.setAnchor(this.store.pointAt!);
-          const to = getToAnchor(this.drawingLine);
+          const to = getToAnchor(this.drawingLine)!;
           const anchor = this.store.activeAnchor;
           if (!anchor) {
             return;
@@ -2071,7 +2072,7 @@ export class Canvas {
 
       // 自动锚点（单击节点），完成绘画
       if (this.store.options.autoAnchor && this.hoverType === HoverType.Node) {
-        const to = getToAnchor(this.drawingLine);
+        const to = getToAnchor(this.drawingLine)!;
         const anchor = nearestAnchor(this.store.hover!, e);
         to!.x = anchor!.x;
         to!.y = anchor!.y;
@@ -2084,7 +2085,7 @@ export class Canvas {
       }
 
       // 添加点
-      const to = getToAnchor(this.drawingLine);
+      const to = getToAnchor(this.drawingLine)!;
 
       if (to!.isTemp) {
         this.drawingLine.calculative!.activeAnchor =
@@ -2627,7 +2628,7 @@ export class Canvas {
     if (this.drawingLine) {
       // 在锚点上，完成绘画
       if (this.store.hoverAnchor) {
-        const to = getToAnchor(this.drawingLine);
+        const to = getToAnchor(this.drawingLine)!;
         if (this.store.hoverAnchor.type === PointType.Line) {
           getDistance(to, this.store.hoverAnchor, this.store);
         } else {
@@ -2648,7 +2649,7 @@ export class Canvas {
 
       // 自动锚点（单击节点），完成绘画
       if (this.store.options.autoAnchor && this.hoverType === HoverType.Node) {
-        const to = getToAnchor(this.drawingLine);
+        const to = getToAnchor(this.drawingLine)!;
         const anchor = nearestAnchor(this.store.hover, e);
         to.x = anchor.x;
         to.y = anchor.y;
@@ -2670,8 +2671,8 @@ export class Canvas {
       this.store.active[0] !== this.store.hover
     ) {
       const line = this.store.active[0];
-      const from = getFromAnchor(line);
-      const to = getToAnchor(line);
+      const from = getFromAnchor(line)!;
+      const to = getToAnchor(line)!;
       if (this.store.hoverAnchor) {
         const hover = this.store.hover;
         const isHoverFrom = getFromAnchor(hover) === this.store.hoverAnchor;
@@ -3070,8 +3071,8 @@ export class Canvas {
       dockPen?.type === 1 &&
       (xDock?.anchorId || yDock?.anchorId)
     ) {
-      const from = getFromAnchor(dockPen);
-      const to = getToAnchor(dockPen);
+      const from = getFromAnchor(dockPen)!;
+      const to = getToAnchor(dockPen)!;
 
       if (xDock?.anchorId) {
         const anchor = this.store.pens[
@@ -3736,13 +3737,13 @@ export class Canvas {
         if (pen.calculative!.worldAnchors) {
           for (const anchor of pen.calculative!.worldAnchors) {
             if (anchor.twoWay === TwoWay.In) {
-              const to = getToAnchor(this.store.active![0]!);
+              const to = getToAnchor(this.store.active![0]!)!;
               if (this.store.activeAnchor!.id !== to!.id) {
                 continue;
               }
             }
             if (anchor.twoWay === TwoWay.Out) {
-              const from = getFromAnchor(this.store.active![0]!);
+              const from = getFromAnchor(this.store.active![0]!)!;
               if (this.store.activeAnchor!.id !== from!.id) {
                 continue;
               }
@@ -4492,7 +4493,7 @@ export class Canvas {
     if (!this.drawingLine) {
       return;
     }
-    const from = getFromAnchor(this.drawingLine);
+    const from = getFromAnchor(this.drawingLine)!;
     let to = getToAnchor(this.drawingLine);
     if (to!.isTemp) {
       this.drawingLine.calculative!.worldAnchors!.pop();
@@ -6133,8 +6134,8 @@ export class Canvas {
     }
 
     const line = this.store.active![0]!;
-    const from = getFromAnchor(line);
-    const to = getToAnchor(line);
+    const from = getFromAnchor(line)!;
+    const to = getToAnchor(line)!;
 
     if (line.lineName === 'polyline' && !keyOptions.shiftKey) {
       translatePolylineAnchor(line, this.store.activeAnchor!, pt);
@@ -6563,8 +6564,8 @@ export class Canvas {
     pen: Pen,
     penConnection?: ConnectLine
   ) {
-    const from = getFromAnchor(line);
-    const to = getToAnchor(line);
+    const from = getFromAnchor(line)!;
+    const to = getToAnchor(line)!;
     const newAnchor = nearestAnchor(pen, lineAnchor === from ? to : from);
     if (!newAnchor) {
       return;
@@ -6690,14 +6691,14 @@ export class Canvas {
       }
 
       if (line.autoFrom) {
-        const from = getFromAnchor(line);
+        const from = getFromAnchor(line)!;
         if (from.id === lineAnchor.id) {
           this.calcAutoAnchor(line, from, pen, item);
         }
       }
 
       if (line.autoTo) {
-        const to = getToAnchor(line);
+        const to = getToAnchor(line)!;
         if (to.id === lineAnchor.id) {
           this.calcAutoAnchor(line, to, pen, item);
         }
@@ -8505,11 +8506,7 @@ export class Canvas {
     pen: Pen,
     origin = this.store.data.origin,
     scale = this.store.data.scale
-  ) {
-    if (!pen) {
-      return;
-    }
-
+  ): Rect {
     if (pen.parentId) {
       // 子节点的 rect 只与父节点 rect 有关
       return {

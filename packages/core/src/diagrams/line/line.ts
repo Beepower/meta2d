@@ -47,7 +47,7 @@ export function lineSegment(store: Meta2dStore, pen: Pen, mousedwon?: Point) {
     return;
   }
 
-  const from = getFromAnchor(pen);
+  const from = getFromAnchor(pen)!;
   const to = getToAnchor(pen);
   if (!from || !to || !to.id || from === to) {
     return;

@@ -439,7 +439,7 @@ function drawLinearGradientLine(
 }
 
 function ctxDrawLinearGradientPath(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const anchors = pen.calculative!.worldAnchors;
+  const anchors = pen.calculative!.worldAnchors!;
   let smoothLenth =
     pen.calculative!.lineWidth *
     (pen.calculative!.gradientSmooth || pen.calculative!.lineSmooth || 0);
@@ -641,7 +641,7 @@ function smoothAnimateTransition(
 }
 
 export function getGradientAnimatePath(pen: Pen) {
-  const anchors = pen.calculative!.worldAnchors;
+  const anchors = pen.calculative!.worldAnchors!;
   let smoothLenth =
     pen.calculative!.lineWidth *
     (pen.calculative!.gradientSmooth || pen.calculative!.lineSmooth || 0);
@@ -1284,7 +1284,7 @@ export function drawIcon(
   ctx.shadowOffsetY = 0;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  const iconRect = pen.calculative!.worldIconRect;
+  const iconRect = pen.calculative!.worldIconRect!;
   let x = iconRect.x + iconRect.width / 2;
   let y = iconRect.y + iconRect.height / 2;
 
@@ -3164,14 +3164,14 @@ export function connectLine(
     if (line.calculative!.worldAnchors.length === 1) {
       return;
     }
-    const to = getToAnchor(line);
+    const to = getToAnchor(line)!;
     if (lineAnchor.id !== to.id) {
       return;
     }
   }
 
   if (anchor.twoWay === TwoWay.Out) {
-    const from = getFromAnchor(line);
+    const from = getFromAnchor(line)!;
     if (lineAnchor.id !== from.id) {
       return;
     }

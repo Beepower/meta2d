@@ -3,8 +3,8 @@ import { Rect } from '../../rect';
 export interface SvgCommand {
   key: string;
   values: number[];
+  worldPoints: number[];
   relative?: boolean;
-  worldPoints?: number[];
 }
 
 export interface SvgPath {
@@ -208,7 +208,7 @@ function parseCommands(
 
   const commands: SvgCommand[] = [];
   while (cursor <= path.length) {
-    const command: SvgCommand = { key: type, values: [] };
+    const command: SvgCommand = { key: type, values: [], worldPoints: [] };
     for (const regex of expectedRegexList) {
       const match = path.slice(cursor).match(regex);
 

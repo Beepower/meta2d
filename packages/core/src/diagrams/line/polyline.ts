@@ -437,7 +437,7 @@ function getNextPoints(pen: Pen, from: Point, to: Point) {
 }
 
 export function anchorInHorizontal(pen: Pen, anchor: Point, from = true) {
-  let anchors = pen.calculative!.worldAnchors;
+  let anchors = pen.calculative!.worldAnchors!;
   if (!from) {
     anchors = [];
     pen.calculative!.worldAnchors!.forEach((item) => {
@@ -465,7 +465,7 @@ export function anchorInHorizontal(pen: Pen, anchor: Point, from = true) {
 }
 
 export function anchorInVertical(pen: Pen, anchor: Point, from = true) {
-  let anchors = pen.calculative!.worldAnchors;
+  let anchors = pen.calculative!.worldAnchors!;
   if (!from) {
     anchors = [];
     pen.calculative!.worldAnchors!.forEach((item) => {
@@ -505,7 +505,7 @@ export function translatePolylineAnchor(
     (item) => item.id === anchor.id
   );
 
-  const from = getFromAnchor(pen);
+  const from = getFromAnchor(pen)!;
   const to = getToAnchor(pen);
 
   let prev = pen.calculative!.worldAnchors[i - 1];

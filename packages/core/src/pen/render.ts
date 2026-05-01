@@ -216,7 +216,10 @@ function getBkRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 }
 
 function getBkGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { x, y, ex, width, height, center } = pen.calculative!.worldRect!;
+  const wr = pen.calculative!.worldRect!;
+  calcRightBottom(wr);
+  calcCenter(wr);
+  const { x, y, ex, width, height, center } = wr;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
@@ -225,7 +228,7 @@ function getBkGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   if(pen.calculative!.checked){
     color = pen.calculative!.onGradientColors;
   }
-  const { angle, colors } = formatGradient(color);
+  const { angle, colors } = formatGradient(color!);
   let r = getGradientR(angle, width, height);
   points.forEach((point) => {
     rotatePoint(point, angle, center);
@@ -264,13 +267,15 @@ function getTextRadialGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
 
 function getTextGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
   !pen.calculative!.textDrawRect && calcTextDrawRect(ctx, pen);
-  calcCenter(pen.calculative!.textDrawRect);
-  const { x, y, ex, width, height, center } = pen.calculative!.textDrawRect!;
+  const tr = pen.calculative!.textDrawRect!;
+  calcRightBottom(tr);
+  calcCenter(tr);
+  const { x, y, ex, width, height, center } = tr;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
   ];
-  const { angle, colors } = formatGradient(pen.calculative!.textGradientColors);
+  const { angle, colors } = formatGradient(pen.calculative!.textGradientColors!);
   let r = getGradientR(angle, width, height);
   points.forEach((point) => {
     rotatePoint(point, angle, center);
@@ -382,13 +387,16 @@ function rgbaToHex(value: string) {
 }
 
 function getLineGradient(ctx: CanvasRenderingContext2D, pen: Pen) {
-  const { x, y, ex, width, height, center } = pen.calculative!.worldRect!;
+  const wr = pen.calculative!.worldRect!;
+  calcRightBottom(wr);
+  calcCenter(wr);
+  const { x, y, ex, width, height, center } = wr;
   let points = [
     { x: ex, y: y + height / 2 },
     { x: x, y: y + height / 2 },
   ];
 
-  const { angle, colors } = formatGradient(pen.calculative!.lineGradientColors);
+  const { angle, colors } = formatGradient(pen.calculative!.lineGradientColors!);
   let r = getGradientR(angle, width, height);
 
   points.forEach((point) => {

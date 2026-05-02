@@ -26,3 +26,6 @@ dist/
 .vscode/
 vendor
 
+# Test coverage output (vitest --coverage / @vitest/coverage-v8)
+coverage/
+

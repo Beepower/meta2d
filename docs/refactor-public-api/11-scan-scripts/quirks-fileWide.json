@@ -1,0 +1,20 @@
+[
+  {
+    "line": 196,
+    "rawText": "ch11.7 #4",
+    "fullLine": "@quirk ch11.7 #4 — drag 期间的 pen clones。movingPens 元素在 store.pens",
+    "attachedToMethod": "batchDepth"
+  },
+  {
+    "line": 3296,
+    "rawText": "ch11.6 #2",
+    "fullLine": "@quirk ch11.6 #2 — `drawing` 参数控制是否 emit 'inactive' event:",
+    "attachedToMethod": "inactive"
+  },
+  {
+    "line": 6850,
+    "rawText": "ch11.7 #1 + #2",
+    "fullLine": "@quirk ch11.7 #1 + #2 — Event timing 二分:",
+    "attachedToMethod": "translatePens"
+  }
+]

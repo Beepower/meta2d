@@ -1,0 +1,3421 @@
+[
+  {
+    "id": "",
+    "name": "listen",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "splitLine",
+    "signature": "(line: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, anchor: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "translateAnchor",
+    "signature": "(x: number, y: number) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "fileToPen",
+    "signature": "(file: File, isGif: boolean) => Promise<import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen>",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dropPens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], e: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => Promise<void>",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "randomCombineId",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], parentId?: string) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "addPens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], history?: boolean, abs?: boolean) => Promise<import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getDistance",
+    "signature": "(touch1: { clientX: number; clientY: number; }, touch2: { clientX: number; clientY: number; }) => number",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getCenter",
+    "signature": "(touch1: { clientX: number; clientY: number; }, touch2: { clientX: number; clientY: number; }) => { x: number; y: number; }",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getInitPencilLine",
+    "signature": "(pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "createDrawingLine",
+    "signature": "(pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "addRuleLine",
+    "signature": "(e: { x: number; y: number; ctrlKey?: boolean; }) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "clearRuleLines",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "alignPenToGrid",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "movedActivePens",
+    "signature": "(readyConnect?: boolean) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "copyMovedPens",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "initImageCanvas",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initTemplateCanvas",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hasImage",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, isBottom: boolean) => boolean",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "inactive",
+    "signature": "(drawing?: boolean) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [
+      "[quirk] ch11.6 #2"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "active",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], emit: boolean) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": true,
+    "callers": [
+      "V2",
+      "卫星",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getSizeCPs",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getSpecialAngle",
+    "signature": "(to: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point, last: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "clearHover",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "inAnchor",
+    "signature": "(pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point, pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, anchor: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").HoverType",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "resize",
+    "signature": "(w?: number, h?: number) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "clearCanvas",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "addPen",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, history?: boolean, emit?: boolean, abs?: boolean, activate: boolean) => Promise<import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "addPenSync",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, history?: boolean, emit?: boolean, abs?: boolean, activate: boolean) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pushHistory",
+    "signature": "(action: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").EditAction) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "undo",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "redo",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "activeHistory",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "doEditAction",
+    "signature": "(action: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").EditAction, undo: boolean) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "makePen",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "drawline",
+    "signature": "(mouse?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initLineRect",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "drawingPencil",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "stopPencil",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "finishDrawline",
+    "signature": "(end?: boolean) => Promise<void>",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "finishPencil",
+    "signature": "() => Promise<void>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "firefoxLoadSvg",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "loadImage",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "__loadImage",
+    "signature": "(src: string, retryNum: number) => any",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "imageLoaded",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "templateImageLoaded",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setCalculativeByScale",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "updatePenRect",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, {\r\n      worldRectIsReady,\r\n      playingAnimate,\r\n    }: { worldRectIsReady?: boolean; playingAnimate?: boolean; noChildren?: boolean; }) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initGlobalStyle",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onMovePens",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setViewport",
+    "signature": "(viewport: { x: number; y: number; zoom: number; }) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setTranslate",
+    "signature": "(x: number, y: number) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setScale",
+    "signature": "(zoom: number, pivot?: { x: number; y: number; }) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "templateScale",
+    "signature": "(scale: number, _center: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [
+      "[deprecated] use alternative"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "rotatePens",
+    "signature": "(e: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "resizePens",
+    "signature": "(e: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "movePens",
+    "signature": "(e: { x: number; y: number; ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; }) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "changeIdsByMoving",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "initMovingPens",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": true,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "moveLineAnchor",
+    "signature": "(pt: { x: number; y: number; }, keyOptions: { ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; }) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "moveLineAnchorPrev",
+    "signature": "(e: { x: number; y: number; }) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "moveLineAnchorNext",
+    "signature": "(e: { x: number; y: number; }) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setAnchor",
+    "signature": "(e: { x: number; y: number; }) => Promise<void>",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "checkDisconnect",
+    "signature": "(line: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "translatePens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], x: number, y: number, doing?: boolean) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [
+      "[quirk] ch11.7 #1 + #2"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "templateTranslatePens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], x: number, y: number) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "calcAutoAnchor",
+    "signature": "(line: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, lineAnchor: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point, pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, penConnection?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").ConnectLine) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "restoreNodeAnimate",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "updateLines",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, change?: boolean) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "calcActiveRect",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "rotatePen",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, angle: number, rect: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "nextAnimate",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getFrameProps",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => Record<string, any>",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "animate",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "copy",
+    "signature": "(pens?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], emit: boolean) => Promise<void>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "cut",
+    "signature": "(pens?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "paste",
+    "signature": "() => Promise<void>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getAllByPens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getAllFollowersByPens",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], deep: boolean) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setFollowers",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "changeLineAnchors",
+    "signature": "(oldId: string, pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, pastePens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "changeNodeConnectedLine",
+    "signature": "(oldId: string, line: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, pastePens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "delete",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], canDelLocked: boolean, history: boolean) => Promise<void>",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "deleteSync",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], canDelLocked: boolean, history: boolean) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "_del",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], delPens?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], canDelLocked?: boolean) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "getDelPens",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, delPens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getLockedParent",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => false | import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "delForce",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "delConnectedLines",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "convertSpecialCharacter",
+    "signature": "(str: string) => string",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "createInput",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "clearDropdownList",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dropdownAppendOption",
+    "signature": "(text: string, index: number) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "find",
+    "signature": "(idOrTag: string) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "findOne",
+    "signature": "(idOrTag: string) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "changePenId",
+    "signature": "(oldId: string, newId: string) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "updateValue",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, data: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").IValue) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "execPenResize",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, raw?: boolean) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "setPenRect",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, rect: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect, render: boolean) => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getPenRect",
+    "signature": "(pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, _origin: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point, _scale: number) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "toPng",
+    "signature": "(padding: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/utils/padding\").Padding, callback?: BlobCallback, containBkImg: boolean, maxWidth?: number) => string",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "activeToPng",
+    "signature": "(padding: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/utils/padding\").Padding, maxWidth?: number) => string",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pensToPng",
+    "signature": "(pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], padding: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/utils/padding\").Padding, maxWidth?: number) => string",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "toggleAnchorMode",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "addAnchorHand",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "removeAnchorHand",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "toggleAnchorHand",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "gotoView",
+    "signature": "(x: number, y: number) => void",
+    "kind": "class-method",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "showMagnifier",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hideMagnifier",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "showFit",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hideFit",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "makeFit",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "updateFit",
+    "signature": "(e: any) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "updateFitRect",
+    "signature": "(fit: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").Fit) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "deleteFit",
+    "signature": "(fit: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").Fit) => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "calcuActiveFit",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "toggleMagnifier",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "destroy",
+    "signature": "() => void",
+    "kind": "class-method",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canvas",
+    "signature": ": HTMLCanvasElement",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "offscreen",
+    "signature": ": HTMLCanvasElement",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "width",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "height",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "externalElements",
+    "signature": ": HTMLDivElement",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "clientRect",
+    "signature": "?: DOMRect",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canvasRect",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "activeRect",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initActiveRect",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dragRect",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastRotate",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "sizeCPs",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point[]",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "activeInitPos",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point[]",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hoverType",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").HoverType",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "resizeIndex",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "mouseDown",
+    "signature": "?: { x: number; y: number; restore?: boolean; }",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hotkeyType",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").HotkeyType",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "mouseRight",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").MouseRight",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "addCaches",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "touchCenter",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initTouchDis",
+    "signature": "?: number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initScale",
+    "signature": "?: number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "touchScaling",
+    "signature": "?: boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "touchMoving",
+    "signature": "?: boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "startTouches",
+    "signature": "?: TouchList",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastTouchY",
+    "signature": "?: number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "startDistance",
+    "signature": "?: number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "startCenter",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "currentCenter",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastOffsetX",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastOffsetY",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "drawingLineName",
+    "signature": "?: string",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "drawLineFns",
+    "signature": ": string[]",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "drawingLine",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pencil",
+    "signature": "?: boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pencilLine",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "movingPens",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "patchFlagsLines",
+    "signature": ": Set<import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen>",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dirtyPens",
+    "signature": ": Set<import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen>",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "batchDepth",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [
+      "[quirk] ch11.7 #4"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "dock",
+    "signature": "?: { xDock?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; yDock?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; }",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "prevAnchor",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "nextAnchor",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastMouseTime",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "hoverTimer",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "fitTimer",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "willInactivePen",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "patchFlags",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastRender",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "touchStart",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "touchStartTimer",
+    "signature": ": any",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "timer",
+    "signature": ": any",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastTapTime",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "lastAnimateRender",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "animateRendering",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "renderTimer",
+    "signature": "?: number",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "initPens",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pointSize",
+    "signature": ": 8",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pasteOffset",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "opening",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "maxZindex",
+    "signature": ": number",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canMoveLine",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "randomIdObj",
+    "signature": "?: Record<string, string>",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "keyOptions",
+    "signature": "?: { shiftKey?: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; F?: boolean; }",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "isMobile",
+    "signature": "?: boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beforeAddPen",
+    "signature": "?: (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => boolean",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [
+      "[deprecated] use alternative"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beforeAddPens",
+    "signature": "?: (pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => Promise<boolean>",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beforeAddAnchor",
+    "signature": "?: (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, anchor: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => Promise<boolean>",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beforeRemovePens",
+    "signature": "?: (pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => Promise<boolean>",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beforeRemoveAnchor",
+    "signature": "?: (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, anchor: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => Promise<boolean>",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "customResizeDock",
+    "signature": "?: (store: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").Meta2dStore, rect: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], resizeIndex: number) => { xDock: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; yDock: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; }",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "customMoveDock",
+    "signature": "?: (store: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/store/store\").Meta2dStore, rect: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[], offset: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => { xDock: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; yDock: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point; }",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [
+      "[hook-util] customMoveDock: see installUxPatches.ts:272"
+    ],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "inputParent",
+    "signature": ": HTMLDivElement",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "inputDiv",
+    "signature": ": HTMLDivElement",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dropdown",
+    "signature": ": HTMLUListElement",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "tooltip",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/tooltip/tooltip\").Tooltip",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "popconfirm",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/popconfirm/popconfirm\").Popconfirm",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "title",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/title/title\").Title",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "mousePos",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "scroll",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/scroll/scroll\").Scroll",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "movingAnchor",
+    "signature": "?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canvasTemplate",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/canvas/canvasTemplate\").CanvasTemplate",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canvasImage",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/canvas/canvasImage\").CanvasImage",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "canvasImageBottom",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/canvas/canvasImage\").CanvasImage",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "magnifierCanvas",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/canvas/magnifierCanvas\").MagnifierCanvas",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "dialog",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/dialog/dialog\").Dialog",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "autoPolylineFlag",
+    "signature": ": boolean",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "stopPropagation",
+    "signature": ": (e: MouseEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "curve",
+    "signature": ": typeof import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/diagrams/line/curve\").curve",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "polyline",
+    "signature": ": typeof import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/diagrams/line/polyline\").polyline",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "mind",
+    "signature": ": typeof import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/diagrams/line/curve\").mind",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "line",
+    "signature": ": typeof import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/diagrams/line/line\").lineSegment",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onCopy",
+    "signature": ": (event: ClipboardEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onCut",
+    "signature": ": (event: ClipboardEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onPaste",
+    "signature": ": (event: ClipboardEvent) => Promise<void>",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onMessage",
+    "signature": ": (e: MessageEvent<any>) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onwheel",
+    "signature": ": (e: WheelEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onkeydown",
+    "signature": ": (e: KeyboardEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onkeyup",
+    "signature": ": (e: KeyboardEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "ondrop",
+    "signature": ": (event: DragEvent) => Promise<void>",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "ontouchstart",
+    "signature": ": (e: TouchEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "ontouchmove",
+    "signature": ": (event: TouchEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "ontouchend",
+    "signature": ": (event: TouchEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onGesturestart",
+    "signature": ": (e: Event) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onMouseDown",
+    "signature": ": (e: { x: number; y: number; clientX: number; clientY: number; pageX: number; pageY: number; buttons?: number; ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; }) => void",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onMouseMove",
+    "signature": ": (e: { x: number; y: number; clientX: number; clientY: number; pageX: number; pageY: number; buttons?: number; ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; }) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onMouseUp",
+    "signature": ": (e: { x: number; y: number; clientX: number; clientY: number; pageX: number; pageY: number; buttons?: number; ctrlKey?: boolean; shiftKey?: boolean; altKey?: boolean; button?: number; }) => void",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "clearDock",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "onResize",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "onScroll",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "calibrateMouse",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getContainerHover",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "lastHoverType",
+    "signature": ": import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").HoverType",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "getHover",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "inPens",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point, pens: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen[]) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/data\").HoverType",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "dockInAnchor",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "__loadMap",
+    "signature": ": Map<any, any>",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "imageTimer",
+    "signature": ": any",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "templateImageTimer",
+    "signature": ": any",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "render",
+    "signature": ": (patchFlags?: number | boolean) => void",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": true,
+    "callers": [
+      "V2",
+      "卫星",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "markDirty",
+    "signature": ": (pen?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "markAllDirty",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "public-ish",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "meta2d 顶层(非 delegate)"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "beginBatch",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "endBatch",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "V2",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "expandDirtyByOverlap",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "computeDirtyUnion",
+    "signature": ": () => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "shouldUseFastPath",
+    "signature": ": () => boolean",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [
+      "V2"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "renderPens",
+    "signature": ": (clipRect?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "renderPenContainChild",
+    "signature": ": (ctx: CanvasRenderingContext2D, pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "renderBorder",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "renderHoverPoint",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "renderPensAnchors",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "renderAnchors",
+    "signature": ": (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "transTimeout",
+    "signature": ": any",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "pastePen",
+    "signature": ": (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, parentId?: string) => import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "ondblclick",
+    "signature": ": (e: MouseEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "showInput",
+    "signature": ": (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen, rect?: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/rect/rect\").Rect, background?: string) => void",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "卫星",
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setInputStyle",
+    "signature": ": (pen: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/pen/model\").Pen) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "hideInput",
+    "signature": ": () => void",
+    "kind": "class-property",
+    "classification": "public",
+    "monkeyPatched": false,
+    "callers": [
+      "facade-delegate"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false
+  },
+  {
+    "id": "",
+    "name": "setDropdownList",
+    "signature": ": (search?: boolean) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "selectDropdown",
+    "signature": ": (e: MouseEvent | TouchEvent) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "inFitBorder",
+    "signature": ": (pt: import(\"D:/Codes/web/beepower/meta2d.js/packages/core/src/point/point\").Point) => void",
+    "kind": "class-property",
+    "classification": "internal",
+    "monkeyPatched": false,
+    "callers": [],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": true
+  },
+  {
+    "id": "",
+    "name": "movingSuffix",
+    "signature": "movingSuffix = '-moving' as const",
+    "kind": "module-const",
+    "classification": "appendix",
+    "monkeyPatched": false,
+    "callers": [
+      "sibling: 1"
+    ],
+    "notes": [],
+    "isPublicKeyword": false,
+    "isPrivateKeyword": false,
+    "siblingPaths": [
+      "packages/core/src/diagrams/form.ts"
+    ]
+  }
+]

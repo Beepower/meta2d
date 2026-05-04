@@ -12,6 +12,7 @@
 *.out
 *.log
 *.yaml
+!docs/refactor-public-api/**/*.yaml
 
 Desktop.ini
 

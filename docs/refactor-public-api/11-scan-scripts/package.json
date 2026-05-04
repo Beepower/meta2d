@@ -1,0 +1,15 @@
+{
+  "name": "p0-scan-scripts",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Phase 0 scan scripts (D-P0-06 三阶段 pipeline). Isolated from V2 root to avoid polluting package.json/lockfile. ts-morph + ripgrep based.",
+  "type": "module",
+  "scripts": {
+    "scan:canvas": "tsx canvas.config.ts",
+    "scan:core": "tsx core.config.ts",
+    "scan:render": "tsx render.config.ts"
+  },
+  "dependencies": {
+    "ts-morph": "^24.0.0"
+  }
+}

@@ -433,6 +433,66 @@ master-plan §3 里程碑 P_N            (一句话级)
 
 > **写 CRoSS 不是孤独地填空白模板，是和 AI 对答跑标准 challenge。**
 
+
+## §3.7 Skill 起草 protocol 自身的工程纪律
+
+§3.6 列的 skill 都会**起草 protocol 给 Claude Code 执行**(如 
+`/master-plan-init` 起草 master-plan;`/phase-scope-init` 起草 scope.md;
+特殊 case 起草 destructive operation protocol 如文档迁移、phase 收口、
+reset 等)。
+
+**Skill 起草 protocol 时是 AI 起草 work**——脱离 user 直接监督,但被 
+Claude Code 当指令执行。这件事的工程纪律高于通用 AI 起草:
+
+### 4 条 skill 起草 protocol 的工程纪律
+
+**1. Step 0 always verify state before mutate**
+
+任何 destructive operation protocol 起草默认包含 Step 0 = read-only verify,
+ping user "current state vs assumed state 一致?" 后再 Step 1 mutate。
+
+不允许 protocol 起草跳过 Step 0 直接进入 mutate。
+
+**2. 显式 enumerate hidden behavior**
+
+- .gitignore broad pattern catch
+- .gitattributes filter
+- submodule / hooks
+- cross-platform shell incompatibility(PowerShell vs Bash)
+
+protocol 起草前查 .gitignore + .gitattributes + 主仓 hooks,识别可能 
+hidden 的行为。
+
+**3. 显式 acknowledge user in-flight work**
+
+User 在 protocol 起草到执行间可能做的事:
+- rename / archive / move
+- manual edit
+- branch switch
+- remote config 修改
+
+protocol 起草必须 query "user 你最近做了什么" 而不是 default 之前 state。
+最简单的 query 形态:`git status` / `git log --since=<last-known>` 作为 
+Step 0 强制 verify。
+
+**4. 跨平台 command articulate**
+
+protocol 起草时避免 Unix-specific pipe(`| head` / `| grep` / `| awk`),
+用通用 git args(如 `git log --oneline -n 3` 替代 `git log | head -3`)。
+
+或显式标注 "Linux/Mac" + "Windows PowerShell" 等价。
+
+### 反例(本次 meta2d 重构 P0 → P1 桥实践浮现)
+
+Day 0b 文档迁移 protocol 起草时三次浮现意外:
+
+1. V2 仓 inventory 实测 37 而非起草假设 17
+2. .gitignore `*.yaml` broad pattern catch lock 文件
+3. V2 仓 staged uncommitted rename(P0 收口期 user buffer in-flight work)
+
+三次都不是 user / Claude Code 失误,**是 skill 起草 protocol 自己 incomplete**。
+3 条 + Step 0 应用后,protocol 起草质量保证 prevent 这件事。
+
 ---
 
 ## 04 Constitution：被遗漏的中间层

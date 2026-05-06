@@ -1,7 +1,7 @@
 # 工程纪律（meta2d.js）
 
 > **路径**：`docs/rules/engineering-discipline.md`
-> **类型**：L2 层项目特定规则（参见 cross-chasm.md §4.3.2 规则的两层来源）
+> **类型**：L2 层项目特定规则（参见 cross-chasm.md §4.5.1 子节"规则的两层来源"）
 > **来源**：P0 期间累积浮现的工程纪律基线，Day 1 提炼落地
 > **维护**：本项目永真规则；新规则浮现 → 起草决策档案（ADR）→ 用户审阅 → 追加到本文件
 
@@ -13,12 +13,12 @@
 
 与 `docs/rules/engineering-vision.md` 的分工：本文件讲**怎么做**——R8 失败形态识别、Q 自查清单、对称约束反向应用、轮次度量、基线规则；engineering-vision.md 讲**做什么**——V1 行为如何分类、接口设计哲学。
 
-与 `docs/rules/AI-cooperate.md` 的关系：
+与 `docs/rules/AI-writing.md` 的关系：
 
-> AI-cooperate.md 是**正面规则**——AI 该做什么（六条 P1-P6 准则）。
+> AI-writing.md 是**正面规则**——AI 该做什么（六条 P1-P6 准则）。
 > 本文件是**反面案例库**——AI 容易栽在哪里（meta2d 项目实际撞过的 R8 失败形态，以及对应的 Q 自查清单）。
 >
-> R8 形态本质上是 AI-cooperate.md 中 P4「行行有据」反模式（事后追认 / 判断甩锅）和 P5「临疑能止」反模式（硬撑）的具体表现。本文件提供 meta2d 项目里这些反模式的实际触发案例，帮助 AI 识别"这次任务正在接近哪种失败模式"。
+> R8 形态本质上是 AI-writing.md 中 P4「行行有据」反模式（事后追认 / 判断甩锅）和 P5「临疑能止」反模式（硬撑）的具体表现。本文件提供 meta2d 项目里这些反模式的实际触发案例，帮助 AI 识别"这次任务正在接近哪种失败模式"。
 
 ## 术语与上下文
 
@@ -255,11 +255,9 @@ P0 期间已识别盲区累积：
 
 ## 协议起草自身的工程纪律
 
-协议起草本身也需要工程纪律——协议漏洞会在执行时引发意外。本节交叉引用 cross-chasm.md §3.7，加 meta2d 实践案例，不重复原文内容。
+协议起草本身也需要工程纪律——协议漏洞会在执行时引发意外。本节给出 4 条协议起草通用纪律，来源是 Day 0b 文档迁移协议执行经验加上 P0 期间累积的协议起草教训。本节是 meta2d 项目对该主题的首次系统表达——4 条纪律本身的性质是跨项目通用（任何不可逆操作的协议起草都适用）。
 
-### cross-chasm.md §3.7 的四条协议起草纪律（引用）
-
-完整内容详见 cross-chasm.md §3.7。这里简略列举：
+### 四条协议起草纪律
 
 1. **第 0 步永远先核对状态再做改动** — 不可逆操作的协议默认包含只读核对的第 0 步
 2. **显式列出隐藏行为** — `.gitignore` 的宽匹配模式 / `.gitattributes` 过滤器 / submodule / git hooks / 跨平台 shell 差异
@@ -268,9 +266,9 @@ P0 期间已识别盲区累积：
 
 ### meta2d 实践案例：Day 0b 文档迁移协议
 
-Day 0b 文档迁移协议（`docs/refactor-public-api/day-0b-migration-protocol.md`）执行时三次浮现意外，每次都印证 cross-chasm.md §3.7 第 1-4 条：
+Day 0b 文档迁移协议（`docs/refactor-public-api/day-0b-migration-protocol.md`）执行时三次浮现意外，每次都印证上述 4 条中的一条：
 
-| 次 | 浮现的意外 | 对应 cross-chasm.md §3.7 哪一条 | 起草时如何避免 |
+| 次 | 浮现的意外 | 对应哪一条 | 起草时如何避免 |
 |---|---|---|---|
 | **1** | V2 仓的实际 inventory 是 37 个文件，不是起草时假设的 17（99-progress 已改名 / 多了 SESSION-KICKOFF / 多了 11-scan-scripts 整目录 / _archived 多 1 个）| 第 3 条用户进行中的工作 | 起草前用 `git ls-files` 查询，不要默认假设状态是静态的 |
 | **2** | meta2d 仓根目录 `.gitignore` 里 `*.yaml` 这条宽匹配模式把 `pnpm-lock.yaml` 默默拦下了（V2 仓里这是被 git 跟踪的唯一一个 yaml 文件，被静默丢失）| 第 2 条隐藏行为 | 起草前查一下 `.gitignore`，跑一下 `git check-ignore` 核对暂存范围 |
@@ -278,13 +276,16 @@ Day 0b 文档迁移协议（`docs/refactor-public-api/day-0b-migration-protocol.
 
 **元教训**：三次都不是用户或者 Claude Code 的失误，**而是 skill 起草的协议自身不完整**。起草前应用这 4 条可以避免这件事。
 
-### 与 cross-chasm.md §3.7 的关系（团队层 vs 项目层边界）
+### 团队层 vs 项目层边界
 
-cross-chasm.md §3.7 是**跨项目通用**的（任何不可逆操作的 skill 起草都适用）——形式上属于 L1（团队 / 方法论级别），但物理位置在 cross-chasm.md（meta2d 仓的 `docs/refactor-public-api/`），因为 cross-chasm.md 整体是用户的 CRoSS CHASM 方法论文档，本身放在 meta2d 项目内。
+本节 4 条协议起草纪律的内容性质是**跨项目通用**（属 L1，团队 / 方法论级别），但物理位置在本文件（meta2d 项目的 L2 层）。这是 meta2d 项目首次对该主题做系统表达——L2 层是该跨项目纪律的诞生地，而不是它的最终归属。
 
-跨项目复用时需要再提炼到 `~/team-rules/protocol-drafting-discipline.md`（参见 cross-chasm.md §4.3.3 跨项目流动）。本节（L2 层 meta2d engineering-discipline 协议起草章节）只交叉引用 cross-chasm.md §3.7，加 meta2d 实践案例，不重复内容。
+后续跨项目复用时，可以走两条路径：
 
-> **v2 deltas 候选 Delta-014**：L1 内容物理位置在 L2 项目里的处置——是不是有具体的 cross-chasm v2 修订建议？（待用户裁决）
+- **抽象到方法论文档**：cross-chasm.md 后续章节重新引入该主题（用户主权决定时机）
+- **独立成团队规则**：提炼到 `~/team-rules/protocol-drafting-discipline.md`（参见 cross-chasm.md §4.5.1 子节"跨项目流动" L2 → L1 沉淀路径）
+
+> **v2 deltas 候选 Delta-014**：跨项目通用内容（L1 性质）首次落地在项目特定文件（L2 物理位置）的一般处置 pattern——是否需要 cross-chasm.md 显式表达"L2 是 L1 的诞生地"这一现象？
 
 ---
 
@@ -306,7 +307,7 @@ cross-chasm.md §3.7 是**跨项目通用**的（任何不可逆操作的 skill 
 | 校对纪律 | 工作纪律 #2 #3 | 1693 |
 | 双模式核对 | D-P0-21 | 1543 |
 | 路径漂移核对 | D-P0-31 §5 | 1065 |
-| 协议起草自身的工程纪律 | cross-chasm.md §3.7 + Day 0b 提交 `cccabb15`（meta2d）+ 提交 `30a4839` / `f5d2a3d`（V2）| cross-chasm.md 437 行 + git history |
+| 协议起草自身的工程纪律 | Day 0b 提交 `cccabb15`（meta2d）+ 提交 `30a4839` / `f5d2a3d`（V2）+ P0 期间累积的协议起草教训 | git history |
 
 ### 维护规则
 
@@ -314,7 +315,7 @@ cross-chasm.md §3.7 是**跨项目通用**的（任何不可逆操作的 skill 
 - **Q5 后续扩展（v4+）** → 跳号保留（参见「Q5 自查的三次扩展」编号原则），追加 Q5 三次扩展历史
 - **对称约束第 5 次反向应用** → 追加对称约束反向应用累积表，更新「模式固化」节
 - **新基线规则** → 追加基线规则，标注源 D-P<N>-XX
-- **跨项目沉淀**：L2（本文件）→ 跨项目验证 → L1（`~/team-rules/`）— 参见 cross-chasm.md §4.3.3 跨项目流动
+- **跨项目沉淀**：L2（本文件）→ 跨项目验证 → L1（`~/team-rules/`）— 参见 cross-chasm.md §4.5.1 子节"跨项目流动"
 
 ---
 
